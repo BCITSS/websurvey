@@ -16,7 +16,13 @@ var io = require("socket.io")(server);
 
 //postgres
 //database url
-var dbURL = "postgres://postgres:1994Daniel@localhost:5432/survey_system";
+var pool = new pg.Pool ({
+	user: 'postgres',
+	host1: 'localhost',
+	database: 'survey_system',
+	password: 'password',
+	max: 20
+});
 
 
 //use body parser
