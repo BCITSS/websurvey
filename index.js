@@ -20,7 +20,7 @@ var pool = new pg.Pool ({
 	user: 'postgres',
 	host1: 'localhost',
 	database: 'survey_system',
-	password: 'bcitA00972424',
+	password: 'password',
 	max: 20
 });
 
