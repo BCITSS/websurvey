@@ -1,18 +1,18 @@
-//set everything up
+//REQUIRE ALL MODULES
 const express = require("express");
+const session = require("express-session");
 const port = process.env.PORT || 10000;
 const path = require("path");
 const bodyParser = require("body-parser");
-const session = require("express-session");
 const pg  = require("pg");
-var pF = path.resolve(__dirname,"public");
-var app = express();
 
-//create a new server for socket, but combine it with express functions
+//Start server
+var app = express();
 const server = require("http").createServer(app);
 
-//create a socket server with the new server
+//Setup Settings for DB, Server & Folders
 var io = require("socket.io")(server);
+var pF = path.resolve(__dirname,"public");
 
 //postgres
 //database url
@@ -23,7 +23,6 @@ var pool = new pg.Pool ({
 	password: 'password',
 	max: 20
 });
-
 
 //use body parser
 app.use(bodyParser.urlencoded({
@@ -37,11 +36,57 @@ app.use(session({
     saveUninitialized:true
 }));
 
+//redirect scripts to build folder
 app.use("/scripts",express.static("build"));
 
-//root folder
-app.get("/", function(req, resp){
-    resp.sendFile(pF+"/index.html");
+app.use("/images", express.static("images"));
+
+app.use("/css", express.static("css"));
+
+//if logged in go to item.html, else go to login.html
+app.get("/", function(req,resp){
+    if(req.session.user){
+        resp.sendFile(pF + "/home.html")
+    }else{
+        resp.sendFile(pF + "/login.html")
+    }
+});
+
+//login function
+app.post("/login",function(req,resp){
+    var email = req.body.email;
+    var password = req.body.password;
+    
+    pool.connect(function(err, client, done){
+        if(err){
+            console.log(err);
+            resp.end("FAIL");
+        }
+        client.query("SELECT username, id FROM users WHERE email = $1 AND password = $2", [email, password], function(err, result){
+			client.release()
+            if(err){
+                console.log(err);
+                resp.end("FAIL");
+            }
+            if(result.rows.length >0){
+                req.session.user = result.rows[0];
+                var obj = {
+                    status:"success",
+                    user:req.session.user
+                }
+                resp.send(obj);
+            }else{
+                resp.end("FAIL");
+            }
+        });
+    });
+});
+
+//logout
+app.post("/logout",function(req, resp){
+    //deletes the session in the db
+    req.session.destroy();
+    resp.end("success");
 });
 
 

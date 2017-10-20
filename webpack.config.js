@@ -6,7 +6,8 @@ var bF = path.resolve(__dirname,"build");
 
 var config = {
     entry:{
-        "index":jF +"/index.js"
+        "login":jF +"/login.js",
+		"home": jF +"/home.js"
     },
     output:{
         filename:"[name]bundle.js",
@@ -15,7 +16,9 @@ var config = {
     plugins:[
         new webpack.ProvidePlugin({
             $:"jquery",
-            jQuery:"jquery"
+            jQuery:"jquery",
+			Survey:"surveyjs-jquery",
+			SurveyEditor:"surveyjs-editor"
         })
     ]
 }

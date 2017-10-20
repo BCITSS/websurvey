@@ -10,14 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "chart.js": "^2.7.0",
-    "express": "^4.16.2",
-    "express-session": "^1.15.6",
-    "formidable": "^1.1.1",
+
+    "body-parser": "^1.17.1",
+    "bootstrap": "^3.3.7",
+    "express": "^4.15.2",
+    "express-session": "^1.15.2",
     "jquery": "^3.2.1",
-    "pg": "^6.4.2",
-    "socket.io": "^1.7.4",
-    "webpack": "^2.7.0"
+    "knockout": "^3.4.2",
+    "pg": "^6.1.5",
+    "socket.io": "^1.7.3",
+    "survey-jquery": "^0.12.32",
+    "survey-knockout": "^0.12.32",
+    "surveyjs-editor": "^0.12.32",
+    "webpack": "^2.3.2"
   }
 }
