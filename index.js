@@ -41,15 +41,27 @@ app.use("/scripts",express.static("build"));
 
 app.use("/images", express.static("images"));
 
-app.use("/css", express.static("css"));
+app.use("/styles", express.static("css"));
 
 //if logged in go to item.html, else go to login.html
-app.get("/", function(req,resp){
+app.get("/", function(req, resp){
     if(req.session.user){
-        resp.sendFile(pF + "/home.html")
+        resp.sendFile(pF + "/admin.html");
     }else{
-        resp.sendFile(pF + "/login.html")
+        resp.sendFile(pF + "/login.html");
     }
+});
+
+app.get("/create", function(req, resp){
+    resp.sendFile(pF + "/create.html");
+});
+
+app.get("/client", function(req, resp){
+    resp.sendFile(pF + "/client.html");
+});
+
+app.get("/questions", function(req, resp){
+    resp.sendFile(pF + "/questions.html");
 });
 
 //login function

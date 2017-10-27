@@ -1,25 +1,26 @@
 body {
     margin: 0;
     background-image: url(/images/fall.jpg);
-	background-repeat:no-repeat;
-	background-position: right;
+	background-repeat: no-repeat;
+	background-position: center;
+    background-size: cover;
 	font-family: Helvetica, Arial, sans-serifS;
 }
 
 .outerdiv {
-	position:center;
+	position: relative;
 	background-color: rgba(169,169,169,0.7);
-	width:24%;
-	margin-top:2%;
+	width: 24vw;
+    height: 60vh;
+	margin-top: 2%;
 	margin-left: auto;
 	margin-right: auto;
-	border-radius: 75px;
+	border-radius: 5vw;
 }
 
 #logo_div {
-padding-top:10%;
-width: 100%;
-
+    padding-top:10%;
+    width: 100%;
 }
 
 #sign_logo{
@@ -40,7 +41,7 @@ width: 100%;
     border: 1px solid #F28732;
     margin: 20px auto;
 	width: 50%;
-	height:20%;
+	height: 45%;
 	font-size: 25px;
 	border-radius: 50px;
 }
