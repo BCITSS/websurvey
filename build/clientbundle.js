@@ -63,12 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10328,37 +10327,18 @@ return jQuery;
 
 
 /***/ }),
-
-/***/ 5:
+/* 1 */,
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {var loginBut = document.getElementById("login");
-$(document).ready(function(){
-    //login but on click does the following
-    loginBut.addEventListener("click", function(){
-        var email = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
-        $.ajax({
-            url:"/login",
-            type:"post",
-            data:{
-                //id:id,
-                email:email,
-                password:password
-            },
-            success:function(resp){
-                if(resp.status =="success") {
-                    alert("Login Successful");
-                    location.reload();
-                } else {
-                   alert("Unsuccessful");
-                }
-            }
-        })
+/* WEBPACK VAR INJECTION */(function($) {$(document).ready(function(){
+    var begin = document.getElementById("begin");
+    
+    begin.addEventListener("click", function() {
+        location.href = "/questions";
     });
-})
+});
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
-
-/******/ });
+/******/ ]);
