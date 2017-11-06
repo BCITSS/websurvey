@@ -10,7 +10,8 @@ var config = {
 		"admin": jF + "/admin.js",
         "create": jF + "/create.js",
         "client": jF + "/client.js",
-        "questions": jF + "/questions.js"
+        "questions": jF + "/questions.js",
+        "halfEditor": jF+"/halfEditor.js",
     },
     output:{
         filename:"[name]bundle.js",
