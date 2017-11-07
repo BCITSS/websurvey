@@ -11,7 +11,8 @@ var config = {
         "create": jF + "/create.js",
         "client": jF + "/client.js",
         "questions": jF + "/questions.js",
-		"main": jF + "/main.js"
+		    "main": jF + "/main.js"
+        "halfEditor": jF+"/halfEditor.js",
     },
     output:{
         filename:"[name]bundle.js",

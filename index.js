@@ -4,7 +4,7 @@ const session = require("express-session");
 const port = process.env.PORT || 10000;
 const path = require("path");
 const bodyParser = require("body-parser");
-const pg  = require("pg");
+const pg = require("pg");
 
 //Start server
 var app = express();
@@ -12,55 +12,60 @@ const server = require("http").createServer(app);
 
 //Setup Settings for DB, Server & Folders
 var io = require("socket.io")(server);
-var pF = path.resolve(__dirname,"public");
+var pF = path.resolve(__dirname, "public");
 
 //postgres
 //database url
-var pool = new pg.Pool ({
-	user: 'postgres',
-	host1: 'localhost',
-	database: 'survey_system',
-	password: 'password',
-	max: 20
+var pool = new pg.Pool({
+    user: 'postgres',
+    host1: 'localhost',
+    database: 'survey_system',
+    password: 'password',
+    max: 20
 });
 
 //use body parser
 app.use(bodyParser.urlencoded({
-    extended:true
+    extended: true
 }));
 
 //use sessions
 app.use(session({
-    secret:"survey_code",
-    resave:true,
-    saveUninitialized:true
+    secret: "survey_code",
+    resave: true,
+    saveUninitialized: true
 }));
 
 //redirect scripts to build folder
-app.use("/scripts",express.static("build"));
+app.use("/scripts", express.static("build"));
 
 app.use("/images", express.static("images"));
 
 app.use("/styles", express.static("css"));
 
+app.use("/html", express.static("html"));
+
 //if logged in go to item.html, else go to login.html
-app.get("/", function(req, resp){
-    if(req.session.user){
+app.get("/", function (req, resp) {
+    if (req.session.user) {
         resp.sendFile(pF + "/admin.html");
-    }else{
+    } else {
         resp.sendFile(pF + "/login.html");
     }
 });
 
-app.get("/create", function(req, resp){
+app.get("/create", function (req, resp) {
     resp.sendFile(pF + "/create.html");
 });
 
-app.get("/client", function(req, resp){
+app.get("/editor", function (req, resp) {
+    resp.sendFile(pF + "/halfEditor.html");
+});
+app.get("/client", function (req, resp) {
     resp.sendFile(pF + "/client.html");
 });
 
-app.get("/questions", function(req, resp){
+app.get("/questions", function (req, resp) {
     resp.sendFile(pF + "/questions.html");
 });
 
@@ -78,29 +83,29 @@ app.get("/logout", function(req,resp){
 });
 
 //login function
-app.post("/login",function(req,resp){
+app.post("/login", function (req, resp) {
     var email = req.body.email;
     var password = req.body.password;
-    
-    pool.connect(function(err, client, done){
-        if(err){
+
+    pool.connect(function (err, client, done) {
+        if (err) {
             console.log(err);
             resp.end("FAIL");
         }
-        client.query("SELECT username, id FROM users WHERE email = $1 AND password = $2", [email, password], function(err, result){
-			client.release()
-            if(err){
+        client.query("SELECT username, id FROM users WHERE email = $1 AND password = $2", [email, password], function (err, result) {
+            client.release()
+            if (err) {
                 console.log(err);
                 resp.end("FAIL");
             }
-            if(result.rows.length >0){
+            if (result.rows.length > 0) {
                 req.session.user = result.rows[0];
                 var obj = {
-                    status:"success",
-                    user:req.session.user
+                    status: "success",
+                    user: req.session.user
                 }
                 resp.send(obj);
-            }else{
+            } else {
                 resp.end("FAIL");
             }
         });
@@ -108,19 +113,23 @@ app.post("/login",function(req,resp){
 });
 
 //logout
-app.post("/logout",function(req, resp){
+app.post("/logout", function (req, resp) {
     //deletes the session in the db
     req.session.destroy();
     resp.end("success");
 });
 
+// create survey
+app.post("/createSurvey", function (req, resp) {
+    resp.end("success");
+});
 
 // server listen
-server.listen(port, function(err){
-    if(err){
+server.listen(port, function (err) {
+    if (err) {
         console.log(err);
         return false;
     }
-    
-    console.log(port+" is running");
+
+    console.log(port + " is running");
 });
