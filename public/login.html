@@ -15,10 +15,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="//code.jquery.com/jquery.min.js"></script>
 
-<link rel="stylesheet" href="/styles/login.css"/>
+<link rel="stylesheet" type="text/css" href="/styles/login.css"/>
 	
 </head>
 <body>
+	<div class="wrapper">
 	<div class="outerdiv">
 		<div id="logo_div">
 			<img id=sign_logo width="400" height="400" src="/images/bcitlogo.png"/>
@@ -29,17 +30,18 @@
 			<br>
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-				<input type="email" placeholder="TYPE EMAIL HERE" name="email" class="form-control inputs" id="email" pattern="^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$" title="Must be in the form of bobsmith@mybcit.ca" required="required">
+				<input type="email" placeholder="EMAIL" name="email" class="form-control inputs" id="email" pattern="^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$" title="Must be in the form of bobsmith@mybcit.ca" required="required">
 			</div>
 			
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="password" placeholder="TYPE PASSWORD HERE" name="password" id="password" class="form-control inputs" pattern="^[^ \s]{4,15}$" title="Must be 4-15 characters. Whitespace is not allowed." required="required"> 
+				<input type="password" placeholder="PASSWORD" name="password" id="password" class="form-control inputs" pattern="^[^ \s]{4,15}$" title="Must be 4-15 characters. Whitespace is not allowed." required="required"> 
 			</div>
         	<input id="login" type="submit" value="LOGIN" class="buttons btn">
 		</form>     
    </div>
 </div>
+		</div>
 </body>
 <script src="/scripts/loginbundle.js"></script>
 

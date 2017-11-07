@@ -1,4 +1,5 @@
 var loginBut = document.getElementById("login");
+
 $(document).ready(function(){
     //login but on click does the following
     loginBut.addEventListener("click", function(){
