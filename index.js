@@ -69,6 +69,19 @@ app.get("/questions", function (req, resp) {
     resp.sendFile(pF + "/questions.html");
 });
 
+app.get("/main", function(req,resp){
+	resp.sendFile(pF + "/main.html");
+});
+
+app.get("/profile", function(req,resp){
+	resp.sendFile(pF + "/profile.html")
+});
+
+app.get("/logout", function(req,resp){
+	req.session.destroy();
+	resp.redirect("/");
+});
+
 //login function
 app.post("/login", function (req, resp) {
     var email = req.body.email;

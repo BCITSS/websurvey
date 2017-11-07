@@ -4,18 +4,21 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
     background-size: cover;
-	font-family: Helvetica, Arial, sans-serifS;
+	font-family: Helvetica, Arial, sans-serifs;
+}
+
+.wrapper{
+ margin-top: 60px;
+ margin-bottom: 80px;
 }
 
 .outerdiv {
-	position: relative;
-	background-color: rgba(169,169,169,0.7);
-	width: 24vw;
-    height: 60vh;
-	margin-top: 2%;
-	margin-left: auto;
-	margin-right: auto;
-	border-radius: 5vw;
+  max-width: 350px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  border: 1px solid rgba(0,0,0,0.1);  
+  background-color: rgba(169,169,169,0.7);
+  border-radius: 5vw;
 }
 
 #logo_div {
@@ -25,13 +28,13 @@ body {
 
 #sign_logo{
 	display:block;
-	width:40%;
+	width:50%;
 	height:auto;
 	margin:0 auto;
 }
 
 #sign_in {
-	height:25%;
+	height:24%;
 	position:relative;
 }
 
@@ -40,10 +43,7 @@ body {
     color: whitesmoke;
     border: 1px solid #F28732;
     margin: 20px auto;
-	width: 50%;
-	height: 45%;
-	font-size: 25px;
-	border-radius: 50px;
+	font-size: 1.4em;
 }
 
 .buttons:hover {
@@ -57,8 +57,9 @@ body {
 	margin-top:8%;
 	margin-left:auto;
 	margin-right:auto;
-    width:70%;
+    width:100%;
     text-align: center;
 	line-height: 0.75;
 	text-shadow: 0.5px 1px grey;
 }
+

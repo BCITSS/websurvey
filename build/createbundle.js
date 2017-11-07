@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10329,36 +10329,12 @@ return jQuery;
 /***/ }),
 /* 1 */,
 /* 2 */,
-/* 3 */,
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {var loginBut = document.getElementById("login");
-
-$(document).ready(function(){
-    //login but on click does the following
-    loginBut.addEventListener("click", function(){
-        var email = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
-        $.ajax({
-            url:"/login",
-            type:"post",
-            data:{
-                //id:id,
-                email:email,
-                password:password
-            },
-            success:function(resp){
-                if(resp.status =="success") {
-                    alert("Login Successful");
-                    location.reload();
-                } else {
-                   alert("Unsuccessful");
-                }
-            }
-        })
-    });
-})
+/* WEBPACK VAR INJECTION */(function($) {$(document).ready(function(){
+    console.log("CREATE");
+});
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
