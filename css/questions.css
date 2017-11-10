@@ -6,6 +6,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 #questionDiv {
@@ -14,39 +15,106 @@ body {
     height: 15%;
     top: 2.5%;
     left: 5%;
-    background: linear-gradient(whitesmoke, rgb(200,200,200));
-    border-top-right-radius: 5vw;
-    border-top-left-radius: 0.5vw;
+    background-color: #003F6B;
+    border-top-right-radius: 1vw;
+    border-top-left-radius: 1vw;
 }
 
-#q1 {
+#question {
+    display: flex;
     position: relative;
     width: 90%;
+    height: 100%;
     left: 5%;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     font-family: 'Rambla', sans-serif;
     font-size: 3vw;
-    color: #003F6B;
+    color: yellow;
 }
 
-#answerDiv {
+/*Through Back-end*/
+.answerOuterDiv {
     position: absolute;
     width: 90%;
     height: 60%;
     top: 20%;
     left: 5%;
-    background-color: #003F6B;
-    border: .2vw solid whitesmoke;
+    background-color: whitesmoke;
+    border: .1vw solid #003F6B;
+    transition: .75s;
 }
 
-#optionsDiv {
+/*
+#answerOuterDiv1 {
+    left: 0%;
+}
+*/
+/*
+#answerOuterDiv2 {
+    left: 100%;
+}
+*/
+
+/*Through Back-end*/
+.answerWrapDiv {
     position: relative;
     width: 50%;
+    height: 100%;
     top: 50%;
     transform: translateY(-50%);
 }
 
-#imageDiv {
+/*Through Back-end*/
+.answerDiv {
+    position: relative;
+    text-align: center;
+    width: 90%;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.options {
+    display: inline-block;
+    position: relative;
+    
+    min-width: 45%;
+    height: 10vh;
+    
+    margin-bottom: 2.5%;
+    margin-left: .5%;
+    
+    font-size: 1.75vw;
+    text-align: center;
+    font-family: 'Maven Pro', sans-serif;
+    
+    color: black;
+    background-color: yellow;
+    border: .25vw outset yellow;
+    border-radius: 10vw;
+    
+    box-shadow: .2vw .2vw 1.25vw black;
+    
+    transition: .2s;
+    cursor: pointer;
+    outline: none;
+}
+.options:hover {
+    background-color: orange;
+    border: .25vw outset orange;
+}
+.options:focus {
+    background-color: orange;
+    border: .25vw inset orange;
+    
+    box-shadow: 0 0 .75vw black;
+}
+
+/*Through Back-end*/
+.answerImageDiv {
     position: absolute;
     width: 50%;
     height: 100%;
@@ -54,44 +122,16 @@ body {
     top: 0%;
 }
 
-#image {
+/*Through Back-end*/
+.answerImage {
     position: relative;
     display: block;
     margin-left: auto;
     margin-right: auto;
     max-width: 95%;
-    max-height: 95%;
+    max-height: 90%;
     top: 50%;
     transform: translateY(-50%);
-}
-
-#input1, #input2, #input3, #input4, #input5 {
-    display: inline-block;
-    position: relative;
-    width: 90%;
-    height: 15%;
-    left: 5%;
-    top: 1%;
-    text-align: center;
-    font-family: 'Maven Pro', sans-serif;
-    color: yellow;
-}
-
-input {
-    position: relative;
-    width: 10%;
-    height: 4vw;
-    display: block;
-    cursor: pointer;
-}
-
-.o {
-    position: absolute;
-    width: 80%;
-    left: 6vw;
-    bottom: .9vw;
-    font-family: 'Maven Pro', sans-serif;
-    font-size: 2vw;
 }
 
 #bottomDiv {
@@ -101,8 +141,8 @@ input {
     top: 82.5%;
     left: 5%;
     background-color: whitesmoke;
-    background: linear-gradient(rgb(200,200,200), whitesmoke);
-    border-bottom-left-radius: 5vw;
+    background-color: #003F6B;
+    border-bottom-left-radius: 0.5vw;
     border-bottom-right-radius: 0.5vw;
 }
 
@@ -114,26 +154,58 @@ input {
     transform: translateY(-50%);
     font-family: 'Rambla', sans-serif;
     font-size: 2.25vw;
-    color: white;
-    background-color: #003F6B;
-    border: .2vw solid black;
+    color: black;
+    background-color: whitesmoke;
+    border: .2vw outset whitesmoke;
     border-radius: .5vw;
     transition: .1s;
     cursor: pointer;
     outline: none;
 }
 #previous:hover, #next:hover {
-    color: black;
     background-color: yellow;
+    border: .2vw outset yellow;
+}
+#previous:active, #next:active {
+    background-color: yellow;
+    border: .2vw inset yellow;
 }
 
 #previous {
     left: .75vw;
-    border-bottom-left-radius: 3.75vw;
 }
 
 #next {
     right: .75vw;
+}
+
+#pbarDiv {
+    position: relative;
+    width: 65vw;
+    height: 5vh;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#pbarContainer {
+    position: relative;
+    width: 100%;
+    height: 70%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: whitesmoke;
+    box-shadow: 0 0 4vw black;
+}
+
+#pbarText {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Rambla', sans-serif;
+    font-size: 1.5vw;
+    text-align: center;
+    color: whitesmoke;
+    text-shadow: 0 0 .75vw black;
 }
 
 

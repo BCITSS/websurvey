@@ -48,12 +48,11 @@ body {
 
 #motto2 {
     position: relative;
-    top: 9vh;
+    top: 6vh;
     left: 2vw;
     width: 70%;
     font-size: 4vw;
-    font-family: 'Kalam', cursive;
-    text-shadow: 0 0 4vw yellow;
+    font-family: 'Teko', sans-serif;
     color: whitesmoke;
 }
 

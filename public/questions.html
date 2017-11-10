@@ -1,62 +1,75 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Questions</title>
+        <title>Speak Up</title>
         <link href="/styles/questions.css" type="text/css" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com/css?family=Maven+Pro|Rambla" rel="stylesheet">
         
-<!--        Progress bar        -->
-<!--
+        <!-- PROGRESS BAR REQUIREMENTS -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
--->
+        <!-- PROGRESS BAR REQUIREMENTS -->
         
     </head>
     
     <body>
+        <!-- QUESTIONS DIV START -->
         <div id="questionDiv">
-            <h1 id="q1">How are you feeling today?</h1>
+            <div id="question"></div>
         </div>
-        <div id="answerDiv">
-            <div id="optionsDiv">
-                <div id="input1">
-                    <input type="radio" name="q1" value="g"/><div class="o">good</div>
+        <!-- QUESTIONS DIV END -->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <!-- ANSWERS START -->
+        
+            <!-- -->
+            <!-- POPULATE FROM DATABASE THROUGH BACK-END -->
+            <!-- -->
+        
+        <!-- ANSWERS END -->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <!-- BOTTOM DIV START-->
+        <div id="bottomDiv">
+            <button id="previous">Previous</button>
+            
+            
+            <!-- PROGRESS BAR START -->
+                <div class="container" id="pbarDiv">
+                    <div class="progress" id="pbarContainer">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                            <div id="pbarText">40%</div>
+                        </div>
+                    </div>
                 </div>
-                <div id="input2">
-                    <input type="radio" name="q1" value="h"/><div class="o">happy</div>
-                </div>
-                <div id="input3">
-                    <input type="radio" name="q1" value="sa"/><div class="o">sad</div>
-                </div>
-                <div id="input4">
-                    <input type="radio" name="q1" value="st"/><div class="o">stressed</div>
-                </div>
-                <div id="input5">
-                    <input type="radio" name="q1" value="n"/><div class="o">normal</div>
+            <!-- PROGRESS BAR END -->
+            
+            
+            <button id="next">Next</button>
+        </div>
+        <!-- BOTTOM DIV END-->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <script src="/scripts/questionsbundle.js"></script>
+    </body>
+    
+</html>
+
+<!--
+        <div id="MCanswerDiv">
+            <div id="MCoptionsDiv">
+                <div id="MCoptionsWrap">
                 </div>
             </div>
             
             <div id="imageDiv">
-                <img id="image" src="https://commons.bcit.ca/news/files/2014/10/Big-Info-exterior-e1489792981964.jpg"/>
+                <img id="image" src="/images/bcit.png"/>
             </div>
         </div>
-        <div id="bottomDiv">
-            <button id="previous">Previous</button>
-<!--
-            <div class="container">
-                <h2>Basic Progress Bar</h2>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                        <span class="sr-only">70% Complete</span>
-                    </div>
-                </div>
-            </div>
 -->
-            <button id="next">Next</button>
-        </div>
-        <script src="/scripts/questionsbundle.js"></script>
-    </body>
-</html>
