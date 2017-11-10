@@ -92,7 +92,6 @@ $(document).ready(function () {
             if (this.id == "option-add-row-btn") {
                 $(selectQ).find("#answer-row").append($ansDivClone);
             } else {
-                console.log("yes")
                 $ansDivClone.find("#answer-option").removeClass();
                 $ansDivClone.find("#answer-option").addClass("answer-option-col");
                 $(selectQ).find("#answer-col").append($ansDivClone);
@@ -161,18 +160,18 @@ $(document).ready(function () {
         $addRowBtn.on("click", addOption);
 
     }
-
-    addQ.addEventListener("click", function () {
+    
+    function addQuestion(question_type){
         inc += 1;
         var q = surveyQuestions.length;
         var newQ = document.createElement("div");
         newQ.id = "question" + (inc);
         newQ.className = "question";
-        newQ.classList.add("multChoice");
+        newQ.classList.add(question_type);
         QuestCon.appendChild(newQ);
         surveyQuestions.push({
             "id": newQ.id,
-            "type": "multChoice"
+            "type": question_type
         })
         var newQBut = document.createElement("button");
         newQBut.id = "q" + (surveyQuestions.length);
@@ -191,7 +190,9 @@ $(document).ready(function () {
         if (surveyQuestions.length > 9) {
             this.disabled = true;
         }
-    })
+    }
+
+    addQ.addEventListener("click", function(){addQuestion("multChoice")});
 
     remQ.addEventListener("click", function () {
 
@@ -229,7 +230,8 @@ $(document).ready(function () {
         $(".question").each(function () {
             saveQuestion(this);
         });
-
+        surveyTitle = document.getElementById("survey-title").value;
+        
         $.ajax({
             url: "/createSurvey",
             type: "post",
@@ -238,9 +240,23 @@ $(document).ready(function () {
                 questions: surveyQuestions
             },
             success: function (resp) {
-                console.log(resp);
+                console.log(resp.status);
+                if(resp.status == 'success'){
+                    alert(resp.survey_name + ' survey created');
+                    location.reload();
+                }else{
+                    alert(resp);
+                }
+            },
+            error: function(e){
+                conosle.log(e);
+                alert("ERROR:",e);
             }
         });
     })
 
 })
+
+module.exports = {
+    addQuestion: addQuestion,
+}

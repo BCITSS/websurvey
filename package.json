@@ -10,11 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-
     "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
+    "file-system": "^2.2.2",
     "jquery": "^3.2.1",
     "knockout": "^3.4.2",
     "pg": "^6.1.5",

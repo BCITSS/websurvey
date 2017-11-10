@@ -78,18 +78,20 @@
                 <i class="fa fa-plus-square fa-lg"></i> <span>CREATE</span><i class="fa fa-angle-left pull-right"></i> 
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="#"><i class="fa fa-file"></i> NEW</a></li>
+                <li class="active">
+                    <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
+                </li>
                 <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
 				</ul>
             </li>
             <li class="treeview">
-              <a href="#">
+              <a href="#" id='modify-btn'>
                 <i class="fa fa-pencil-square"></i>
                 <span>MODIFY</span>
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="#" id="view-btn">
                 <i class="fa fa-th"></i> <span>VIEW</span> 
               </a>
             </li>
@@ -109,7 +111,7 @@
 	</div>
 	
 	<div class="content-wrapper" style="height: auto;">
-		<section class="content">
+		<section class="content" id="main-content">
 			<div class="row">
 
 			</div>
@@ -121,8 +123,6 @@
 	</div>
 	<footer class="main-footer">
 		<div class="pull-right hidden-xs">
-			  <button type="button" class="btn btn-success">SAVE</button>
-			  <button type="button" class="btn btn-danger">CANCEL</button>
 		</div>
 		<div class="copyright">
 			<strong> copyright 2017 BCITSSD Team
