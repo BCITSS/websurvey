@@ -165,3 +165,142 @@ $.mainPage.tree = function (menu) {
     }
   });
 };
+
+/* Sidebar Button JS
+ * =================
+ */
+var maincontent = $('#main-content');
+var newBtn = $('#new-btn');
+var modifyBtn = $('#modify-btn');
+var viewBtn = $('#view-btn');
+
+function loadSurveyObj(survey_obj){
+    //document.getElementById("survey-title").value = "yes";
+    
+    
+}
+
+newBtn.on("click",function(){
+    $.ajax({
+        url:'/adminPanel',
+        type:'post',
+        data:{
+            type:"create"
+        },
+        success:function(resp){
+            maincontent.html(resp);
+        }
+    });
+   
+});
+
+modifyBtn.on("click",function(){
+    $.ajax({
+        url:'/adminPanel',
+        type:'post',
+        data:{
+            type:"view"
+        },
+        success:function(resp){
+            console.log(resp);
+            // --- create action bar ---
+            var bar = document.createElement('div');
+            bar.id = 'action_bar';
+            var modify_action_button = document.createElement('button');
+            modify_action_button.innerHTML = 'Modify';
+            
+            // modify button click event listener
+            modify_action_button.addEventListener("click",function(){
+               var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
+                console.log(selected_survey);
+                $.ajax({
+                    url:"/adminPanel",
+                    type:"post",
+                    data:{
+                        type:"modify",
+                        survey_id: selected_survey.value
+                    },
+                    success: function(resp){
+                        console.log(resp);
+                        var survey_obj = resp;
+                        $.ajax({
+                            url:"/adminPanel",
+                            type:"post",
+                            data:{
+                                type:"create"
+                            },
+                            success:function(resp){
+                                
+                                maincontent.html(resp);
+                                loadSurveyObj(survey_obj);
+                            }
+                        });
+                    }
+                });
+            });
+            bar.append(modify_action_button);
+            
+            // --- create survey list table ---
+            var table = document.createElement("table");
+            table.id = "survey-list-table";
+            table.setAttribute('border','1');
+            var headTr = document.createElement('tr');
+            var tableColumn = ['survey name','description', 'create date', 'publish', 'last update','modify' ]
+            tableColumn.forEach(function(Element){
+                var th = document.createElement('th');
+                th.innerHTML = Element;
+                headTr.appendChild(th);
+            });
+            table.appendChild(headTr);
+            
+            console.log(resp);
+            console.log(resp.length);
+            if(resp.status == "No survey" ){
+                var new_div = document.createElement('div');
+                new_div.id = "content-div";
+                new_div.innerHTML = resp.message;
+                maincontent.html(new_div);
+            }else{
+                for(var i=0;i<resp.length;i++){
+                    var row = table.insertRow(i+1);
+                    var survey_name = row.insertCell(0);
+                    var description = row.insertCell(1);
+                    var create_date = row.insertCell(2);
+                    var publish = row.insertCell(3);
+                    var last_update = row.insertCell(4);
+                    var modify = row.insertCell(5);
+
+                    var modify_button = document.createElement('input');
+                    modify_button.type = 'radio';
+                    modify_button.name = 'modi_btn';
+                    modify_button.value = resp[i].id;
+                    modify_button.class = 'modify-button';
+
+                    survey_name.innerHTML = resp[i].survey_name;
+                    description.innerHTML = resp[i].description;
+                    create_date.innerHTML = resp[i].start_date.replace(/T.*$/,"");
+                    publish.innerHTML = resp[i].isopen;
+                    last_update.innerHTML = resp[i].updated.replace(/T.*$/,"");
+                    modify.appendChild(modify_button);
+                }
+                maincontent.html('');
+                maincontent.append(bar);
+                maincontent.append(table);
+            }
+        }
+    });
+});
+
+viewBtn.on("click",function(){
+    $.ajax({
+        url:'/adminPanel',
+        type:'post',
+        data:{
+            type:"view"
+        },
+        success:function(resp){
+            console.log(resp)
+        }
+    })
+})
+
