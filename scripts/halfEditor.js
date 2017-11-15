@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var surveyTitle = document.getElementById("survey-title").value;
+    var surveyTitle = document.getElementById("survey-title");
     var addQ = document.getElementById("addQuestion");
     var QuestCon = document.getElementById("questionsContainer");
     var questChoose = document.getElementById("questionChooser");
@@ -35,7 +35,7 @@ $(document).ready(function () {
         changeQ("q1");
     });
     changeQ("q1");
-
+    console.log(choices);
     choices.forEach(function (Element) {
         var choice = document.createElement("button");
         choice.id = Element.id;
@@ -85,7 +85,7 @@ $(document).ready(function () {
         $(this).parent().remove();
     }
 
-    function addOption() {
+    function addOption(optionValue) {
         var $ansDivClone = $("#" + selectQTypePanel).find("#answer-div").clone(true);
         $ansDivClone.find("#option-delete-btn").on("click", deleteDiv);
         if (selectQ.classList.contains("ratingQuest")) {
@@ -135,7 +135,7 @@ $(document).ready(function () {
                 Element.answers = answersArray;
             }
         });
-        console.log(surveyQuestions);
+        //console.log(surveyQuestions);
     }
 
     function addQuestionPanel() {
@@ -162,6 +162,7 @@ $(document).ready(function () {
     }
     
     function addQuestion(question_type){
+        console.log("HELLLLO");
         inc += 1;
         var q = surveyQuestions.length;
         var newQ = document.createElement("div");
@@ -188,8 +189,72 @@ $(document).ready(function () {
 
         remQ.disabled = false;
         if (surveyQuestions.length > 9) {
-            this.disabled = true;
+            addQ.disabled = true;
         }
+    }
+    
+    function loadSurveyObj(){
+        $("#q1").remove();
+        $("#question1").remove();
+        surveyQuestions.pop();
+        surveyTitle.value = global_survey_obj.name;
+        surveyTitle.disabled = true;
+        inc = 0;
+        for (var g=0; g< global_survey_obj.questions.length; g++){
+            var question = global_survey_obj.questions[g];
+            addQuestion(question.question_type);
+            console.log(g);
+            $("#question" + (g+1)).find("#question").val(question.question);
+            if(question.answers.length > 0 && question.question_type != "trueFalse"){
+                for (var x=0; x<question.answers.length-1; x++){
+                    addOption(question.answers[x]);
+                }
+                for(var h=0; h<question.answers.length; h++){
+                    console.log($("#question" + (g+1)).find(".answer-option")[h].value);
+                    $("#question" + (g+1)).find(".answer-option")[h].value = question.answers[h];
+                }
+            }
+            
+        }
+    }
+    
+    // check if survey obj is assign
+    if(global_survey_obj != "none"){
+        loadSurveyObj();
+        createBtn.remove();
+        // create new button? to DELETE survey and CREATE a new one;
+        var done_btn = document.createElement("button");
+        done_btn.id = "done-btn";
+        done_btn.innerHTML = "Done";
+        done_btn.addEventListener("click",function(){
+            $(".question").each(function () {
+            saveQuestion(this);
+            });
+            surveyTitle = document.getElementById("survey-title").value;
+
+            $.ajax({
+                url: "/modifySurvey",
+                type: "post",
+                data: {
+                    name: surveyTitle,
+                    questions: surveyQuestions
+                },
+                success: function (resp) {
+                    console.log(resp.status);
+                    if(resp.status == 'success'){
+                        alert(resp.survey_name + ' survey modified');
+                        location.reload();
+                    }else{
+                        alert(resp);
+                    }
+                },
+                error: function(e){
+                    conosle.log(e);
+                    alert("ERROR:",e);
+                }
+            });
+        });
+        $("#main-content").append(done_btn);
     }
 
     addQ.addEventListener("click", function(){addQuestion("multChoice")});
@@ -254,9 +319,4 @@ $(document).ready(function () {
             }
         });
     })
-
 })
-
-module.exports = {
-    addQuestion: addQuestion,
-}
