@@ -1,3 +1,21 @@
+$(document).ready(function(){
+    // get logined username and department name
+   $.ajax({
+        url:"/getSession",
+        type:"post",
+        success:function(resp){
+            
+            console.log(resp);
+            // display username and department name to admin panel (main.html)
+            document.getElementById("nav-username").innerHTML = resp.name;
+            document.getElementById("pull-right-username").innerHTML = resp.name;
+            document.getElementById("pull-right-department").innerHTML = resp.department_name;
+            
+        }
+       
+   });
+});
+
 if (typeof jQuery === "undefined") {
   throw new Error("BCITSSD requires jQuery");
 }
@@ -169,15 +187,23 @@ $.mainPage.tree = function (menu) {
 /* Sidebar Button JS
  * =================
  */
+
 var maincontent = $('#main-content');
 var newBtn = $('#new-btn');
 var modifyBtn = $('#modify-btn');
 var viewBtn = $('#view-btn');
 
 function loadSurveyObj(survey_obj){
-    //document.getElementById("survey-title").value = "yes";
-    
-    
+    global_survey_obj = survey_obj;
+    $.ajax({
+        url:"/adminPanel",
+        type:"post",
+        data:{
+            type: "create"
+        },
+        success:function(resp){
+        }
+    });
 }
 
 newBtn.on("click",function(){
@@ -230,9 +256,11 @@ modifyBtn.on("click",function(){
                                 type:"create"
                             },
                             success:function(resp){
-                                
                                 maincontent.html(resp);
                                 loadSurveyObj(survey_obj);
+                            },
+                            error:function(e){
+                                console.log(e);
                             }
                         });
                     }
