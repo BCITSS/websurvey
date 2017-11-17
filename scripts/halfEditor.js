@@ -5,6 +5,10 @@ $(document).ready(function () {
     var questChoose = document.getElementById("questionChooser");
     var selectQ = document.getElementById("question1");
     var createBtn = document.getElementById("create-button");
+    var clicked_btn = document.getElementById("q1");
+    clicked_btn.style.backgroundColor = "red";
+    
+    
 
     var choices = [{
         "id": "multChoice",
@@ -33,6 +37,7 @@ $(document).ready(function () {
     // Q1 sample button
     document.getElementById("q1").addEventListener("click", function () {
         changeQ("q1");
+        colorQuestionButton(this);
     });
     changeQ("q1");
     console.log(choices);
@@ -42,9 +47,14 @@ $(document).ready(function () {
         choice.innerHTML = Element.name;
         choice.addEventListener("click", function () {
             selectType(choice.id);
+            console.log(clicked_btn);
+            clicked_btn.classList.remove(clicked_btn.classList[1]);
+            clicked_btn.classList.add(this.id);
         })
         document.getElementById("questionChoices").appendChild(choice);
     })
+    
+    var clicked_type = document.getElementById("multChoice");
 
     function findQ(id) {
         var a = 0;
@@ -77,7 +87,7 @@ $(document).ready(function () {
         selectQ.classList.add(type);
         var position = findQ(selectQ.id);
         addQuestionPanel();
-
+        
         surveyQuestions[position].type = type;
     }
 
@@ -160,9 +170,13 @@ $(document).ready(function () {
         $addRowBtn.on("click", addOption);
 
     }
+    function colorQuestionButton(buttonDOM){
+        clicked_btn.style.backgroundColor = "";
+        clicked_btn = buttonDOM;
+        clicked_btn.style.backgroundColor = "red";
+    }
     
     function addQuestion(question_type){
-        console.log("HELLLLO");
         inc += 1;
         var q = surveyQuestions.length;
         var newQ = document.createElement("div");
@@ -177,15 +191,19 @@ $(document).ready(function () {
         var newQBut = document.createElement("button");
         newQBut.id = "q" + (surveyQuestions.length);
         newQBut.className = "questionBut";
+        newQBut.classList.add(question_type);
         newQBut.innerHTML = "Q" + (surveyQuestions.length);
 
         // Question button LISTENER
         newQBut.addEventListener("click", function () {
             changeQ(newQBut.id);
-
+            colorQuestionButton(this);
+            
         });
         changeQ(newQBut.id);
         questChoose.appendChild(newQBut);
+        
+        colorQuestionButton(newQBut);
 
         remQ.disabled = false;
         if (surveyQuestions.length > 9) {
@@ -219,6 +237,8 @@ $(document).ready(function () {
     }
     
     // check if survey obj is assign
+    console.log("ssss",global_survey_obj.status);
+    
     if(global_survey_obj != "none"){
         loadSurveyObj();
         createBtn.remove();
@@ -279,9 +299,11 @@ $(document).ready(function () {
         if (b > surveyQuestions.length - 1) {
             selectQ = document.getElementById(surveyQuestions[b - 1].id);
             changeQ("q" + (b));
+            colorQuestionButton(document.getElementById("q" + (b)));
         } else {
             selectQ = document.getElementById(surveyQuestions[b].id);
             changeQ("q" + (b + 1));
+            colorQuestionButton(document.getElementById("q" + (b+1)))
         }
 
         if (surveyQuestions.length < 2) {

@@ -192,7 +192,9 @@ var maincontent = $('#main-content');
 var newBtn = $('#new-btn');
 var modifyBtn = $('#modify-btn');
 var viewBtn = $('#view-btn');
+var publishBtn = $("#publish-btn");
 
+// get survey obj from server
 function loadSurveyObj(survey_obj){
     global_survey_obj = survey_obj;
     $.ajax({
@@ -204,6 +206,64 @@ function loadSurveyObj(survey_obj){
         success:function(resp){
         }
     });
+}
+
+// get random color
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+// convert array for chartjs
+function parseSurveyStatus(obj){
+    var question_array = [];
+    var answer_array = [];
+    var answer_count = [];
+    for (var key in obj){
+        if(obj.hasOwnProperty(key)){
+            question_array.push(key);
+            var temp_array_1 = [];
+            var temp_array_2 = [];
+            for (var i =0; i<obj[key].length;i++){
+                console.log(obj[key][i]);
+                temp_array_1.push(obj[key][i][0]);
+                temp_array_2.push(obj[key][i][1]);
+            }
+            answer_array.push(temp_array_1);
+            answer_count.push(temp_array_2);
+        } 
+    }
+    return {
+        "question_array":question_array,
+        "answer_array":answer_array,
+        "answer_count":answer_count
+    };
+}
+// convert resp obj to 2D array
+function convert2DArray(obj){
+    var twoDarray = [];
+    for(var i=0;i<obj.length;i++){
+        var temp_array = [];
+        temp_array.push(obj[i].question_text);
+        temp_array.push(obj[i].answer_text);
+        twoDarray.push(temp_array);
+    }
+    return twoDarray;
+}
+
+// convert 2D array to CSV
+function arrayToCsv(array){
+    var csvRow = [];
+    for(var i=0; i< array.length;i++){
+        csvRow.push(array[i].join(','));
+    }
+    var csvString = csvRow.join("\r\n");
+        
+    return csvString; 
 }
 
 newBtn.on("click",function(){
@@ -232,8 +292,14 @@ modifyBtn.on("click",function(){
             // --- create action bar ---
             var bar = document.createElement('div');
             bar.id = 'action_bar';
+            
             var modify_action_button = document.createElement('button');
             modify_action_button.innerHTML = 'Modify';
+            modify_action_button.class = "mod-action-btn";
+            
+            var publish_action_button = document.createElement('button');
+            publish_action_button.innerHTML = 'Publish';
+            publish_action_button.class = "pub-action-btn";
             
             // modify button click event listener
             modify_action_button.addEventListener("click",function(){
@@ -247,33 +313,59 @@ modifyBtn.on("click",function(){
                         survey_id: selected_survey.value
                     },
                     success: function(resp){
+                        console.log("OK?",resp);
                         console.log(resp);
-                        var survey_obj = resp;
-                        $.ajax({
-                            url:"/adminPanel",
-                            type:"post",
-                            data:{
-                                type:"create"
-                            },
-                            success:function(resp){
-                                maincontent.html(resp);
-                                loadSurveyObj(survey_obj);
-                            },
-                            error:function(e){
-                                console.log(e);
-                            }
-                        });
+                        if(resp.status == false){
+                            alert(resp.msg);
+                        }else{
+                            var survey_obj = resp;
+                            $.ajax({
+                                url:"/adminPanel",
+                                type:"post",
+                                data:{
+                                    type:"create"
+                                },
+                                success:function(resp){
+                                    maincontent.html(resp);
+                                    loadSurveyObj(survey_obj);
+                                },
+                                error:function(e){
+                                    console.log(e);
+                                }
+                            });
+                        }
+                        
                     }
                 });
             });
             bar.append(modify_action_button);
+            
+            publish_action_button.addEventListener("click",function(){
+                var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
+                console.log(selected_survey);
+                $.ajax({
+                    url:"/adminPanel",
+                    type:"post",
+                    data:{
+                        type:"publish",
+                        survey_id: selected_survey.value
+                    },
+                    success: function(resp){
+                        if(resp.status == false){
+                            alert(resp.msg);
+                        }
+                        modifyBtn.click();
+                    }
+                });
+            });
+            bar.append(publish_action_button);
             
             // --- create survey list table ---
             var table = document.createElement("table");
             table.id = "survey-list-table";
             table.setAttribute('border','1');
             var headTr = document.createElement('tr');
-            var tableColumn = ['survey name','description', 'create date', 'publish', 'last update','modify' ]
+            var tableColumn = ['survey name','description', 'create date', 'last update','current publishing','been published' ,'select' ]
             tableColumn.forEach(function(Element){
                 var th = document.createElement('th');
                 th.innerHTML = Element;
@@ -294,9 +386,10 @@ modifyBtn.on("click",function(){
                     var survey_name = row.insertCell(0);
                     var description = row.insertCell(1);
                     var create_date = row.insertCell(2);
-                    var publish = row.insertCell(3);
-                    var last_update = row.insertCell(4);
-                    var modify = row.insertCell(5);
+                    var last_update = row.insertCell(3);
+                    var publish = row.insertCell(4);
+                    var been_pub = row.insertCell(5)
+                    var modify = row.insertCell(6);
 
                     var modify_button = document.createElement('input');
                     modify_button.type = 'radio';
@@ -307,9 +400,35 @@ modifyBtn.on("click",function(){
                     survey_name.innerHTML = resp[i].survey_name;
                     description.innerHTML = resp[i].description;
                     create_date.innerHTML = resp[i].start_date.replace(/T.*$/,"");
-                    publish.innerHTML = resp[i].isopen;
+                    // change color of  the cell if isopen equal to true
+                    var open_var;
+                    if(resp[i].isopen){
+                        publish.style.backgroundColor = "green";
+                        openvar = "Yes";
+                    }else{
+                        openvar = "No";
+                    }
+                    publish.innerHTML = openvar;
                     last_update.innerHTML = resp[i].updated.replace(/T.*$/,"");
                     modify.appendChild(modify_button);
+                    
+                    // change color of  the cell if been_published equal to true
+                    var published_var;
+                    if(resp[i].been_published){
+                        been_pub.style.backgroundColor = "green";
+                        published_var = "Yes"
+                    }else{
+                        been_pub.style.backgroundColor = "red";
+                        published_var = "No"
+                    }
+                    
+                    // background color of modify cell indicate if can modify
+                    
+                    if(resp[i].been_published || resp[i].publish){
+                        modify.style.backgroundColor = "red";
+                        modify_button.remove();
+                    }
+                    been_pub.innerHTML = published_var;
                 }
                 maincontent.html('');
                 maincontent.append(bar);
@@ -324,11 +443,209 @@ viewBtn.on("click",function(){
         url:'/adminPanel',
         type:'post',
         data:{
-            type:"view"
+            type:"view_status"
         },
         success:function(resp){
-            console.log(resp)
+            console.log(resp);
+            if(resp.survey_result == "no result"){
+                maincontent.innerHTML = "No Survey";
+            }else{
+                var table = document.createElement("table");
+                table.id = "survey-view";
+                table.setAttribute('border','1');
+                var headTr = document.createElement('tr');
+                var tableColumn = ['survey name','description', 'create date', 'publish', 'last update','Total Response','CSV' ]
+                tableColumn.forEach(function(Element){
+                    var th = document.createElement('th');
+                    th.innerHTML = Element;
+                    headTr.appendChild(th);
+                });
+                table.appendChild(headTr);
+                
+                for(var i=0;i<resp.length;i++){
+                    var row = table.insertRow(i+1);
+                    var survey_name = row.insertCell(0);
+                    var description = row.insertCell(1);
+                    var create_date = row.insertCell(2);
+                    var publish = row.insertCell(3);
+                    var last_update = row.insertCell(4);
+                    var total_resp = row.insertCell(5);
+                    var csv_field = row.insertCell(6);
+                    
+                    // --- Total response btn --- //
+                    var total_resp_btn = document.createElement('button');
+                    total_resp_btn.value = resp[i].count;
+                    total_resp_btn.innerHTML = resp[i].count;
+                    total_resp_btn.id = resp[i].id;
+                    total_resp_btn.class = 'total-resp-btn';
+                    total_resp_btn.addEventListener("click",function(){
+                        $.ajax({
+                            url:"/viewSurvey",
+                            type:"post",
+                            data:{
+                                survey_id:this.id
+                            },
+                            success:function(resp){
+                                if(resp == "no result"){
+                                    maincontent.html("no result");
+                                }else{
+                                    console.log(resp);
+                                    var new_format_array = parseSurveyStatus(resp);
+                                    
+                                    console.log(new_format_array);
+                                    
+                                    // create main div
+                                    var new_div = document.createElement('div');
+                                    new_div.id = "main-div";
+                                    new_div.style.position = "absolute";
+                                    new_div.style.top = "50%";
+                                    new_div.style.left = "50%";
+                                    new_div.style.width = "50%";
+                                    new_div.style.minWidth = "500px";
+                                    new_div.style.overflowX = "hidden";
+                                    new_div.style.height = "90%";
+                                    new_div.style.zIndex = "100000";
+                                    new_div.style.transform = "translate(-50%,-50%)";
+                                    new_div.style.border = '1px solid black';
+                                    new_div.style.backgroundColor = "white";
+                                    
+                                    // create div title
+                                    var div_title = document.createElement("p");
+                                    div_title.id = "status-title";
+                                    div_title.innerHTML = "Question Response Status";
+                                    
+                                    new_div.append(div_title);
+                                    
+                                    // generate close button
+                                    var close_btn = document.createElement('button');
+                                    close_btn.id = "close-btn";
+                                    close_btn.innerHTML = "x";
+                                    close_btn.style.top="0px";
+                                    close_btn.style.right= "0px";
+                                    close_btn.style.position= "absolute";
+                                    close_btn.style.backgroundColor="red"; 
+                                    close_btn.style.zIndex = "100";
+                                    close_btn.addEventListener("click",function(){
+                                        this.parentElement.remove();
+                                    });
+                                    new_div.append(close_btn);
+                                    
+                                    // create chart div
+                                    var chart_div = document.createElement('div');
+                                    chart_div.style.width = "50%";
+                                    new_div.append(chart_div);
+                                    
+                                    // create table div
+                                    var table_div = document.createElement('div');
+                                    chart_div.style.width = "50%";
+                                    table_div.style.backgroundColor="blue";
+                                    table_div.style.display = "inline-block";
+                                    table_div.style.width = "50%";
+                                    table_div.style.height= "100%";
+                                    table_div.style.position = "absolute";
+                                    table_div.style.right = '0px';
+                                    table_div.style.top = '13px';
+                                    new_div.append(table_div);
+                                    
+                                    // genertate charts
+                                    for(var i=0; i<new_format_array.question_array.length;i++ ){
+                                        var new_canvas = document.createElement("canvas");
+                                        new_canvas.class= "answer-pie-chart";
+                                        new_canvas.width = "100";
+                                        new_canvas.height = "100";
+                                        new_canvas.getContext("2d");
+                                        chart_div.append(new_canvas);
+                                        
+                                        //generate random color list
+                                        var chart_color_array = [];
+                                        
+                                        for(var y =0;y<new_format_array.answer_array[i].length;y++){
+                                            chart_color_array.push(getRandomColor());
+                                        }
+                                        
+                                        
+                                        var my_chart = new Chart(new_canvas,{
+                                            type:'doughnut',
+                                           data:{
+                                               labels: new_format_array.answer_array[i],
+                                               data:new_format_array.answer_count[i],
+                                               datasets:[{
+                                                   backgroundColor: chart_color_array,
+                                                   data:new_format_array.answer_count[i],
+                                                   borderWidth: 1,
+                                               }]
+
+                                           },
+                                           options: {
+                                               legend:{
+                                                   display:true,
+                                                   position:"top",
+                                                   labels:{
+                                                       fontSize:15,
+                                                       boxWidth: 20
+                                                   },
+                                                   
+                                               },
+                                               title:{
+                                                 display:true,
+                                                    text: "Question "+(i+1)+": "+new_format_array.question_array[i],
+                                                    fontSize:20
+                                               },
+                                               
+
+                                            }
+                                        });
+                                    }
+                                    maincontent.append(new_div);
+                                }
+                            }
+                        });
+                    })
+                    // --- CSV download button
+                    var csv_download_btn = document.createElement('button');
+                    csv_download_btn.innerHTML = "Download";
+                    csv_download_btn.id = resp[i].id;
+                    csv_download_btn.value = resp[i].survey_name
+                    csv_download_btn.class = 'csv-download-btn';
+                    
+                    csv_download_btn.addEventListener("click",function(){
+                        var survey_name = this.value;
+                        $.ajax({
+                            url:"/getQuestionAnswer",
+                            type:"post",
+                            data:{
+                                survey_id:this.id
+                            },
+                            success:function(resp){
+                                console.log(resp);
+                                var resp_2D_array = convert2DArray(resp);
+                                console.log(convert2DArray(resp));
+                                arrayToCsv(resp_2D_array);
+                                console.log(arrayToCsv(resp_2D_array));
+                                var csvString = arrayToCsv(resp_2D_array);
+                                
+                                var a = document.createElement('a');
+                                a.href = 'data:attachment/csv,' + csvString;
+                                a.target = '_blank';
+                                a.download = survey_name + '.csv';
+                                a.click();
+                            }
+                        })
+                    });
+                    
+                    survey_name.innerHTML = resp[i].survey_name;
+                    description.innerHTML = resp[i].description;
+                    create_date.innerHTML = resp[i].start_date.replace(/T.*$/,"");
+                    publish.innerHTML = resp[i].isopen;
+                    last_update.innerHTML = resp[i].updated.replace(/T.*$/,"");
+                    total_resp.appendChild(total_resp_btn);
+                    csv_field.appendChild(csv_download_btn);
+                }
+                maincontent.html('');
+                maincontent.append(table);
+                
+            }
         }
     })
-})
+});
 
