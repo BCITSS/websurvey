@@ -20,7 +20,6 @@ var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'survey_system',
-    password: '1994Daniel',
     max: 20
 });
 
@@ -123,57 +122,6 @@ app.post("/login", function (req, resp) {
     });
 });
 
-var allAnswers = [];
-
-//app.post("/questions",function(req,resp){
-//    pool.connect(function(err, client, done){
-//        
-//        if(err){
-//            console.log(err);
-//            resp.send("*Connection to the database failed*");
-//        }
-//        
-//        client.query("SELECT * FROM questions;", [], function(err, result) {
-//            
-//            if(err) {
-//                console.log(err);
-//                resp.send("*Connection to the database failed*");
-//            }
-//            
-//            if(result.rows.length > 0) {
-//                
-//                req.session.qPack = result.rows;
-//                
-//                for (var i=0; i < req.session.qPack.length; i++) {
-//                    client.query("SELECT * FROM " + result.rows[i].a_id + ";", [], function(err, result2) {
-//                        if(err) {
-//                            console.log(err);
-//                            resp.send("*Connection to the database failed*");
-//                        }
-//                        if(result2.rows.length > 0) {
-//                            allAnswers.push(result2.rows);
-//                        } else {
-//                            resp.send("*Connection to the database failed*");
-//                        }
-//                    });
-//                }
-//                client.release();
-//                var obj = {
-//                    status: "success",
-//                    qPack: req.session.qPack,
-//                    aArr: allAnswers
-//                }
-//                allAnswers = [];
-//                resp.send(obj);
-//                
-//            } else {
-//                resp.send("*Connection to the database failed*");
-//            }
-//            
-//        });
-//    });
-//});
-
 //logout
 app.post("/logout", function (req, resp) {
     //deletes the session in the db
@@ -255,16 +203,16 @@ app.post("/createSurvey", function (req, resp) {
     });
 });
 
+var req_survey_id;
 app.post("/adminPanel",function(req,resp){
     // TODO check session permission
     
-    // *** CREATE ***//
+    // * CREATE ***//
     if(req.body.type == "create"){
-        console.log("create");
         resp.sendFile(pF + "/halfEditor.html");
     }
     
-    // *** VIEW *** //
+    // * VIEW * //
     if(req.body.type == 'view') {
        pool.connect(function(err,client,done){
            if (err) {
@@ -288,7 +236,7 @@ app.post("/adminPanel",function(req,resp){
         });
        });
     }
-    // *** MODIFY *** //
+    // * MODIFY * //
     if(req.body.type == 'modify'){
         pool.connect(function(err,client,done){
             if(err){
@@ -300,95 +248,121 @@ app.post("/adminPanel",function(req,resp){
             survey_obj.questions = [];
             var survey_q_id = [];
             
-            client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2",[req.body.survey_id,req.session.department],function(err,result){
-                done();
-                if(err){
-                    console.log(err);
-                    resp.end('FAIL');
-                }
-                if(result.rows.length == 1){
-                    survey_obj.name = result.rows[0].survey_name;
-                    survey_obj.questions = [];
-                }
-                else if(result.rows.length > 1){
-                    resp.send("ERROR: multiple survey found");
-                }else{
-                    resp.send("no such survey in this department");
-                }
-            });
-            
-            // --- select questions by survey_id --- 
-            client.query("SELECT * FROM question WHERE survey_id = $1",[req.body.survey_id],function(err,result){
-                done();
-                if(err){
-                    console.log(err);
-                    resp.end('FAIL');
-                }
-                if(result.rows.length > 0){
-                    for (var i=0; i<result.rows.length;i++){
-                        //console.log("i",i);
-                        question_obj = {};
-                        question_obj.question = result.rows[i].question_text;
-                        question_obj.question_type = result.rows[i].question_type;
-                        question_obj.question_variable = result.rows[i].question_variable;
-                        question_obj.answers = [];
-                        survey_obj.questions.push(question_obj);
-                        survey_q_id.push(result.rows[i].id);
-                        if(i == (result.rows.length-1)){
-                            select_answer();
-                        }
-                        
+            //var req_survey_id;
+            var req_department_id;
+            if(req.body.client && req.session.name == undefined){
+                req_department_id = req.body.department_id;
+                client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1",[req_department_id],function(err,result){
+                    done();
+                    if(err){
+                        console.log(err);
+                        resp.end('FAIL');
                     }
-                    
-                }
-                
-            });
-            
-            function combineData(survey_question_list, answer_option_list){
-                var i = 0;
-                survey_question_list.forEach(function(Element){
-                    //console.log("IIIII",i);
-                    Element.answers = answer_option_list[i];
-                    i++
+                    if(result.rows.length == 1){
+                        req_survey_id = result.rows[0].id;
+                        survey_obj.name = result.rows[0].survey_name;
+                        survey_obj.questions = [];
+                        insideQuery();
+                    }
+                    else if(result.rows.length > 1){
+                        resp.send("ERROR: multiple survey found");
+                    }else{
+                        resp.send("no such survey in this department");
+                    }
                 });
-                //console.log(survey_question_list);
-                survey_obj.questions = survey_question_list;
-                //console.log('SSSSD',survey_obj);
-                // !------END POINT ------! //
-                resp.send(survey_obj);
+                
+            }else{
+                req_survey_id = req.body.survey_id;
+                req_department_id = req.session.department;
+                 client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2",[req_survey_id,req_department_id],function(err,result){
+                    done();
+                    if(err){
+                        console.log(err);
+                        resp.end('FAIL');
+                    }
+                    if(result.rows.length == 1){
+                        survey_obj.name = result.rows[0].survey_name;
+                        survey_obj.questions = [];
+                        insideQuery();
+                    }
+                    else if(result.rows.length > 1){
+                        resp.send("ERROR: multiple survey found");
+                    }else{
+                        resp.send("no such survey in this department");
+                    }
+                });
             }
             
-            // -- select answer option
-            var survey_answers_id = [];
-            var g = 0;
-            function select_answer(){
-                for (var y=0;y<survey_q_id.length;y++){
-                    client.query("SELECT * FROM answer_option WHERE question_id = $1",[survey_q_id[y]],function(err,result){
-                        done();
-                        if(err){
-                            console.log(err)
-                            resp.end("FAIL");
-                        }
-                        var array = [];
-                        if(result.rows.length > 0){
-                            var rows = result.rows;
-                            
-                            for(var x=0; x<rows.length; x++){
-                                
-                                array.push(rows[x].answer_text);
+            function insideQuery(){
+                // --- select questions by survey_id --- 
+                client.query("SELECT * FROM question WHERE survey_id = $1",[req_survey_id],function(err,result){
+                    done();
+                    if(err){
+                        console.log(err);
+                        resp.end('FAIL');
+                    }
+                    if(result.rows.length > 0){
+
+                        for (var i=0; i<result.rows.length;i++){
+                            question_obj = {};
+                            question_obj.question = result.rows[i].question_text;
+                            question_obj.question_type = result.rows[i].question_type;
+                            question_obj.question_variable = result.rows[i].question_variable;
+                            question_obj.answers = [];
+                            survey_obj.questions.push(question_obj);
+                            survey_q_id.push(result.rows[i].id);
+                            if(i == (result.rows.length-1)){
+                                select_answer();
                             }
+
                         }
-                        survey_answers_id.push(array);
-                        //console.log(survey_answers_id);
-                        g++
-                        if( g == (survey_q_id.length)){
-                            //console.log('QQ',survey_obj.questions,'AA',survey_answers_id,"///"); 
-                            combineData(survey_obj.questions,survey_answers_id);
-                        }
+
+                    }
+
+                });
+
+                function combineData(survey_question_list, answer_option_list){
+                    var i = 0;
+                    survey_question_list.forEach(function(Element){
+                        Element.answers = answer_option_list[i];
+                        i++
                     });
-                    
+                    survey_obj.questions = survey_question_list;
+                    // !------END POINT ------! //
+                    resp.send(survey_obj);
+                }
+
+                // -- select answer option
+                var survey_answers_id = [];
+                var g = 0;
+                function select_answer(){
+                    for (var y=0;y<survey_q_id.length;y++){
+                        client.query("SELECT * FROM answer_option WHERE question_id = $1",[survey_q_id[y]],function(err,result){
+                            done();
+                            if(err){
+                                console.log(err)
+                                resp.end("FAIL");
+                            }
+                            var array = [];
+                            if(result.rows.length > 0){
+                                var rows = result.rows;
+
+                                for(var x=0; x<rows.length; x++){
+
+                                    array.push(rows[x].answer_text);
+                                }
+                            }
+                            survey_answers_id.push(array);
+                            g++
+                            if( g == (survey_q_id.length)){
+                                combineData(survey_obj.questions,survey_answers_id);
+                            }
+                        });
+
+                    }
                 }
             }
+            
         });
     }
 });
