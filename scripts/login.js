@@ -15,7 +15,6 @@ $(document).ready(function(){
             },
             success:function(resp){
                 if(resp.status =="success") {
-                    console.log(resp);
                     location.reload();
                 } else {
                    alert("Unsuccessful");
