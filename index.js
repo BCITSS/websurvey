@@ -21,7 +21,6 @@ var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'survey_system',
-    password: '1994Daniel',
     max: 20
 });
 
@@ -137,57 +136,6 @@ app.post("/login", function (req, resp) {
         });
     });
 });
-
-var allAnswers = [];
-
-//app.post("/questions",function(req,resp){
-//    pool.connect(function(err, client, done){
-//        
-//        if(err){
-//            console.log(err);
-//            resp.send("*Connection to the database failed*");
-//        }
-//        
-//        client.query("SELECT * FROM questions;", [], function(err, result) {
-//            
-//            if(err) {
-//                console.log(err);
-//                resp.send("*Connection to the database failed*");
-//            }
-//            
-//            if(result.rows.length > 0) {
-//                
-//                req.session.qPack = result.rows;
-//                
-//                for (var i=0; i < req.session.qPack.length; i++) {
-//                    client.query("SELECT * FROM " + result.rows[i].a_id + ";", [], function(err, result2) {
-//                        if(err) {
-//                            console.log(err);
-//                            resp.send("*Connection to the database failed*");
-//                        }
-//                        if(result2.rows.length > 0) {
-//                            allAnswers.push(result2.rows);
-//                        } else {
-//                            resp.send("*Connection to the database failed*");
-//                        }
-//                    });
-//                }
-//                client.release();
-//                var obj = {
-//                    status: "success",
-//                    qPack: req.session.qPack,
-//                    aArr: allAnswers
-//                }
-//                allAnswers = [];
-//                resp.send(obj);
-//                
-//            } else {
-//                resp.send("*Connection to the database failed*");
-//            }
-//            
-//        });
-//    });
-//});
 
 //logout
 app.post("/logout", function (req, resp) {
@@ -606,7 +554,7 @@ app.post("/adminPanel", function (req, resp) {
                     }
 
                 });
-
+              
                 function combineData(survey_question_list, answer_option_list) {
                     var i = 0;
                     survey_question_list.forEach(function (Element) {
@@ -648,6 +596,7 @@ app.post("/adminPanel", function (req, resp) {
                     }
                 }
             }
+            
         });
     }
 });
