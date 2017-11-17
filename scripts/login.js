@@ -15,7 +15,6 @@ $(document).ready(function(){
             },
             success:function(resp){
                 if(resp.status =="success") {
-                    alert("Login Successful");
                     location.reload();
                 } else {
                    alert("Unsuccessful");

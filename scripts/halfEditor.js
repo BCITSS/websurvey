@@ -1,10 +1,14 @@
 $(document).ready(function () {
-    var surveyTitle = document.getElementById("survey-title").value;
+    var surveyTitle = document.getElementById("survey-title");
     var addQ = document.getElementById("addQuestion");
     var QuestCon = document.getElementById("questionsContainer");
     var questChoose = document.getElementById("questionChooser");
     var selectQ = document.getElementById("question1");
     var createBtn = document.getElementById("create-button");
+    var clicked_btn = document.getElementById("q1");
+    clicked_btn.style.backgroundColor = "red";
+    
+    
 
     var choices = [{
         "id": "multChoice",
@@ -33,18 +37,24 @@ $(document).ready(function () {
     // Q1 sample button
     document.getElementById("q1").addEventListener("click", function () {
         changeQ("q1");
+        colorQuestionButton(this);
     });
     changeQ("q1");
-
+    console.log(choices);
     choices.forEach(function (Element) {
         var choice = document.createElement("button");
         choice.id = Element.id;
         choice.innerHTML = Element.name;
         choice.addEventListener("click", function () {
             selectType(choice.id);
+            console.log(clicked_btn);
+            clicked_btn.classList.remove(clicked_btn.classList[1]);
+            clicked_btn.classList.add(this.id);
         })
         document.getElementById("questionChoices").appendChild(choice);
     })
+    
+    var clicked_type = document.getElementById("multChoice");
 
     function findQ(id) {
         var a = 0;
@@ -77,7 +87,7 @@ $(document).ready(function () {
         selectQ.classList.add(type);
         var position = findQ(selectQ.id);
         addQuestionPanel();
-
+        
         surveyQuestions[position].type = type;
     }
 
@@ -85,7 +95,7 @@ $(document).ready(function () {
         $(this).parent().remove();
     }
 
-    function addOption() {
+    function addOption(optionValue) {
         var $ansDivClone = $("#" + selectQTypePanel).find("#answer-div").clone(true);
         $ansDivClone.find("#option-delete-btn").on("click", deleteDiv);
         if (selectQ.classList.contains("ratingQuest")) {
@@ -135,7 +145,7 @@ $(document).ready(function () {
                 Element.answers = answersArray;
             }
         });
-        console.log(surveyQuestions);
+        //console.log(surveyQuestions);
     }
 
     function addQuestionPanel() {
@@ -160,6 +170,11 @@ $(document).ready(function () {
         $addRowBtn.on("click", addOption);
 
     }
+    function colorQuestionButton(buttonDOM){
+        clicked_btn.style.backgroundColor = "";
+        clicked_btn = buttonDOM;
+        clicked_btn.style.backgroundColor = "red";
+    }
     
     function addQuestion(question_type){
         inc += 1;
@@ -176,20 +191,90 @@ $(document).ready(function () {
         var newQBut = document.createElement("button");
         newQBut.id = "q" + (surveyQuestions.length);
         newQBut.className = "questionBut";
+        newQBut.classList.add(question_type);
         newQBut.innerHTML = "Q" + (surveyQuestions.length);
 
         // Question button LISTENER
         newQBut.addEventListener("click", function () {
             changeQ(newQBut.id);
-
+            colorQuestionButton(this);
+            
         });
         changeQ(newQBut.id);
         questChoose.appendChild(newQBut);
+        
+        colorQuestionButton(newQBut);
 
         remQ.disabled = false;
         if (surveyQuestions.length > 9) {
-            this.disabled = true;
+            addQ.disabled = true;
         }
+    }
+    
+    function loadSurveyObj(){
+        $("#q1").remove();
+        $("#question1").remove();
+        surveyQuestions.pop();
+        surveyTitle.value = global_survey_obj.name;
+        surveyTitle.disabled = true;
+        inc = 0;
+        for (var g=0; g< global_survey_obj.questions.length; g++){
+            var question = global_survey_obj.questions[g];
+            addQuestion(question.question_type);
+            console.log(g);
+            $("#question" + (g+1)).find("#question").val(question.question);
+            if(question.answers.length > 0 && question.question_type != "trueFalse"){
+                for (var x=0; x<question.answers.length-1; x++){
+                    addOption(question.answers[x]);
+                }
+                for(var h=0; h<question.answers.length; h++){
+                    console.log($("#question" + (g+1)).find(".answer-option")[h].value);
+                    $("#question" + (g+1)).find(".answer-option")[h].value = question.answers[h];
+                }
+            }
+            
+        }
+    }
+    
+    // check if survey obj is assign
+    console.log("ssss",global_survey_obj.status);
+    
+    if(global_survey_obj != "none"){
+        loadSurveyObj();
+        createBtn.remove();
+        // create new button? to DELETE survey and CREATE a new one;
+        var done_btn = document.createElement("button");
+        done_btn.id = "done-btn";
+        done_btn.innerHTML = "Done";
+        done_btn.addEventListener("click",function(){
+            $(".question").each(function () {
+            saveQuestion(this);
+            });
+            surveyTitle = document.getElementById("survey-title").value;
+
+            $.ajax({
+                url: "/modifySurvey",
+                type: "post",
+                data: {
+                    name: surveyTitle,
+                    questions: surveyQuestions
+                },
+                success: function (resp) {
+                    console.log(resp.status);
+                    if(resp.status == 'success'){
+                        alert(resp.survey_name + ' survey modified');
+                        location.reload();
+                    }else{
+                        alert(resp);
+                    }
+                },
+                error: function(e){
+                    conosle.log(e);
+                    alert("ERROR:",e);
+                }
+            });
+        });
+        $("#main-content").append(done_btn);
     }
 
     addQ.addEventListener("click", function(){addQuestion("multChoice")});
@@ -214,9 +299,11 @@ $(document).ready(function () {
         if (b > surveyQuestions.length - 1) {
             selectQ = document.getElementById(surveyQuestions[b - 1].id);
             changeQ("q" + (b));
+            colorQuestionButton(document.getElementById("q" + (b)));
         } else {
             selectQ = document.getElementById(surveyQuestions[b].id);
             changeQ("q" + (b + 1));
+            colorQuestionButton(document.getElementById("q" + (b+1)))
         }
 
         if (surveyQuestions.length < 2) {
@@ -254,9 +341,4 @@ $(document).ready(function () {
             }
         });
     })
-
 })
-
-module.exports = {
-    addQuestion: addQuestion,
-}
