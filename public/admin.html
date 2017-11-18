@@ -1,13 +1,225 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Admin</title>
-        <link href="/styles/admin.css" type="text/css" rel="stylesheet"/>
-    </head>
-    
-    <body>
-        <div>ADMIN</div>
-        
-        <script src="scripts/adminbundle.js"></script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+    <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
+    <link href="https://fonts.googleapis.com/css?family=Raleway|Montserrat:900|Boogaloo" rel="stylesheet">
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<body>
+			<!--Top-->
+	    <header class="main-header">
+			<!--BCIT Logo-->
+			<img src="/images/bcit.png" class="logo"/>
+		<!--Navbar Header-->
+        <nav class="navbar navbar-static-top">
+			<!--Hamburger Icon Button-->
+		<!-- dropdown container -->
+		<div class="dropdown">
+    	<!-- trigger button -->
+    <button>
+		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
+		Creighton Lee
+		<i class="fa fa-caret-down" aria-hidden="true"></i>
+	</button>
+    	<!-- dropdown menu -->
+    <ul class="dropdown-menu">
+        <li><a id="p-but" href="/profile">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			Profile
+			</a>
+		<li><a id="p-but" href="/admin">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			Admin
+			</a>
+		</li>
+        <li><a id="lo-but" href="/logout">
+			<i class="fa fa-sign-out" aria-hidden="true"></i>
+			Logout
+			</a>
+		</li>
+    </ul>
+</div>
+</nav>
+</header>
+
+<div id="adminSettingsDiv">
+        <div id="headerDiv">
+            <h1 class="headerTexts">Admin PAGE</h1>
+        </div>
+    </div>
+
+<div id="addEmployeeDiv" class="displayDivs">
+        <div class="headerDivs">
+            <h1 id="addEmployeeText" class="headerTexts">ADD EMPLOYEE</h1>
+        </div>
+
+        <div class="lowerDivs">
+            <div class="bigContainer">
+                <div class="container">
+                    <label id="addEmployeeNameLabel" class="addEmployeeLabels">Employee Name:</label>
+                    <input type="text" title="Only alphabetic characters are allowed" id="addEmployeeNameInput" class="form-control">
+                </div>
+
+                <div class="container">
+                    <label id="addEmployeeIdLabel" class="addEmployeeLabels">Employee ID:</label>
+                    <input type="text" title="Employee ID should start with 'A' followed by a 3 digit unique employee number" id="addEmployeeIdInput" class="form-control">
+                </div>
+
+                <div class="container">
+                    <label id="selectPositionLabel" class="addEmployeeLabels">Position:</label>
+                    <select id="selectPositionList" class="form-control">
+                        <option value="a">Admin</option>
+                        <option value="c">Cook</option>
+                    </select>
+                </div>
+
+                <div class="container">
+                    <label id="addEmployeePasswordLabel" class="addEmployeeLabels">Password:</label>
+                    <input type="password" title="Only alphanumeric characters are allowed" id="addEmployeePasswordInput" class="form-control">
+                </div>
+                <button id="addEmployeeSave" class="btn btn-success">SAVE</button>
+
+
+                <div class="alert alert-success alert-dismissible" role="alert" id="addEmployeeSuccess" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> You have successfully added an employee.
+                </div>
+
+                <div class="alert alert-danger alert-dismissible" role="alert" id="addEmployeeFailed" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Error!</strong> Please make sure all the inputs are valid.
+                </div>
+
+                <div class="alert alert-danger alert-dismissible" role="alert" id="addEmployeeExists" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Error!</strong> Employee already exists.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="removeEmployeeDiv"  class="displayDivs">
+        <div class="headerDivs">
+            <h1 id="removeEmployeeText" class="headerTexts">REMOVE EMPLOYEE</h1>
+        </div>
+
+        <div class="lowerDivs">
+            <div class="bigContainer">
+                <div class="container">
+                    <label id="removeSelectEmployeeLabel">Employee Name:</label>
+                    <select id="removeEmployeeList" class="form-control"></select>
+                </div>
+
+                <button data-toggle="modal" data-target="#removeEmployeeModal" id="removeEmployee" class="btn btn-danger">REMOVE</button>
+
+                <div class="alert alert-success alert-dismissible" role="alert" id="removeEmployeeSuccess" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> You have successfully removed an employee.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editEmployeeDiv" class="displayDivs">
+        <div class="headerDivs">
+            <h1 id="editEmployeeText" class="headerTexts">EDIT EMPLOYEE</h1>
+        </div>
+
+        <div class="lowerDivs">
+            <div class="bigContainer">
+                <div class="container">
+                    <label id="editSelectEmployeeLabel" class="editEmployeeLabels">Employee:</label>
+                    <select id="editEmployeeList" class="form-control"></select>
+                </div>
+
+                <div class="container">
+                    <label id="editEmployeeNameLabel" class="editEmployeeLabels">Employee Name:</label>
+                    <input type="text" title="Only alphabetic characters are allowed" id="editEmployeeNameInput" class="form-control">
+                </div>
+
+                <div class="container">
+                    <label id="editEmployeeIdLabel" class="editEmployeeLabels">Employee ID:</label>
+                    <input type="text" title="Employee ID should start with 'A' followed by a 3 digit unique employee number" id="editEmployeeIdInput" class="form-control">
+                </div>
+
+                <div class="container">
+                    <label id="editEmployeePositionLabel" class="editEmployeeLabels">Position:</label>
+                    <select id="editEmployeePositionList" class="form-control">
+                        <option value="a">Admin</option>
+                        <option value="c">Cook</option>
+                    </select>
+                </div>
+
+                <div class="container">
+                    <label id="editEmployeePasswordLabel" class="editEmployeeLabels">Password:</label>
+                    <input type="password" title="Only alphanumeric characters are allowed" id="editEmployeePasswordInput" class="form-control">
+                </div>
+
+                <button id="editEmployeeSave" class="btn btn-success">SAVE</button>
+
+                <div class="alert alert-success alert-dismissible" role="alert" id="editEmployeeSuccess" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> You have successfully edited an employee.
+                </div>
+
+                <div class="alert alert-danger alert-dismissible" role="alert" id="editEmployeeFailed" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Error!</strong> Please make sure all the inputs are valid.
+                </div>
+
+                <div class="alert alert-danger alert-dismissible" role="alert" id="editEmployeeExists" hidden>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Error!</strong> Duplicate employee information.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeItemModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Remove Item</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="alert" id="removeItemSave">Remove</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeEmployeeModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Remove Employee</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this employee?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="alert" id="removeEmployeeSave">Remove</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src='/scripts/adminbundle.js'></script>
+</body>
 </html>

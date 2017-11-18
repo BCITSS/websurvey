@@ -20,23 +20,20 @@
 </head>	
 <body>
 	<div class="wrapper">
-		<!--Top-->
+			<!--Top-->
 	    <header class="main-header">
 			<!--BCIT Logo-->
 			<img src="/images/bcit.png" class="logo"/>
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
 			<!--Hamburger Icon Button-->
-          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-          </a>
 		
 		<!-- dropdown container -->
 		<div class="dropdown">
     	<!-- trigger button -->
     <button>
 		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
-        <label id = "nav-username"></label>
+		Creighton Lee
 		<i class="fa fa-caret-down" aria-hidden="true"></i>
 	</button>
     	<!-- dropdown menu -->
@@ -45,10 +42,9 @@
 			<i class="fa fa-user" aria-hidden="true"></i>
 			Profile
 			</a>
-		</li>
-        <li><a id="l-but" href="#">
-			<i class="fa fa-sign-in" aria-hidden="true"></i>
-			Login
+		<li><a id="p-but" href="/admin">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			Admin
 			</a>
 		</li>
         <li><a id="lo-but" href="/logout">
@@ -58,9 +54,8 @@
 		</li>
     </ul>
 </div>
-		
-        </nav>
-      </header>
+</nav>
+</header>
 	<div class="main-sidebar">
 		<section class="sidebar" style="height: auto;">
 			<div class="user-panel">
@@ -68,8 +63,7 @@
 					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
 				</div>
 				<div class="pull-right">
-					<p id = "pull-right-username"></p>
-                    <p id = "pull-right-department"></p>
+					<p>Creighton Lee</p>
 				</div>
 			</div>
 			<ul class="sidebar-menu">
@@ -79,25 +73,23 @@
                 <i class="fa fa-plus-square fa-lg"></i> <span>CREATE</span><i class="fa fa-angle-left pull-right"></i> 
               </a>
               <ul class="treeview-menu">
-                <li class="active">
-                    <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
-                </li>
+                <li class="active"><a href="#"><i class="fa fa-file"></i> NEW</a></li>
                 <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
 				</ul>
             </li>
             <li class="treeview">
-              <a href="#" id='modify-btn'>
+              <a href="#">
                 <i class="fa fa-pencil-square"></i>
                 <span>MODIFY</span>
               </a>
             </li>
             <li>
-              <a href="#" id="view-btn">
+              <a href="#">
                 <i class="fa fa-th"></i> <span>VIEW</span> 
               </a>
             </li>
 			<li>
-              <a href="#" id="publish-btn">
+              <a href="#">
                 <i class="fa fa-check-square"></i> <span>PUBLISH</span>
               </a>
             </li>
@@ -112,7 +104,7 @@
 	</div>
 	
 	<div class="content-wrapper" style="height: auto;">
-		<section class="content" id="main-content">
+		<section class="content">
 			<div class="row">
 
 			</div>
@@ -124,6 +116,8 @@
 	</div>
 	<footer class="main-footer">
 		<div class="pull-right hidden-xs">
+			  <button type="button" class="btn btn-success">SAVE</button>
+			  <button type="button" class="btn btn-danger">CANCEL</button>
 		</div>
 		<div class="copyright">
 			<strong> copyright 2017 BCITSSD Team
@@ -135,7 +129,7 @@
 		
 	</div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+
 <script src="scripts/mainbundle.js"></script>
 
 </html>
