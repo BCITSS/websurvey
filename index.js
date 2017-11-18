@@ -71,6 +71,142 @@ function checkPermission(req,permission_level){
     }
 }
 
+function getSurveyFromDB(req,resp,client){
+    pool.connect(function (err, client, done) {
+        if (err) {
+            console.log(err);
+            resp.end('FAIL');
+        }
+        // --- select survey ---
+        var survey_obj = {}; // create survey obj
+        survey_obj.questions = [];
+        var survey_q_id = []; // tmp array used to record question id
+
+        //var req_survey_id;
+        var req_department_id;
+
+        // if request survey obj from client 
+        if (req.body.client || req.session.name == undefined) {
+            req_department_id = req.body.department_id;
+            // get survey from db
+            client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1", [req_department_id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    resp.end('FAIL');
+                }
+                if (result.rows.length == 1) {
+                    req_survey_id = result.rows[0].id;
+                    survey_obj.name = result.rows[0].survey_name;
+                    survey_obj.questions = [];
+                    getQuestion();
+                } else if (result.rows.length > 1) {
+                    resp.send("ERROR: multiple survey found");
+                } else {
+                    resp.send("no such survey in this department");
+                }
+            });
+
+        // if request survey obj from logined user
+        } else {
+            req_survey_id = req.body.survey_id;
+            req_department_id = req.session.department;
+            // get survey from db
+            client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2 and isopen=false and been_published = false", [req_survey_id, req_department_id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    resp.end('FAIL');
+                }
+                console.log(result.rows.length);
+                if (result.rows.length == 1) {
+                    survey_obj.name = result.rows[0].survey_name;
+                    survey_obj.questions = [];
+                    getQuestion();
+                } else if (result.rows.length > 1) {
+                    resp.send("ERROR: multiple survey found");
+                } else {
+                    resp.send({
+                        status:false,
+                        msg:"It is currently or been published OR no such survey in your department"});
+                }
+            });
+        }
+
+        function getQuestion() {
+            // --- get questions by survey_id --- 
+            client.query("SELECT * FROM question WHERE survey_id = $1", [req_survey_id], function (err, result) {
+                done();
+                if (err) {
+                    console.log(err);
+                    resp.end('FAIL');
+                }
+                if (result.rows.length > 0) {
+
+                    for (var i = 0; i < result.rows.length; i++) {
+                        question_obj = {};
+                        question_obj.question = result.rows[i].question_text;
+                        question_obj.question_type = result.rows[i].question_type;
+                        question_obj.question_variable = result.rows[i].question_variable;
+                        question_obj.answers = [];
+                        survey_obj.questions.push(question_obj);
+                        survey_q_id.push(result.rows[i].id);
+                        if (i == (result.rows.length - 1)) {
+                            select_answer();
+                        }
+
+                    }
+
+                } else {
+                    combineData(survey_obj.questions, survey_answers_id);
+                }
+
+            });
+
+            function combineData(survey_question_list, answer_option_list) {
+                var i = 0;
+                survey_question_list.forEach(function (Element) {
+                    Element.answers = answer_option_list[i];
+                    i++
+                });
+                survey_obj.questions = survey_question_list;
+                // !------resp send ------! //
+                resp.send(survey_obj);
+            }
+
+            // -- get answer option --
+            var survey_answers_id = [];
+            var g = 0;
+
+            function select_answer() {
+                for (var y = 0; y < survey_q_id.length; y++) {
+                    client.query("SELECT * FROM answer_option WHERE question_id = $1", [survey_q_id[y]], function (err, result) {
+                        done();
+                        if (err) {
+                            console.log(err)
+                            resp.end("FAIL");
+                        }
+                        var array = [];
+                        if (result.rows.length > 0) {
+                            var rows = result.rows;
+
+                            for (var x = 0; x < rows.length; x++) {
+
+                                array.push(rows[x].answer_text);
+                            }
+                        }
+                        survey_answers_id.push(array);
+                        g++
+                        if (g == (survey_q_id.length)) {
+                            combineData(survey_obj.questions, survey_answers_id);
+                        }
+                    });
+                }
+            }
+        }
+    });
+}
+
 //redirect scripts to build folder
 app.use("/scripts", express.static("build"));
 
@@ -132,6 +268,10 @@ app.get("/logout", function (req, resp) {
     resp.redirect("/");
 });
 
+app.post("/client",function(req,resp){
+    getSurveyFromDB(req,resp);
+});
+
 //login function
 app.post("/login", function (req, resp) {
     var email = req.body.email;
@@ -165,8 +305,6 @@ app.post("/login", function (req, resp) {
         });
     });
 });
-
-var allAnswers = [];
 
 //app.post("/questions",function(req,resp){
 //    pool.connect(function(err, client, done){
@@ -631,141 +769,12 @@ app.post("/adminPanel", function (req, resp) {
     
     // *** MODIFY *** //
     if (req.body.type == 'modify') {
-        pool.connect(function (err, client, done) {
-            if (err) {
-                console.log(err);
-                resp.end('FAIL');
-            }
-            // --- select survey ---
-            var survey_obj = {}; // create survey obj
-            survey_obj.questions = [];
-            var survey_q_id = []; // tmp array used to record question id
-
-            //var req_survey_id;
-            var req_department_id;
-
-            // if request survey obj for client 
-            if (req.body.client && req.session.name == undefined) {
-                req_department_id = req.body.department_id;
-                // get survey from db
-                client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1", [req_department_id], function (err, result) {
-                    done();
-                    if (err) {
-                        console.log(err);
-                        resp.end('FAIL');
-                    }
-                    if (result.rows.length == 1) {
-                        req_survey_id = result.rows[0].id;
-                        survey_obj.name = result.rows[0].survey_name;
-                        survey_obj.questions = [];
-                        getQuestion();
-                    } else if (result.rows.length > 1) {
-                        resp.send("ERROR: multiple survey found");
-                    } else {
-                        resp.send("no such survey in this department");
-                    }
-                });
-
-                // if request survey obj from logined user
-            } else {
-                req_survey_id = req.body.survey_id;
-                req_department_id = req.session.department;
-                // get survey from db
-                client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2 and isopen=false and been_published = false", [req_survey_id, req_department_id], function (err, result) {
-                    done();
-                    if (err) {
-                        console.log(err);
-                        resp.end('FAIL');
-                    }
-                    console.log(result.rows.length);
-                    if (result.rows.length == 1) {
-                        survey_obj.name = result.rows[0].survey_name;
-                        survey_obj.questions = [];
-                        getQuestion();
-                    } else if (result.rows.length > 1) {
-                        resp.send("ERROR: multiple survey found");
-                    } else {
-                        resp.send({
-                            status:false,
-                            msg:"It is currently or been published OR no such survey in your department"});
-                    }
-                });
-            }
-
-            function getQuestion() {
-                // --- get questions by survey_id --- 
-                client.query("SELECT * FROM question WHERE survey_id = $1", [req_survey_id], function (err, result) {
-                    done();
-                    if (err) {
-                        console.log(err);
-                        resp.end('FAIL');
-                    }
-                    if (result.rows.length > 0) {
-
-                        for (var i = 0; i < result.rows.length; i++) {
-                            question_obj = {};
-                            question_obj.question = result.rows[i].question_text;
-                            question_obj.question_type = result.rows[i].question_type;
-                            question_obj.question_variable = result.rows[i].question_variable;
-                            question_obj.answers = [];
-                            survey_obj.questions.push(question_obj);
-                            survey_q_id.push(result.rows[i].id);
-                            if (i == (result.rows.length - 1)) {
-                                select_answer();
-                            }
-
-                        }
-
-                    } else {
-                        combineData(survey_obj.questions, survey_answers_id);
-                    }
-
-                });
-
-                function combineData(survey_question_list, answer_option_list) {
-                    var i = 0;
-                    survey_question_list.forEach(function (Element) {
-                        Element.answers = answer_option_list[i];
-                        i++
-                    });
-                    survey_obj.questions = survey_question_list;
-                    // !------resp send ------! //
-                    resp.send(survey_obj);
-                }
-
-                // -- get answer option --
-                var survey_answers_id = [];
-                var g = 0;
-
-                function select_answer() {
-                    for (var y = 0; y < survey_q_id.length; y++) {
-                        client.query("SELECT * FROM answer_option WHERE question_id = $1", [survey_q_id[y]], function (err, result) {
-                            done();
-                            if (err) {
-                                console.log(err)
-                                resp.end("FAIL");
-                            }
-                            var array = [];
-                            if (result.rows.length > 0) {
-                                var rows = result.rows;
-
-                                for (var x = 0; x < rows.length; x++) {
-
-                                    array.push(rows[x].answer_text);
-                                }
-                            }
-                            survey_answers_id.push(array);
-                            g++
-                            if (g == (survey_q_id.length)) {
-                                combineData(survey_obj.questions, survey_answers_id);
-                            }
-                        });
-                    }
-                }
-            }
-        });
+        checkLogin(req);
+        getSurveyFromDB(req,resp);
     }
 });
+
+
 
 // server listen
 server.listen(port, function (err) {

@@ -3,7 +3,7 @@ $(document).ready(function(){
     
     begin.addEventListener("click", function() {
         $.ajax({
-            url:"/adminPanel",
+            url:"/client",
             type:"post",
             data:{
                 type:"modify",
@@ -11,7 +11,7 @@ $(document).ready(function(){
                 client: true
             },
             success: function(resp){
-                console.log(resp);
+                location.href = "/questions";
             }
         });
     });
