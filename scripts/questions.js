@@ -9,15 +9,14 @@ var question = document.getElementById("question"),
 $(document).ready(function() {
     
     $.ajax({
-        url: "/adminPanel",
+        url: "/client",
         data: {
-            type: "modify",
             client: true,
             department_id: 1
         },
         type: "post",
         success: function(resp) {
-            
+            console.log(resp);
             if(resp) {
                 
                 var optionsDivList = [],
