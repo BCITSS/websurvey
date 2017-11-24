@@ -336,7 +336,7 @@ $(document).ready(function () {
                 }
             },
             error: function(e){
-                conosle.log(e);
+                console.log(e);
                 alert("ERROR:",e);
             }
         });
