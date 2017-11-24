@@ -9,16 +9,15 @@ $(document).ready(function(){
             url:"/login",
             type:"post",
             data:{
-                //id:id,
                 email:email,
                 password:password
             },
             success:function(resp){
                 if(resp.status =="success") {
-                    location.reload();
                 } else {
                    alert("Unsuccessful");
                 }
+                location.reload();
             }
         })
     });

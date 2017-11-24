@@ -14,12 +14,14 @@
 <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
 <!--StyleSheet for Main.html-->	
 <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
+<link rel="stylesheet"  type="text/css" href="/styles/global.css"/>	
 	 
 <head>
 	<title>Main Page</title>
 </head>	
 <body>
-	<div class="wrapper">
+    <div class="loading-icon" id="loading-icon"></div>
+    <div class="wrapper">
 		<!--Top-->
 	    <header class="main-header">
 			<!--BCIT Logo-->
@@ -74,15 +76,19 @@
 			</div>
 			<ul class="sidebar-menu">
             <li class="sidebar-title">SURVEY DASHBOARD</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-plus-square fa-lg"></i> <span>CREATE</span><i class="fa fa-angle-left pull-right"></i> 
               </a>
               <ul class="treeview-menu">
                 <li class="active">
-                    <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
+                    <a href="#" id = "new-btn"><i class="fa fa-file"></i>NEW</a>
                 </li>
-                <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-clipboard"></i>  TEMPLATE
+                    </a>
+                </li>
 				</ul>
             </li>
             <li class="treeview">
@@ -112,7 +118,12 @@
 	</div>
 	
 	<div class="content-wrapper" style="height: auto;">
+        <div class="status-bar" id="status-bar">
+            <label class = "status-text" id="status-text"></label>
+            <button type="button" class="status-bar-close" id="status-bar-close">close</button>
+        </div>
 		<section class="content" id="main-content">
+
 			<div class="row">
 
 			</div>
@@ -135,7 +146,22 @@
 		
 	</div>
 </body>
+<script>
+    // Global function and variables
+    var status_text = document.getElementById("status-text");
+    var statusBar = document.getElementById("status-bar");
+    
+    // status bar function
+    function showStatusBar(string, color="#d0ffad"){
+        statusBar.style.display = "block";
+        status_text.innerHTML = string;
+        statusBar.style.backgroundColor = color;
+    }
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
 <script src="scripts/mainbundle.js"></script>
+<script src="scripts/loadingbundle.js"></script>
+
 
 </html>
