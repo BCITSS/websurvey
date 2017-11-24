@@ -7,9 +7,8 @@ $(document).ready(function () {
     var createBtn = document.getElementById("create-button");
     var clicked_btn = document.getElementById("q1");
     clicked_btn.style.backgroundColor = "red";
-    
-    
-
+    var statusBar = document.getElementById("status-bar");
+    var status_text = document.getElementById("status-text");
     var choices = [{
         "id": "multChoice",
         "name": "Multiple Choice"
@@ -55,6 +54,43 @@ $(document).ready(function () {
     })
     
     var clicked_type = document.getElementById("multChoice");
+    
+    // function check input is empty
+    function emptyCheck(input){
+        if( input.length == 0 || input == null || input ==""){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    // check if survey title and question is empty
+    function checkSurveyInput(survey_title,question_array){
+        if(emptyCheck(survey_title)){
+            return "survey title is empty"
+        }
+        for(var i=0; i<question_array.length;i++){
+            var Element = question_array[i];
+            if(emptyCheck(Element.question)){
+                return "question " + (i+1) +" is empty"
+            }else{
+                if(Element.type != "shortAns"){
+                    if(Element.answers.length <= 0){
+                        return "question "+(i+1)+" answer option is empty"
+                    }else{
+                        for(var x=0; x<Element.answers.length;x++){
+                            var answer_option = Element.answers[x];
+                            if(emptyCheck(answer_option)){
+                               return "question "+(i+1) +" answer option is empty"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+
+    }
 
     function findQ(id) {
         var a = 0;
@@ -95,11 +131,11 @@ $(document).ready(function () {
         $(this).parent().remove();
     }
 
-    function addOption(optionValue) {
+    function addOption(optionValue,row_column = null) {
         var $ansDivClone = $("#" + selectQTypePanel).find("#answer-div").clone(true);
         $ansDivClone.find("#option-delete-btn").on("click", deleteDiv);
         if (selectQ.classList.contains("ratingQuest")) {
-            if (this.id == "option-add-row-btn") {
+            if (this.id == "option-add-row-btn" || row_column == "row") {
                 $(selectQ).find("#answer-row").append($ansDivClone);
             } else {
                 $ansDivClone.find("#answer-option").removeClass();
@@ -114,6 +150,7 @@ $(document).ready(function () {
 
     function saveQuestion(question_w) {
         var question = $(question_w).find("#question").first();
+        var questionImage = $(question_w).find("#question-image").first();
         if (!question_w.classList.contains("ratingQuest")) {
             var answersArray = (function () {
                 var answers = $(question_w).find(".answer-option");
@@ -142,10 +179,10 @@ $(document).ready(function () {
         surveyQuestions.forEach(function (Element) {
             if (Element.id == question_w.id) {
                 Element.question = question[0].value;
+                Element.questionImage = questionImage[0].value;
                 Element.answers = answersArray;
             }
         });
-        //console.log(surveyQuestions);
     }
 
     function addQuestionPanel() {
@@ -218,17 +255,54 @@ $(document).ready(function () {
         surveyTitle.value = global_survey_obj.name;
         surveyTitle.disabled = true;
         inc = 0;
+        var row = 0; // record ratiing question row
         for (var g=0; g< global_survey_obj.questions.length; g++){
             var question = global_survey_obj.questions[g];
-            addQuestion(question.question_type);
-            console.log(g);
-            $("#question" + (g+1)).find("#question").val(question.question);
-            if(question.answers.length > 0 && question.question_type != "trueFalse"){
+            var prev_question = global_survey_obj.questions[g-1];
+//            addQuestion(question.question_type);
+//            $("#question" + (g+1)).find("#question").val(question.question);
+            
+            // if is rating question
+            if(question.question_type == "ratingQuest"){
+                console.log("RR",question);
+                if(prev_question != undefined && question.question == prev_question.question){
+                    // row +1 when next question is in same rating question
+                    row += 1
+                    
+                    // not add question but added another row
+                    addOption(question.question_column,"row");
+                    
+                    // insert row value
+                    $("#question" + (g+1-row)).find(".answer-option-row")[row].value = question.question_column;
+                    
+                }else{
+                    // reset row back to 0 because is not same rating question
+                    row = 0
+                    addQuestion(question.question_type);
+                    $("#question" + (g+1)).find("#question").val(question.question);
+                    
+                    // inert first row value
+                    $("#question" + (g+1)).find(".answer-option-row")[row].value = question.question_column;
+                    
+                    // add option column
+                    for (var y=0; y<question.answers.length-1; y++){
+                        addOption(question.answers[y]);
+                    }
+                    
+                    // insert value for column
+                    for(var z=0; z<question.answers.length; z++){
+                        $("#question" + (g+1)).find(".answer-option-col")[z].value = question.answers[z];
+                    }
+                }
+                
+            }
+            else if(question.answers.length > 0 && question.question_type != "trueFalse"){
+                addQuestion(question.question_type);
+                $("#question" + (g+1)).find("#question").val(question.question);
                 for (var x=0; x<question.answers.length-1; x++){
                     addOption(question.answers[x]);
                 }
                 for(var h=0; h<question.answers.length; h++){
-                    console.log($("#question" + (g+1)).find(".answer-option")[h].value);
                     $("#question" + (g+1)).find(".answer-option")[h].value = question.answers[h];
                 }
             }
@@ -237,12 +311,11 @@ $(document).ready(function () {
     }
     
     // check if survey obj is assign
-    console.log("ssss",global_survey_obj.status);
     
     if(global_survey_obj != "none"){
         loadSurveyObj();
         createBtn.remove();
-        // create new button? to DELETE survey and CREATE a new one;
+        // create a button to DELETE survey and CREATE a new one;
         var done_btn = document.createElement("button");
         done_btn.id = "done-btn";
         done_btn.innerHTML = "Done";
@@ -260,17 +333,17 @@ $(document).ready(function () {
                     questions: surveyQuestions
                 },
                 success: function (resp) {
-                    console.log(resp.status);
                     if(resp.status == 'success'){
-                        alert(resp.survey_name + ' survey modified');
+                        var msg = resp.survey_name + ' survey modified';
+                        showStatusBar(msg);
                         location.reload();
                     }else{
-                        alert(resp);
+                        showStatusBar(resp,"red")
                     }
                 },
                 error: function(e){
                     conosle.log(e);
-                    alert("ERROR:",e);
+                    showStatusBar("ERROR:"+e,"red");
                 }
             });
         });
@@ -319,26 +392,35 @@ $(document).ready(function () {
         });
         surveyTitle = document.getElementById("survey-title").value;
         
-        $.ajax({
-            url: "/createSurvey",
-            type: "post",
-            data: {
-                name: surveyTitle,
-                questions: surveyQuestions
-            },
-            success: function (resp) {
-                console.log(resp.status);
-                if(resp.status == 'success'){
-                    alert(resp.survey_name + ' survey created');
-                    location.reload();
-                }else{
-                    alert(resp);
+        // check input before create
+        var checkInputStaus = checkSurveyInput(surveyTitle,surveyQuestions)
+        
+        // create survey
+        if(checkInputStaus != true){
+            showStatusBar(checkInputStaus,"red");
+        }else{
+            $.ajax({
+                url: "/createSurvey",
+                type: "post",
+                data: {
+                    name: surveyTitle,
+                    questions: surveyQuestions
+                },
+                success: function (resp) {
+                    console.log(resp.status);
+                    if(resp.status == 'success'){
+                        showStatusBar(resp.survey_name + ' survey created');
+                        $("#main-content").html("");
+                    }else{
+                        showStatusBar(resp,"red");
+                    }
+                },
+                error: function(e){
+                    console.log(e);
+                    showStatusBar("ERROR:"+e,"red");
                 }
-            },
-            error: function(e){
-                conosle.log(e);
-                alert("ERROR:",e);
-            }
-        });
+            });
+        }
+        console.log("CREATE",surveyQuestions);
     })
 })
