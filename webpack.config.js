@@ -13,6 +13,7 @@ var config = {
         "questions": jF + "/questions.js",
 		"main": jF + "/main.js",
         "halfEditor": jF+"/halfEditor.js",
+        "loading":jF+"/loading.js"
 		"pass-reset": jF + "/pass-reset.js",
 		"profile": jF + "/profile.js",
     },

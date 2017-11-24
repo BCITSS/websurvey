@@ -4,6 +4,7 @@
 <head>
     <title></title>
     <link href='/styles/halfEditor.css' type='text/css' rel='stylesheet' />
+    <link href='/styles/global.css' type='text/css' rel='stylesheet' />
 </head>
 <style>
 
@@ -11,9 +12,11 @@
 </style>
 
 <body>
+    <div id="whole-editor" class="whole-editor">
     <!-- top navigation -->
     <div>
-        <input id="survey-title" type=text placeholder="Title">
+        <label class="survey-title">Survey Title: </label>
+        <input id="survey-title" type=text placeholder="Title" />
     </div>
     <div id="questionChooser">
         <button id="q1">Q1</button>
@@ -26,96 +29,135 @@
         <div id="question1" class="question multChoice"></div>
     </div>
     <div>
-        <button id="create-button">create</button>
+        <button id="create-button" class="create-button">create</button>
     </div>
 
 
     <!-- question panels -->
     <!-- multiple choice-->
     <div id="multChoice-panel" style="display:none">
-        <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
-        <p>Answers</p>
-        <div id="answer-section">
+        <div class="question-part" id="question-part">
+            <p class="question-number" id="question-number">Question: </p>
+            <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+            <div>
+                <input type="text" id="question-image" placeholder="question image URL" />
+            </div>
+        </div>
+        
+        
+        <div id="answer-section" class="answer-section">
+            <p class="answer-label">Answers:</p>
             <div id="answer-div">
                 <input id="answer-option" class="answer-option" type="text" placeholder="answer option">
-                <button id="option-delete-btn">X</button>
+                <button class= "option-delete-btn" id="option-delete-btn">X</button>
             </div>
         </div>
         <div>
             <button id="option-add-btn">add option</button>
         </div>
-        <button id="save-btn">save</button>
+        <button id="save-btn" class="save-btn">save</button>
     </div>
 
     <!-- true false-->
     <div id="trueFalse-panel" style="display:none">
-        <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
-        <p>Answers</p>
-        <div id="answer-section">
+        <div class="question-part" id="question-part">
+            <p class="question-number" id="question-number">Question: </p>
+            <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+            <div>
+                <input type="text" id="question-image" placeholder="question image URL" />
+            </div>
+        </div>
+        
+        
+        <div id="answer-section" class="answer-section">
+            <p class="answer-label">Answers:</p>
             <div id="answer-div">
                 <input id="answer-option" name="true-false" class="answer-option" type="radio" placeholder="answer option" value="true">true
                 <br>
                 <input id="answer-option" name="true-false" class="answer-option" type="radio" placeholder="answer option" value="false">false
             </div>
         </div>
-        <button id="save-btn">save</button>
+        <button id="save-btn" class="save-btn">save</button>
     </div>
 
     <!-- short answer-->
     <div id="shortAns-panel" style="display:none">
-        <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+        <div class="question-part" id="question-part">
+            <p class="question-number" id="question-number">Question: </p>
+            <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+            <div>
+                <input type="text" id="question-image" placeholder="question image URL" />
+            </div>
+        </div>
+        
 
         <div>
-            <button id="option-add-btn">add option</button>
         </div>
-        <button id="save-btn">save</button>
+        <button id="save-btn" class="save-btn">save</button>
     </div>
 
     <!-- rating question-->
     <div id="ratingQuest-panel" style="display:none">
-        <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
-        <p>Answers</p>
-
-        <div id="answer-row">
-            <p>Row</p>
-            <div id="answer-div">
-                <input id="answer-option" class="answer-option-row" type="text" placeholder="answer option">
-                <button id="option-delete-btn">X</button>
+        <div class="question-part" id="question-part">
+            <p class="question-number" id="question-number">Question: </p>
+            <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+            <div>
+                <input type="text" id="question-image" placeholder="question image URL" />
             </div>
-
         </div>
-        <div>
+        <div class="answer-section">
+            <div id="answer-row">
+                <p class="answer-label">Answers:</p>
+                <p>Row</p>
+                <div id="answer-div">
+                    <input id="answer-option" class="answer-option-row" type="text" placeholder="answer option">
+                    <button class= "option-delete-btn" id="option-delete-btn">X</button>
+                </div>
+
+            </div>
+            <div>
+        </div>
             <button id="option-add-row-btn">add row option</button>
         </div>
-
-        <div id="answer-col">
-            <p>Column</p>
-            <div id="answer-div-2">
-                <input id="answer-option" class="answer-option-col" type="text" placeholder="answer option">
-                <button id="option-delete-btn">X</button>
+        <div class="answer-section">
+            <div id="answer-col">
+                <p>Column</p>
+                <div id="answer-div-2">
+                    <input id="answer-option" class="answer-option-col" type="text" placeholder="answer option">
+                    <button class= "option-delete-btn" id="option-delete-btn">X</button>
+                </div>
+            </div>
+            <div>
+                <button id="option-add-col-btn">add col option</button>
             </div>
         </div>
-        <div>
-            <button id="option-add-col-btn">add col option</button>
-        </div>
+        
 
-        <button id="save-btn">save</button>
+        <button id="save-btn" class="save-btn">save</button>
     </div>
 
     <!-- multiple answer-->
     <div id="multipleAnswer-panel" style="display:none">
-        <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
-        <p>Answers</p>
-        <div id="answer-section">
+        <div class="question-part" id="question-part">
+            <p class="question-number" id="question-number">Question: </p>
+            <textarea id="question" placeholder="question" style="resize:none" rows="3" cols="33"></textarea>
+            <div>
+                <input type="text" id="question-image" placeholder="question image URL" />
+            </div>
+        </div>
+        
+        <div class ="answer-section" id="answer-section">
+            <p class="answer-label">Answers:</p>
             <div id="answer-div">
                 <input id="answer-option" class="answer-option" type="text" placeholder="answer option">
-                <button id="option-delete-btn">X</button>
+                <button class= "option-delete-btn" id="option-delete-btn">X</button>
             </div>
         </div>
         <div>
             <button id="option-add-btn">add option</button>
         </div>
-        <button id="save-btn">save</button>
+        <button id="save-btn" class="save-btn">save</button>
+    </div>
     </div>
 
     <!-- scripts -->
@@ -123,7 +165,6 @@
         var global_survey_obj = "none";
     </script>
     <script src='scripts/halfEditorbundle.js'></script>
-    
 </body>
 
 </html>

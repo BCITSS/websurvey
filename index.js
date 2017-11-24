@@ -39,8 +39,8 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system',
-    password: 'bcitA00972424',
+    database: 'survey_system2',
+    password: '1994Daniel',
     max: 20
 });
 
@@ -56,10 +56,12 @@ app.use(session({
     saveUninitialized: true
 }));
 
-
-function checkLogin(req){
+function checkLogin(req,resp){
     if(!req.session.name){
-        resp.sendFile(pF+"login.html");
+        resp.sendFile(pF+"/login.html");
+        return false;
+    }else{
+        return true;
     }
 }
 
@@ -76,65 +78,92 @@ function getSurveyFromDB(req,resp,client){
         if (err) {
             console.log(err);
             resp.end('FAIL');
+        }else{
+            // Variables
+            var survey_obj = {}; // create survey obj
+            survey_obj.questions = []; // array to store question
+            var survey_q_id = []; // question id for select answer_option loop
+            var survey_answers_id = [];
+            var req_department_id = req.body.department_id; // var req_survey_id;
+
+            // start getSurvey function
+            getSurvey(err,client,done);
+            
         }
-        // --- select survey ---
-        var survey_obj = {}; // create survey obj
-        survey_obj.questions = [];
-        var survey_q_id = []; // tmp array used to record question id
-
-        //var req_survey_id;
-        var req_department_id;
-
-        // if request survey obj from client 
-        if (req.body.client || req.session.name == undefined) {
-            req_department_id = req.body.department_id;
-            // get survey from db
-            client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1", [req_department_id], function (err, result) {
-                done();
-                if (err) {
-                    console.log(err);
-                    resp.end('FAIL');
-                }
-                if (result.rows.length == 1) {
-                    req_survey_id = result.rows[0].id;
-                    survey_obj.name = result.rows[0].survey_name;
-                    survey_obj.questions = [];
-                    getQuestion();
-                } else if (result.rows.length > 1) {
-                    resp.send("ERROR: multiple survey found");
-                } else {
-                    resp.send("no such survey in this department");
-                }
+        
+        
+        
+        // Combine  question list and answer_option list into survey_obj and RESP
+        function combineData(survey_question_list, answer_option_list) {
+            var i = 0;
+            survey_question_list.forEach(function (Element) {
+                Element.answers = answer_option_list[i];
+                i++
             });
-
-        // if request survey obj from logined user
-        } else {
-            req_survey_id = req.body.survey_id;
-            req_department_id = req.session.department;
-            // get survey from db
-            client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2 and isopen=false and been_published = false", [req_survey_id, req_department_id], function (err, result) {
-                done();
-                if (err) {
-                    console.log(err);
-                    resp.end('FAIL');
-                }
-                console.log(result.rows.length);
-                if (result.rows.length == 1) {
-                    survey_obj.name = result.rows[0].survey_name;
-                    survey_obj.questions = [];
-                    getQuestion();
-                } else if (result.rows.length > 1) {
-                    resp.send("ERROR: multiple survey found");
-                } else {
-                    resp.send({
-                        status:false,
-                        msg:"It is currently or been published OR no such survey in your department"});
-                }
-            });
+            survey_obj.questions = survey_question_list;
+            // Send Response with survey_obj
+            resp.send(survey_obj);
         }
+        
+        // --- SELECT Survey ---
+        function getSurvey(err,client,donw){
+            
+            // if request survey obj from client
+            if (req.body.client || req.session.name == undefined) {
+                
+                // get survey from db
+                client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1", [req_department_id], function (err, result) {
+                    done();
+                    if (err) {
+                        console.log(err);
+                        resp.end('FAIL');
+                    }
+                    if (result.rows.length == 1) {
+                        req_survey_id = result.rows[0].id;
+                        survey_obj.name = result.rows[0].survey_name;
+                        survey_obj.questions = [];
+                        getQuestion();
+                    } else if (result.rows.length > 1) {
+                        resp.send("ERROR: multiple survey found");
+                    } else {
+                        resp.send("no such survey in this department");
+                    }
+                });
 
+            // if request survey obj from logined user
+            } else if(req.session.name){
+                req_survey_id = req.body.survey_id;
+                req_department_id = req.session.department;
+                // get survey from db
+                client.query("SELECT * FROM survey WHERE id = $1 and department_id = $2 and isopen=false and been_published = false", [req_survey_id, req_department_id], function (err, result) {
+                    done();
+                    if (err) {
+                        console.log(err);
+                        resp.end('FAIL');
+                    }
+                    console.log(result.rows.length);
+                    if (result.rows.length == 1) {
+                        survey_obj.name = result.rows[0].survey_name;
+                        survey_obj.questions = [];
+                        getQuestion();
+                    } else if (result.rows.length > 1) {
+                        resp.send("ERROR: multiple survey found");
+                    } else {
+                        resp.send({
+                            status:false,
+                            msg:"It is currently publishing, been published or no such survey in your department"});
+                    }
+                });
+            }else{
+                resp.send({
+                    status:false,
+                    msg:"Not logined and not a client"
+                })
+            }
+        }
+        
+        // --- SELECT Question ---
         function getQuestion() {
-            // --- get questions by survey_id --- 
             client.query("SELECT * FROM question WHERE survey_id = $1", [req_survey_id], function (err, result) {
                 done();
                 if (err) {
@@ -142,66 +171,55 @@ function getSurveyFromDB(req,resp,client){
                     resp.end('FAIL');
                 }
                 if (result.rows.length > 0) {
-
+                    
+                    // append selected questions
                     for (var i = 0; i < result.rows.length; i++) {
                         question_obj = {};
                         question_obj.question = result.rows[i].question_text;
                         question_obj.question_type = result.rows[i].question_type;
-                        question_obj.question_variable = result.rows[i].question_variable;
+                        question_obj.question_image = result.rows[i].question_image;
                         question_obj.answers = [];
+                        question_obj.question_column = result.rows[i].question_column;
                         survey_obj.questions.push(question_obj);
+                        
+                        // push question id to survey_q_id array
                         survey_q_id.push(result.rows[i].id);
                         if (i == (result.rows.length - 1)) {
                             select_answer();
                         }
-
                     }
-
                 } else {
                     combineData(survey_obj.questions, survey_answers_id);
                 }
 
             });
-
-            function combineData(survey_question_list, answer_option_list) {
-                var i = 0;
-                survey_question_list.forEach(function (Element) {
-                    Element.answers = answer_option_list[i];
-                    i++
-                });
-                survey_obj.questions = survey_question_list;
-                // !------resp send ------! //
-                resp.send(survey_obj);
-            }
-
-            // -- get answer option --
-            var survey_answers_id = [];
+        }
+        
+        // --- SELECT answer ---
+        function select_answer() {
             var g = 0;
+            for (var y = 0; y < survey_q_id.length; y++) {
+                client.query("SELECT * FROM answer_option WHERE question_id = $1", [survey_q_id[y]], function (err, result) {
+                    done();
+                    if (err) {
+                        console.log(err)
+                        resp.end("FAIL");
+                    }
+                    var array = [];
+                    if (result.rows.length > 0) {
+                        var rows = result.rows;
 
-            function select_answer() {
-                for (var y = 0; y < survey_q_id.length; y++) {
-                    client.query("SELECT * FROM answer_option WHERE question_id = $1", [survey_q_id[y]], function (err, result) {
-                        done();
-                        if (err) {
-                            console.log(err)
-                            resp.end("FAIL");
-                        }
-                        var array = [];
-                        if (result.rows.length > 0) {
-                            var rows = result.rows;
+                        for (var x = 0; x < rows.length; x++) {
 
-                            for (var x = 0; x < rows.length; x++) {
-
-                                array.push(rows[x].answer_text);
-                            }
+                            array.push(rows[x].answer_option_text);
                         }
-                        survey_answers_id.push(array);
-                        g++
-                        if (g == (survey_q_id.length)) {
-                            combineData(survey_obj.questions, survey_answers_id);
-                        }
-                    });
-                }
+                    }
+                    survey_answers_id.push(array);
+                    g++
+                    if (g == (survey_q_id.length)) {
+                        combineData(survey_obj.questions, survey_answers_id);
+                    }
+                });
             }
         }
     });
@@ -216,19 +234,14 @@ app.use("/styles", express.static("css"));
 
 app.use("/html", express.static("html"));
 
-//if logged in go to main.html, else go to login.html
 app.get("/", function (req, resp) {
-    if (req.session.name) {
-        resp.sendFile(pF + "/main.html");
-    } else {
-        resp.sendFile(pF + "/login.html");
-    }
+    resp.sendFile(pF+"/client.html");
 });
 app.get("/login", function (req, resp) {
-    if (req.session.name) {
+    if(checkLogin(req,resp)){
         resp.sendFile(pF + "/main.html");
-    } else {
-        resp.sendFile(pF + "/login.html");
+    }else{
+        
     }
 });
 
@@ -245,7 +258,7 @@ app.get("/questions", function (req, resp) {
 });
 
 app.get("/main", function (req, resp) {
-    checkLogin(req);
+    checkLogin(req,resp);
     resp.sendFile(pF+"/main.html")
 });
 
@@ -255,7 +268,7 @@ app.get("/admin", function(req,resp){
 
 
 app.get("/profile", function (req, resp) {
-    checkLogin(req);
+    checkLogin(req,resp);
     resp.sendFile(pF + "/profile.html")
 });
 
@@ -274,6 +287,9 @@ app.post("/client",function(req,resp){
 
 //login function
 app.post("/login", function (req, resp) {
+    if(req.session.name){
+        resp.sendFile(pF +"/main.html");
+    }
     var email = req.body.email;
     var password = req.body.password;
 
@@ -463,8 +479,19 @@ app.post("/getSession", function (req, resp) {
 
 // create survey
 app.post("/createSurvey", function (req, resp) {
-    checkLogin(req);
+    checkLogin(req,resp);
     var questions = req.body.questions;
+    
+    // check JSON format
+    function validateSurveyTitle(survey_title){
+        var survey_title = survey_title.replace(/\s\s+/g, ' ');;
+        survey_title= survey_title.trim();
+        return survey_title;
+    }
+    
+    var survey_title = validateSurveyTitle(req.body.name);
+    
+    console.log("QS",req.body.questions);
 
     pool.connect(function (err, client, done) {
         if (err) {
@@ -472,7 +499,7 @@ app.post("/createSurvey", function (req, resp) {
             resp.send("FAIL");
         }
         // ** check if survey Exist in department **
-        client.query("SELECT survey_name FROM survey WHERE department_id = $1 and survey_name = $2", [req.session.department, req.body.name], function (err, result) {
+        client.query("SELECT survey_name FROM survey WHERE department_id = $1 and survey_name = $2", [req.session.department, survey_title], function (err, result) {
             done();
             var survey_id; // store survey ID
             if (err) {
@@ -483,7 +510,7 @@ app.post("/createSurvey", function (req, resp) {
                 resp.send("survey name already exist in this department");
             } else {
                 // ---- Insert survey data ---- //
-                client.query("INSERT INTO survey (survey_name,department_id) VALUES ($1,$2) RETURNING id", [req.body.name, req.session.department], function (err, result) {
+                client.query("INSERT INTO survey (survey_name,department_id) VALUES ($1,$2) RETURNING id", [survey_title, req.session.department], function (err, result) {
                     done();
                     if (err) {
                         console.log(err);
@@ -495,9 +522,33 @@ app.post("/createSurvey", function (req, resp) {
                             var question_id; // store question ID
                             // TODO ratingQ
                             if (Element.type == 'ratingQuest') {
+                                for(var i=0; i< Element.answers[0].length;i++){
+                                    client.query("INSERT INTO question (question_type, question_text, survey_id, question_image,question_column) VALUES ($1,$2,$3,$4,$5) RETURNING id", [Element.type, Element.question, survey_id, Element.questionImage,Element.answers[0][i]], function (err, result) {
+                                        done();
+                                        if (err) {
+                                            console.log(err);
+                                            resp.send("FAIL insert question");
+                                        } else {
+                                            question_id = result.rows[0].id;
+                                            // ---- Insert answer option data ---- //
+                                            if (Element.answers != undefined) {
+                                                Element.answers[1].forEach(function (ans_element) {
+                                                    client.query("INSERT INTO answer_option (answer_option_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
+                                                        done();
+                                                        if (err) {
+                                                            console.log(err);
+                                                            resp.send('FAIL insert answer option');
+                                                        }
+                                                    });
+                                                });
+                                            }
 
+                                        }
+                                    });
+                                }
+                                
                             } else {
-                                client.query("INSERT INTO question (question_type, question_text, survey_id) VALUES ($1,$2,$3) RETURNING id", [Element.type, Element.question, survey_id], function (err, result) {
+                                client.query("INSERT INTO question (question_type, question_text, survey_id, question_image) VALUES ($1,$2,$3,$4) RETURNING id", [Element.type, Element.question, survey_id, Element.questionImage], function (err, result) {
                                     done();
                                     if (err) {
                                         console.log(err);
@@ -507,7 +558,7 @@ app.post("/createSurvey", function (req, resp) {
                                         // ---- Insert answer option data ---- //
                                         if (Element.answers != undefined) {
                                             Element.answers.forEach(function (ans_element) {
-                                                client.query("INSERT INTO answer_option (answer_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
+                                                client.query("INSERT INTO answer_option (answer_option_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
                                                     done();
                                                     if (err) {
                                                         console.log(err);
@@ -525,7 +576,7 @@ app.post("/createSurvey", function (req, resp) {
                     }
                 });
                 var obj = {
-                    survey_name: req.body.name,
+                    survey_name: survey_title,
                     status: 'success'
                 }
                 resp.send(obj);
@@ -537,7 +588,7 @@ app.post("/createSurvey", function (req, resp) {
 
 // update DB with modified survey
 app.post("/modifySurvey", function (req, resp) {
-    checkLogin(req);
+    checkLogin(req,resp);
     var questions = req.body.questions;
 
     pool.connect(function (err, client, done) {
@@ -573,10 +624,31 @@ app.post("/modifySurvey", function (req, resp) {
                             questions.forEach(function (Element) {
                                 var question_id; // store question ID
                                 // TODO rating Question;
-                                if (Element.type == 'ratingQuest') {
-
-                                } else {
-                                    client.query("INSERT INTO question (question_type, question_text, survey_id) VALUES ($1,$2,$3) RETURNING id", [Element.type, Element.question, survey_id], function (err, result) {
+                                for(var i=0; i<Element.answers[0].length;i++){
+                                    if (Element.type == 'ratingQuest') {
+                                        client.query("INSERT INTO question (question_type, question_text, survey_id, question_image,question_column) VALUES ($1,$2,$3,$4,$5) RETURNING id", [Element.type, Element.question, survey_id,Element.questionImage,Element.answers[0][i]], function (err, result) {
+                                            done();
+                                            if (err) {
+                                                console.log(err);
+                                                resp.send("FAIL insert question");
+                                            } else {
+                                                question_id = result.rows[0].id;
+                                                // ---- Insert answer option data ---- //
+                                                if (Element.answers != undefined) {
+                                                    Element.answers[1].forEach(function (ans_element) {
+                                                        client.query("INSERT INTO answer_option (answer_option_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
+                                                            done();
+                                                            if (err) {
+                                                                console.log(err);
+                                                                resp.send('FAIL insert answer option');
+                                                            }
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }else {
+                                    client.query("INSERT INTO question (question_type, question_text, survey_id, question_image) VALUES ($1,$2,$3,$4) RETURNING id", [Element.type, Element.question, survey_id,Element.questionImage], function (err, result) {
                                         done();
                                         if (err) {
                                             console.log(err);
@@ -586,7 +658,7 @@ app.post("/modifySurvey", function (req, resp) {
                                             // ---- Insert answer option data ---- //
                                             if (Element.answers != undefined) {
                                                 Element.answers.forEach(function (ans_element) {
-                                                    client.query("INSERT INTO answer_option (answer_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
+                                                    client.query("INSERT INTO answer_option (answer_option_text,question_id) VALUES ($1,$2)", [ans_element, question_id], function (err, result) {
                                                         done();
                                                         if (err) {
                                                             console.log(err);
@@ -598,6 +670,8 @@ app.post("/modifySurvey", function (req, resp) {
                                         }
                                     });
                                 }
+                                
+                                } 
                             });
                         });
 
@@ -617,7 +691,7 @@ app.post("/modifySurvey", function (req, resp) {
 
 // get view from DB
 app.post("/viewSurvey",function(req,resp){
-    checkLogin(req);
+    checkLogin(req,resp);
     var resp_obj = {}
     pool.connect(function(err,client,done){
        if(err){
@@ -633,10 +707,10 @@ app.post("/viewSurvey",function(req,resp){
                        if(typeof resp_obj[question_text] == 'undefined'){
                            resp_obj[question_text] = [];
                        }
-                       var answer_text = result.rows[i].answer_text;
+                       var answer_option_text = result.rows[i].answer_option_txt;
                        var answer_count = parseInt(result.rows[i].count);
                         var tmp_array = []
-                        tmp_array.push(answer_text);
+                        tmp_array.push(answer_option_text);
                         tmp_array.push(answer_count);
                        resp_obj[question_text].push(tmp_array);
                    }
@@ -648,14 +722,15 @@ app.post("/viewSurvey",function(req,resp){
        }
     });
 })
-app.post("/getQuestionAnswer",function(req,resp){
-   checkLogin(req);
+
+app.post("/getSurveyData",function(req,resp){
+   checkLogin(req,resp);
     pool.connect(function(err,client,done){
        if(err){
            console.log(err);
            resp.end('FAIL');
        }else{
-           client.query("select (select question_text from question where question.id = answer.question_id), (select answer_text from answer_option where answer.answer_id = answer_option.id) from answer WHERE survey_id = (SELECT id FROM survey WHERE id = $1 and department_id = $2)",[req.body.survey_id,req.session.department],function(err,result){
+           client.query("select (select question_text from question where question.id = answer.question_id), (select answer_option_text from answer_option where answer.answer_id = answer_option.id) from answer WHERE survey_id = (SELECT id FROM survey WHERE id = $1 and department_id = $2)",[req.body.survey_id,req.session.department],function(err,result){
                done();
                if(err){
                    console.log(err);
@@ -673,7 +748,7 @@ app.post("/getQuestionAnswer",function(req,resp){
 // handle admin panel button actions
 var req_survey_id;
 app.post("/adminPanel", function (req, resp) {
-    checkLogin(req);
+    checkLogin(req,resp);
     // *** CREATE ***//
     if (req.body.type == "create") {
         resp.sendFile(pF + "/halfEditor.html");
@@ -769,8 +844,37 @@ app.post("/adminPanel", function (req, resp) {
     
     // *** MODIFY *** //
     if (req.body.type == 'modify') {
-        checkLogin(req);
         getSurveyFromDB(req,resp);
+    }
+    
+    // *** DELETE *** //
+    if(req.body.type == 'delete'){
+        pool.connect(function(err,client,done){
+            if(err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("DELETE FROM survey WHERE id = $1 and department_id = $2 and isopen = false RETURNING survey_name",[req.body.survey_id,req.session.department],function(err,result){
+                done();
+                if(err){
+                    console.log(err);
+                    resp.end('FAIL');
+                }else{
+                    console.log(result.rows);
+                    if(result.rows.length > 0){
+                        resp.send({
+                            status:"success",
+                            survey_name:result.rows[0].survey_name
+                        })
+                    }else{
+                        resp.send({
+                            status:"FAIL"
+                        })
+                    }
+                    
+                }
+            })
+        });
     }
 });
 
