@@ -6,6 +6,15 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
 
+//Regex
+var nameRegex = /^[a-zA-Z]{1,15}$/;
+var emailRegex = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
+var passwordRegex = /^[^ \s]{4,15}$/;
+
+//bcrypt
+var bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 //Start server
 var app = express();
 const server = require("http").createServer(app);
@@ -14,6 +23,16 @@ const server = require("http").createServer(app);
 var io = require("socket.io")(server);
 var pF = path.resolve(__dirname, "public");
 var sF = path.resolve(__dirname, "scripts");
+
+//Nodemailer Module
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+	service: 'hotmail',
+	auth: {
+		user: 'bcitsurvey999@hotmail.com',
+		pass: 'acit3900drc2017'
+	}
+});
 
 //postgres
 //database url
@@ -224,8 +243,8 @@ app.get("/login", function (req, resp) {
     }else{
         
     }
-    
 });
+
 app.get("/create", function (req, resp) {
     resp.sendFile(pF + "/create.html");
 });
@@ -243,9 +262,18 @@ app.get("/main", function (req, resp) {
     resp.sendFile(pF+"/main.html")
 });
 
+app.get("/admin", function(req,resp){
+	resp.sendFile(pF + "/admin.html")
+});
+
+
 app.get("/profile", function (req, resp) {
     checkLogin(req,resp);
     resp.sendFile(pF + "/profile.html")
+});
+
+app.get("/reset-pass", function(req,resp){
+	resp.sendFile(pF + "/pass-reset.html")
 });
 
 app.get("/logout", function (req, resp) {
@@ -349,6 +377,93 @@ app.post("/logout", function (req, resp) {
     req.session.destroy();
     resp.end("success");
 });
+
+//sends RNG password of 5 char to user email
+app.post("/pass-reset", function(req, resp){
+	var email = req.body.email
+	pool.connect(function(err,client,done){
+		if(err){
+			console.log(err);
+			resp.end("FAIL");
+		}
+		client.query("SELECT email FROM users where email = $1", [email], function(err, result){
+			if(err){
+				console.log(err);
+				resp.end("FAIL")
+			}
+			console.log(result);
+			if(result.rows.length > 0){
+				var passCode = Math.random().toString(36).substr(2,5);
+				client.query("INSERT INTO passRes (email, passcode) values ($1, $2)",[email, passCode], function (err, result){
+					if(err){
+						console.log(err);
+						resp.end("FAIL");
+					}
+					else {
+						var mailOptions = {
+							from:"bcitsurvey999@hotmail.com",
+							to:email,
+							subject:"Recover your password",
+							html:"<div>Your passcode for recovery is:<br><br><b><h1>" + passCode + "</h1></b><br>Enter it on the website to be prompted to enter a new password</div>"
+						}
+						transporter.sendMail(mailOptions,function (error, info){
+							if (error) {
+								console.log(error)
+								resp.end("FAIL");
+							}
+							else {
+								console.log("email sent")
+								var obj = {
+									status:"success"
+								}
+								resp.send(obj);
+							}
+						})
+					}
+				})
+			}
+			else {
+				client.release();
+				resp.end("FAIL");
+			}
+		})
+	})
+})
+
+//pass recovery
+
+app.post("/pass_recovery_url", function(req, resp){
+	var passcode = req.body.passcode;
+	var email = req.body.email;
+	var password = req.body.password;
+	console.log(req.body);
+	pool.connect(function(err,client,done) {
+		if(err){
+			console.log(err);
+			resp.end("FAIL");
+		}
+		client.query("select * from passRes where email = $1 and passcode = $2",[email,passcode],function(err,result){
+			console.log(result.rows)
+			if(result.rows.length > 0){
+				client.query("update users set password = $1 where email = $2",[password,email], function(err,result){
+					if(err) {
+						console.log(err);
+						resp.end("FAIL");
+					}
+					else {
+						client.release();
+						var obj = {status:"success"}
+						resp.send(obj)
+					}
+				})
+			}
+			else {
+				client.release();
+				resp.end("FAIL");
+			}
+		})
+	})
+})
 
 app.post("/getSession", function (req, resp) {
     if (!req.session.name) {
