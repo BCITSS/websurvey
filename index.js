@@ -6,6 +6,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
 
+
 //Regex
 var nameRegex = /^[a-zA-Z]{1,15}$/;
 var emailRegex = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
@@ -304,6 +305,7 @@ app.post("/login", function (req, resp) {
                 console.log(err);
                 resp.end("FAIL");
             }
+			console.log(result);
             if (result.rows.length > 0) {
                 req.session.email = result.rows[0].email;
                 req.session.department = result.rows[0].department_id;
@@ -386,7 +388,7 @@ app.post("/pass-reset", function(req, resp){
 			console.log(err);
 			resp.end("FAIL");
 		}
-		client.query("SELECT email FROM users where email = $1", [email], function(err, result){
+		client.query("SELECT email FROM admin where email = $1", [email], function(err, result){
 			if(err){
 				console.log(err);
 				resp.end("FAIL")
@@ -445,7 +447,7 @@ app.post("/pass_recovery_url", function(req, resp){
 		client.query("select * from passRes where email = $1 and passcode = $2",[email,passcode],function(err,result){
 			console.log(result.rows)
 			if(result.rows.length > 0){
-				client.query("update users set password = $1 where email = $2",[password,email], function(err,result){
+				client.query("update admin set password = $1 where email = $2",[password,email], function(err,result){
 					if(err) {
 						console.log(err);
 						resp.end("FAIL");
@@ -879,6 +881,107 @@ app.post("/adminPanel", function (req, resp) {
 });
 
 
+// changing employees stuff
+
+app.post("/get-employees", function(req,resp){
+	pool.connect(function (err, client, done) {
+		if (err) {
+			console.log(err);
+			resp.end('FAIL');
+		}
+		client.query("SELECT name FROM admin",function(err,result){
+		client.release();
+		if (result.rows.length < 0) {
+			resp.end('FAIL')
+		}
+		else {
+			var obj = {
+				names:result.rows,
+				status:"success"
+				}
+				resp.send(obj);
+			}
+		})
+	})
+})
+
+app.post("/add-employee", function(req,resp){
+	pool.connect(function(err,client,done) {
+		if (err) {
+			console.log(err);
+			resp.end("FAIL")
+		}
+		client.query('INSERT INTO admin (name, email, password, department_id) VALUES ($1, $2, $3, $4)',[req.body.name, req.body.email, req.body.password, req.body.departmentId], function(err,result){
+			client.release();
+			if(err){
+				console.log(err);
+				resp.end("FAIL")
+			}
+			else {
+				var obj = {status:'success'}
+				resp.send(obj);
+			}
+		})
+	})
+})
+
+app.post("/remove-employee", function(req,resp){
+	pool.connect(function(err,client,done){
+		if (err) {
+			console.log(err);
+			resp.end("FAIL")
+		}
+		client.query('DELETE FROM admin WHERE name = $1',[req.body.name],function(err,result){
+			client.release();
+			if (err) {
+				console.log(err);
+				resp.end("FAIL")
+			}
+			else {
+				var obj = {status:'success'}
+				resp.send(obj);
+			}
+		})
+	})
+})
+
+app.post("/edit-employee", function(req,resp){
+	pool.connect(function(err,client,done){
+		if(req.body.type == 'select'){
+			client.query('SELECT name, email, department_id, password FROM admin WHERE name = $1',[req.body.employee_name],function(err,result){
+				client.release();
+				if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				}
+				if (result.rows.length >0){
+					var obj = {
+						status:'success',
+						user: result.rows[0]
+					}
+					resp.send(obj)
+				}
+				else {
+					resp.end('FAIL')
+				}
+			})
+		}
+		else if ( req.body.type =='edit'){
+			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email,req.body.emp_dep,req.body.pass],function(err,result){
+				client.release();
+				if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				} else {
+					var obj = {
+						status:'success'
+					}
+					resp.send(obj)
+				}
+			})
+		}
+	})
+})
 
 // server listen
 server.listen(port, function (err) {

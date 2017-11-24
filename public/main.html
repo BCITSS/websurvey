@@ -12,6 +12,9 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <!-- Ionicons 2.0.0 -->
 <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
+<script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
+<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <!--StyleSheet for Main.html-->	
 <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
 <link rel="stylesheet"  type="text/css" href="/styles/global.css"/>	
@@ -29,13 +32,16 @@
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
 			<!--Hamburger Icon Button-->
+			<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+           <span class="sr-only">Toggle navigation</span>
+         </a>
 		
 		<!-- dropdown container -->
 		<div class="dropdown">
     	<!-- trigger button -->
     <button>
 		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
-		Creighton Lee
+		 <label id = "nav-username"></label>
 		<i class="fa fa-caret-down" aria-hidden="true"></i>
 	</button>
     	<!-- dropdown menu -->
@@ -65,7 +71,9 @@
 					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
 				</div>
 				<div class="pull-right">
-					<p>Creighton Lee</p>
+					<p id = "pull-right-username"></p>
+					<p id = "pull-right-department"></p>
+					<p></p>
 				</div>
 			</div>
 			<ul class="sidebar-menu">
@@ -76,6 +84,9 @@
               </a>
               <ul class="treeview-menu">
                 <li class="active">
+                     <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
+               </li>
+                <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
                     <a href="#" id = "new-btn"><i class="fa fa-file"></i>NEW</a>
                 </li>
                 <li>
@@ -86,18 +97,18 @@
 				</ul>
             </li>
             <li class="treeview">
-              <a href="#">
+              <a href="#" id='modify-btn'>
                 <i class="fa fa-pencil-square"></i>
                 <span>MODIFY</span>
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="#" id="view-btn">
                 <i class="fa fa-th"></i> <span>VIEW</span> 
               </a>
             </li>
 			<li>
-              <a href="#">
+              <a href="#" id="publish-btn">
                 <i class="fa fa-check-square"></i> <span>PUBLISH</span>
               </a>
             </li>
@@ -112,6 +123,7 @@
 	</div>
 	
 	<div class="content-wrapper" style="height: auto;">
+
         <div class="status-bar" id="status-bar">
             <label class = "status-text" id="status-text"></label>
             <button type="button" class="status-bar-close" id="status-bar-close">close</button>
@@ -128,8 +140,6 @@
 	</div>
 	<footer class="main-footer">
 		<div class="pull-right hidden-xs">
-			  <button type="button" class="btn btn-success">SAVE</button>
-			  <button type="button" class="btn btn-danger">CANCEL</button>
 		</div>
 		<div class="copyright">
 			<strong> copyright 2017 BCITSSD Team

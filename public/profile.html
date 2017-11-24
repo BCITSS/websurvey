@@ -1,50 +1,39 @@
 	<html lang="en">
 
 	  <head>
-
 		<meta charset="utf-8">
-
 		<title>Profile Page</title>
-		  <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>
-
-
+		<link rel="stylesheet"  type="text/css" href="/styles/main.css"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">   
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
-
 		<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
-
 		<link href="/css/adminia-1.1.css" rel="stylesheet"> 
 		<link href="/css/adminia-1.1-responsive.css" rel="stylesheet"> 
 		<link href="/css/pages/plans.css" rel="stylesheet"> 
-		  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-	<!-- Latest compiled JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+		<script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
+		<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>	  
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	  </head>
-
-
-
 	<body>
-		
-		<!--Top-->
+<div class="wrapper">
+			<!--Top-->
 	    <header class="main-header">
 			<!--BCIT Logo-->
 			<img src="/images/bcit.png" class="logo"/>
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
-			<!--Hamburger Icon Button-->
-		
 		<!-- dropdown container -->
 		<div class="dropdown">
     	<!-- trigger button -->
     <button>
 		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
-		Creighton Lee
+		 <label id = "nav-username"></label>
 		<i class="fa fa-caret-down" aria-hidden="true"></i>
 	</button>
     	<!-- dropdown menu -->
@@ -67,27 +56,62 @@
 </div>
 </nav>
 </header>
+	<div class="main-sidebar">
+		<section class="sidebar" style="height: auto;">
+			<div class="user-panel">
+				<div class="pull-left">
+					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
+				</div>
+				<div class="pull-right">
+					<p id = "pull-right-username"></p>
+					<p id = "pull-right-department"></p>
+					<p></p>
+				</div>
+			</div>
+			<ul class="sidebar-menu">
+            <li class="sidebar-title">SURVEY DASHBOARD</li>
+            <li class="active treeview">
+              <a href="#">
+                <i class="fa fa-plus-square fa-lg"></i> <span>CREATE</span><i class="fa fa-angle-left pull-right"></i> 
+              </a>
+              <ul class="treeview-menu">
+                <li class="active">
+                     <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
+               </li>
+                <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
+				</ul>
+            </li>
+            <li class="treeview">
+              <a href="#" id='modify-btn'>
+                <i class="fa fa-pencil-square"></i>
+                <span>MODIFY</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" id="view-btn">
+                <i class="fa fa-th"></i> <span>VIEW</span> 
+              </a>
+            </li>
+			<li>
+              <a href="#" id="publish-btn">
+                <i class="fa fa-check-square"></i> <span>PUBLISH</span>
+              </a>
+            </li>
+			<li>
+              <a href="#">
+                <i class="fa fa-tasks"></i> <span>OTHER TAB</span>
+              </a>
+            </li>
+            <li><a href="#"><i class="fa fa-book"></i> Documentation</a></li>
+          </ul>
+		</section>	
+	</div>
 	
-	<div id="content">
+	<div class="content-wrapper" style="height: auto;">
+		<section class="content" id="main-content">
+				<div id="content">
 		<div class="container">
 			<div class="row">
-				<div class="span3">
-					<ul id="main-nav" class="nav nav-tabs nav-stacked">
-						<li>
-							<a href="/main">
-								<i class="icon-home"></i>
-								Dashboard 			
-							</a>
-						</li>
-					</ul>	
-					<div class="sidebar-extra">
-
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
-
-					</div> <!-- .sidebar-extra -->
-					<br />
-				</div> <!-- /span3 -->
-
 				<div class="span9">
 					<h1 class="page-title">
 						<i class="icon-th-large"></i>
@@ -227,6 +251,24 @@
 		   </div> <!-- /row -->
 		</div> <!-- /container -->
 	</div> <!-- /content -->
+
+			
+		</section>
+	</div>
+	<footer class="main-footer">
+		<div class="pull-right hidden-xs">
+		</div>
+		<div class="copyright">
+			<strong> copyright 2017 BCITSSD Team
+			<a href="github">BCITSS/websurvey</a>
+			</strong>
+			All rights reserved.
+		</div>
+	</footer>
+		
+	</div>		
+
+
 	  </body>
 		<script src='/scripts/adminbundle.js'></script>
 
