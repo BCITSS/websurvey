@@ -12,7 +12,9 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script><script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
+<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <script src="//code.jquery.com/jquery.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/styles/pass-reset.css"/>
@@ -54,7 +56,7 @@
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="new-pass" placeholder="ENTER NEW PASSWORD" name="new-pass" id="new-pass" class="form-control inputs" title="New Pass">
+				<input type="password" placeholder="ENTER NEW PASSWORD" name="new-pass" id="new-pass" class="form-control inputs" title="New Pass">
 			</div>
 			<br>
 			<div class="input-group">
@@ -62,7 +64,7 @@
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="confirm-pass" placeholder="CONFIRM NEW PASSWORD" name="confirm-pass" id="confirm-pass" class="form-control inputs" title="Confirm Pass">
+				<input type="password" placeholder="CONFIRM NEW PASSWORD" name="confirm-pass" id="confirm-pass" class="form-control inputs" title="Confirm Pass">
 				</div>
 			<input id="pass-recovery" type="submit" value="SUBMIT CODE" class="buttons btn" action="/pass_recovery_url" method="post">
 <!--			<button id="pass-recovery">Change password</button>-->

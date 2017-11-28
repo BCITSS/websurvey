@@ -193,6 +193,7 @@ var newBtn = $('#new-btn');
 var modifyBtn = $('#modify-btn');
 var viewBtn = $('#view-btn');
 var publishBtn = $("#publish-btn");
+var statusBarCloseBtn = document.getElementById("status-bar-close");
 
 // get survey obj from server
 function loadSurveyObj(survey_obj){
@@ -249,7 +250,7 @@ function convert2DArray(obj){
     for(var i=0;i<obj.length;i++){
         var temp_array = [];
         temp_array.push(obj[i].question_text);
-        temp_array.push(obj[i].answer_text);
+        temp_array.push(obj[i].answer_option_text);
         twoDarray.push(temp_array);
     }
     return twoDarray;
@@ -265,6 +266,10 @@ function arrayToCsv(array){
         
     return csvString; 
 }
+
+statusBarCloseBtn.addEventListener("click",function(){
+    statusBar.style.display = "none";
+})
 
 newBtn.on("click",function(){
     $.ajax({
@@ -301,7 +306,11 @@ modifyBtn.on("click",function(){
             publish_action_button.innerHTML = 'Publish';
             publish_action_button.class = "pub-action-btn";
             
-            // modify button click event listener
+            var delete_action_button = document.createElement('button');
+            delete_action_button.innerHTML = 'Delete';
+            delete_action_button.class = "delete-action-btn";
+            
+            // Top Modify Button click event listener
             modify_action_button.addEventListener("click",function(){
                var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
                 console.log(selected_survey);
@@ -316,7 +325,7 @@ modifyBtn.on("click",function(){
                         console.log("OK?",resp);
                         console.log(resp);
                         if(resp.status == false){
-                            alert(resp.msg);
+                            showStatusBar(resp.msg,"red");
                         }else{
                             var survey_obj = resp;
                             $.ajax({
@@ -340,6 +349,7 @@ modifyBtn.on("click",function(){
             });
             bar.append(modify_action_button);
             
+            // Top Delete button listner
             publish_action_button.addEventListener("click",function(){
                 var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
                 console.log(selected_survey);
@@ -352,7 +362,9 @@ modifyBtn.on("click",function(){
                     },
                     success: function(resp){
                         if(resp.status == false){
-                            alert(resp.msg);
+                            showStatusBar(resp.msg,"red");
+                        }else{
+                            showStatusBar("survey "+resp.survey_name+" is publishing")
                         }
                         modifyBtn.click();
                     }
@@ -360,8 +372,31 @@ modifyBtn.on("click",function(){
             });
             bar.append(publish_action_button);
             
+            delete_action_button.addEventListener("click",function(){
+                var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
+                console.log(selected_survey);
+                $.ajax({
+                    url:"/adminPanel",
+                    type:"post",
+                    data:{
+                        type:"delete",
+                        survey_id: selected_survey.value
+                    },
+                    success: function(resp){
+                        if(resp.status == "success"){
+                            showStatusBar("survey '"+resp.survey_name+"' deleted")
+                        }else{
+                            showStatusBar(resp.status+" cannot delete publishing survey","red");
+                        }
+                        modifyBtn.click();
+                    }
+                });
+            })
+            bar.append(delete_action_button);
+            
             // --- create survey list table ---
             var table = document.createElement("table");
+            table.className += "survey-list-table";
             table.id = "survey-list-table";
             table.setAttribute('border','1');
             var headTr = document.createElement('tr');
@@ -403,7 +438,7 @@ modifyBtn.on("click",function(){
                     // change color of  the cell if isopen equal to true
                     var open_var;
                     if(resp[i].isopen){
-                        publish.style.backgroundColor = "green";
+                        publish.style.backgroundColor = "#c4ffad";
                         openvar = "Yes";
                     }else{
                         openvar = "No";
@@ -415,17 +450,16 @@ modifyBtn.on("click",function(){
                     // change color of  the cell if been_published equal to true
                     var published_var;
                     if(resp[i].been_published){
-                        been_pub.style.backgroundColor = "green";
+                        been_pub.style.backgroundColor = "#c4ffad";
                         published_var = "Yes"
                     }else{
-                        been_pub.style.backgroundColor = "red";
                         published_var = "No"
                     }
                     
                     // background color of modify cell indicate if can modify
-                    
-                    if(resp[i].been_published || resp[i].publish){
-                        modify.style.backgroundColor = "red";
+                    console.log(resp[i])
+                    if(resp[i].isopen){
+                        modify.style.backgroundColor = "#ffadad";
                         modify_button.remove();
                     }
                     been_pub.innerHTML = published_var;
@@ -451,6 +485,7 @@ viewBtn.on("click",function(){
                 maincontent.innerHTML = "No Survey";
             }else{
                 var table = document.createElement("table");
+                table.className += "survey-list-table";
                 table.id = "survey-view";
                 table.setAttribute('border','1');
                 var headTr = document.createElement('tr');
@@ -477,7 +512,7 @@ viewBtn.on("click",function(){
                     total_resp_btn.value = resp[i].count;
                     total_resp_btn.innerHTML = resp[i].count;
                     total_resp_btn.id = resp[i].id;
-                    total_resp_btn.class = 'total-resp-btn';
+                    total_resp_btn.className = 'total-resp-btn';
                     total_resp_btn.addEventListener("click",function(){
                         $.ajax({
                             url:"/viewSurvey",
@@ -487,7 +522,7 @@ viewBtn.on("click",function(){
                             },
                             success:function(resp){
                                 if(resp == "no result"){
-                                    maincontent.html("no result");
+                                    maincontent.html("no result to show");
                                 }else{
                                     console.log(resp);
                                     var new_format_array = parseSurveyStatus(resp);
@@ -606,12 +641,12 @@ viewBtn.on("click",function(){
                     csv_download_btn.innerHTML = "Download";
                     csv_download_btn.id = resp[i].id;
                     csv_download_btn.value = resp[i].survey_name
-                    csv_download_btn.class = 'csv-download-btn';
+                    csv_download_btn.className = 'csv-download-btn';
                     
                     csv_download_btn.addEventListener("click",function(){
                         var survey_name = this.value;
                         $.ajax({
-                            url:"/getQuestionAnswer",
+                            url:"/getSurveyData",
                             type:"post",
                             data:{
                                 survey_id:this.id

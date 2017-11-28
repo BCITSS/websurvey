@@ -4,6 +4,7 @@ var recover_code = document.getElementById('recover-code');
 var pass_recovery_but = document.getElementById('pass-recovery');
 var new_pass = document.getElementById("new-pass");
 var confirm_pass = document.getElementById("confirm-pass");
+const swal = require('sweetalert2');
 
 $(document).ready(function(){
 	console.log('PASSWORD RECOVERY PAGE');
@@ -19,7 +20,12 @@ $(document).ready(function(){
 			},
 			success:function(resp){
 				if(resp.status == "success"){
-					alert("If your email address exists in our database you will receive a password recovery code at your email address.");
+					swal(
+						  'Good job!',
+						  'You clicked the button!',
+						  'success'
+					)
+					//alert("If your email address exists in our database you will receive a password recovery code at your email address.");
 					email.style.disabled = true;
 				}else {
 					alert("Error");
@@ -44,7 +50,7 @@ $(document).ready(function(){
 				},
 				success:function(resp){
 					if(resp.status == "success"){
-						alert("Your email has been changed");
+						alert("Your password has been changed");
 						location.href = "/";
 					}
 					else{
