@@ -24,6 +24,7 @@
     "survey-jquery": "^0.12.32",
     "survey-knockout": "^0.12.32",
     "surveyjs-editor": "^0.12.32",
+    "sweetalert2": "^7.0.3",
     "webpack": "^2.3.2"
   }
 }
