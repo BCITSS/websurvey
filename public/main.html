@@ -12,9 +12,6 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <!-- Ionicons 2.0.0 -->
 <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
-<script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
-<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <!--StyleSheet for Main.html-->	
 <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
 <link rel="stylesheet"  type="text/css" href="/styles/global.css"/>	
@@ -32,16 +29,16 @@
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
 			<!--Hamburger Icon Button-->
-			<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-           <span class="sr-only">Toggle navigation</span>
-         </a>
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
 		
 		<!-- dropdown container -->
 		<div class="dropdown">
     	<!-- trigger button -->
     <button>
 		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
-		 <label id = "nav-username"></label>
+        <label id = "nav-username"></label>
 		<i class="fa fa-caret-down" aria-hidden="true"></i>
 	</button>
     	<!-- dropdown menu -->
@@ -50,6 +47,7 @@
 			<i class="fa fa-user" aria-hidden="true"></i>
 			Profile
 			</a>
+		</li>
 		<li><a id="p-but" href="/admin">
 			<i class="fa fa-user" aria-hidden="true"></i>
 			Admin
@@ -62,8 +60,9 @@
 		</li>
     </ul>
 </div>
-</nav>
-</header>
+		
+        </nav>
+      </header>
 	<div class="main-sidebar">
 		<section class="sidebar" style="height: auto;">
 			<div class="user-panel">
@@ -72,8 +71,7 @@
 				</div>
 				<div class="pull-right">
 					<p id = "pull-right-username"></p>
-					<p id = "pull-right-department"></p>
-					<p></p>
+                    <p id = "pull-right-department"></p>
 				</div>
 			</div>
 			<ul class="sidebar-menu">
@@ -84,9 +82,6 @@
               </a>
               <ul class="treeview-menu">
                 <li class="active">
-                     <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
-               </li>
-                <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
                     <a href="#" id = "new-btn"><i class="fa fa-file"></i>NEW</a>
                 </li>
                 <li>
@@ -123,12 +118,12 @@
 	</div>
 	
 	<div class="content-wrapper" style="height: auto;">
-
         <div class="status-bar" id="status-bar">
             <label class = "status-text" id="status-text"></label>
             <button type="button" class="status-bar-close" id="status-bar-close">close</button>
         </div>
 		<section class="content" id="main-content">
+
 			<div class="row">
 
 			</div>
@@ -151,7 +146,6 @@
 		
 	</div>
 </body>
-
 <script>
     // Global function and variables
     var status_text = document.getElementById("status-text");
@@ -166,7 +160,6 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
-
 <script src="scripts/mainbundle.js"></script>
 <script src="scripts/loadingbundle.js"></script>
 

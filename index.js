@@ -40,8 +40,8 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system2',
-    password: '1994Daniel',
+    database: 'survey_system',
+    password: 'bcitA00972424',
     max: 20
 });
 
@@ -279,7 +279,7 @@ app.get("/reset-pass", function(req,resp){
 
 app.get("/logout", function (req, resp) {
     req.session.destroy();
-    resp.redirect("/");
+    resp.redirect("/login");
 });
 
 app.post("/client",function(req,resp){
@@ -299,7 +299,7 @@ app.post("/login", function (req, resp) {
             console.log(err);
             resp.end("FAIL");
         }
-        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)),email,department_id,name FROM admin where email=$1 and password=$2", [email, password], function (err, result) {
+        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)),email,department_id,name FROM admin where email=$1 and password=$2", [email.toLowerCase(), password], function (err, result) {
             done();
             if (err) {
                 console.log(err);
@@ -906,12 +906,15 @@ app.post("/get-employees", function(req,resp){
 })
 
 app.post("/add-employee", function(req,resp){
-	pool.connect(function(err,client,done) {
+	bcrypt.hash(req.body.password,saltRounds,function(err,hash){
+		console.log(hash)
+		pool.connect(function(err,client,done) {
 		if (err) {
 			console.log(err);
 			resp.end("FAIL")
 		}
-		client.query('INSERT INTO admin (name, email, password, department_id) VALUES ($1, $2, $3, $4)',[req.body.name, req.body.email, req.body.password, req.body.departmentId], function(err,result){
+			console.log(hash);
+		client.query('INSERT INTO admin (name, email, password, department_id) VALUES ($1, $2, $3, $4)',[req.body.name, req.body.email.toLowerCase(), hash, req.body.departmentId], function(err,result){
 			client.release();
 			if(err){
 				console.log(err);
@@ -922,6 +925,7 @@ app.post("/add-employee", function(req,resp){
 				resp.send(obj);
 			}
 		})
+	})
 	})
 })
 
@@ -967,7 +971,7 @@ app.post("/edit-employee", function(req,resp){
 			})
 		}
 		else if ( req.body.type =='edit'){
-			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email,req.body.emp_dep,req.body.pass],function(err,result){
+			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email.toLowerCase(),req.body.emp_dep,req.body.pass],function(err,result){
 				client.release();
 				if (err) {
 					console.log(err);

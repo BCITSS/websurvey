@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Page</title>
-    <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
+	<link rel="icon" href="/images/android-icon-192x192.png">
+    <link rel="stylesheet"  type="text/css" href="/styles/admin.css"/>	
 </head>
 <!--Google Roboto Font -->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
@@ -17,15 +18,13 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <!-- Ionicons 2.0.0 -->
 <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
-<script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
-<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <body>
 <div class="wrapper">
 			<!--Top-->
 	    <header class="main-header">
 			<!--BCIT Logo-->
-			<img src="/images/bcit.png" class="logo" href=>
+			<img src="/images/bcit.png" class="logo" href='#'>
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
 		<!-- dropdown container -->
@@ -57,7 +56,7 @@
 </nav>
 </header>
 	<div class="main-sidebar">
-		<section class="sidebar" style="height: auto;">
+		<section class="sidebar" style="height: 100vh;">
 			<div class="user-panel">
 				<div class="pull-left">
 					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
@@ -69,32 +68,32 @@
 				</div>
 			</div>
 			<ul class="sidebar-menu">
-            <li class="sidebar-title">SURVEY DASHBOARD</li>
+            <li class="sidebar-title">ADMIN DASHBOARD</li>
             <li class="active treeview">
               <a href="#" id="add-btn">
-                <i class="fa fa-plus-square fa-lg"></i> <span>CREATE USER</span><i class="fa fa-angle-left pull-right"></i> 
+                <i class="fa fa-plus-square fa-lg"></i> <span>CREATE EMPLOYEE</span><i class="fa fa-angle-left pull-right"></i> 
               </a>
             </li>
             <li class="treeview">
               <a href="#" id='modify-btn'>
                 <i class="fa fa-pencil-square"></i>
-                <span>MODIFY USER</span>
+                <span>MODIFY EMPLOYEE</span>
               </a>
             </li>
             <li>
               <a href="#" id="remove-btn">
-                <i class="fa fa-th"></i> <span>REMOVE USER</span> 
+                <i class="fa fa-eraser" aria-hidden="true"></i> <span>REMOVE EMPLOYEE</span> 
               </a>
             </li>
           </ul>
 		</section>	
 	</div>
 	
-	<div class="content-wrapper" style="height: auto;">
+	<div class="content-wrapper" style="height: 100vh;">
 		<section class="content" id="main-content">
 				<div id="addEmployeeDiv" class="displayDivs">
         <div class="headerDivs">
-            <h1 id="addEmployeeText" class="headerTexts">ADD EMPLOYEE</h1>
+            <h1 id="addEmployeeText" class="headerTexts">CREATE EMPLOYEE</h1>
         </div>
 
         <div class="lowerDivs">
@@ -166,7 +165,7 @@
 
     <div id="editEmployeeDiv" class="displayDivs">
         <div class="headerDivs">
-            <h1 id="editEmployeeText" class="headerTexts">EDIT EMPLOYEE</h1>
+            <h1 id="editEmployeeText" class="headerTexts">MODIFY EMPLOYEE</h1>
         </div>
 
         <div class="lowerDivs">
