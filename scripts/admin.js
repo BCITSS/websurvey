@@ -1,5 +1,23 @@
 $(document).ready(function(){
 
+	   $.ajax({
+        url:"/getSession",
+        type:"post",
+        success:function(resp){
+            
+            console.log(resp);
+            // display username and department name to admin panel (main.html)
+			//default add employee div will be showing
+            document.getElementById("nav-username").innerHTML = resp.name;
+            document.getElementById("pull-right-username").innerHTML = resp.name;
+            document.getElementById("pull-right-department").innerHTML = resp.department_name;
+			addEmployeeDiv.style.display = "block";
+			removeEmployeeDiv.style.display = "none";
+			editEmployeeDiv.style.display = "none";
+            
+        }
+       
+   });
 	var addEmployeeButton = document.getElementById("add-btn");
 	var removeEmployeeButton = document.getElementById("remove-btn");
 	var editEmployeeButton = document.getElementById("modify-btn");
@@ -14,7 +32,7 @@ $(document).ready(function(){
 	var editEmployeePasswordInput = document.getElementById('editEmployeePasswordInput');
 	var editEmployeeEmailInput = document.getElementById('editEmployeeEmailInput');
 	var editEmployeeDepartmentList = document.getElementById('selectDepartmentList');
-	
+
 	$.ajax({
         url:"/getSession",
         type:"post",
@@ -32,6 +50,7 @@ $(document).ready(function(){
         }
        
     });
+
 	var regExNames = /^[a-zA-Z ]{3,50}/;
 	var regExEmail = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
 	var regExPassword = /^[a-zA-Z0-9!@#$%^&*]{8,30}/;
@@ -43,7 +62,6 @@ $(document).ready(function(){
     return false;
 	}
 
-	
     console.log("ADMIN");
 	addEmployeeButton.addEventListener("click", function(){
 		addEmployeeDiv.style.display = "block";
@@ -57,10 +75,6 @@ $(document).ready(function(){
 		addEmployeeDiv.style.display = "none";
 		removeEmployeeDiv.style.display = "block";
 		editEmployeeDiv.style.display = "none";
-
-
-		//*****************************DROP DOWN LIST**********************************//
-
 		removeEmployeeList.innerHTML = "";
 
 	$.ajax({
@@ -86,7 +100,6 @@ $(document).ready(function(){
 		addEmployeeDiv.style.display = "none";
 		removeEmployeeDiv.style.display = "none";
 		editEmployeeDiv.style.display = "block";
-		//*****************************DROP DOWN LIST**********************************//
 
 		editEmployeeList.innerHTML = "";
 		//ajax to the server, get the employee names and display it to the dropdown list
@@ -173,8 +186,6 @@ $(document).ready(function(){
 		}
 	});
 
-	//**************************REMOVE EMPLOYEE******************************//
-
 	removeEmployeeSave.addEventListener("click", function(){
 		$.ajax({
 			url:"/remove-employee",
@@ -192,9 +203,6 @@ $(document).ready(function(){
 			}
 		})
 	});
-
-	//**************************EDIT EMPLOYEE******************************//
-
 
 	editEmployeeEmailInput.onkeyup = function(){
 		if(!regExTest(regExEmail, editEmployeeEmailInput.value)){
