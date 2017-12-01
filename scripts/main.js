@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	
     // get logined username and department name
    $.ajax({
         url:"/getSession",
