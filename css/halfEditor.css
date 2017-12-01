@@ -1,0 +1,17 @@
+.save-btn{
+    margin-top: 5px;
+}
+.nav-tabs>li>a{
+    background-color: gainsboro;
+}
+.image-preview-div {
+    position: relative;
+    width: 400px;
+    outline: none;
+}
+.image-preview-div img{
+    position: relative;
+    max-width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+}

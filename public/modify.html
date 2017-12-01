@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<link rel="stylesheet" type="text/css" href="/styles/modify.css" />
+<link rel="stylesheet" type="text/css" href="/styles/global.css" />
+
+<head>
+</head>
+
+<body>
+    <div id="main-content2">
+        <div class="row" id="action_bar">
+            <div class="col-sm-4">
+                <button class="mod-action-btn btn btn-primary" id="mod-action-btn">Modify</button>
+                <button class="pub-action-btn btn btn-primary" id="pub-action-btn">Publish</button>
+                <button class="delete-action-btn btn btn-primary" id="delete-action-btn">Delete</button>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search for..." id='search-input'>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <nav aria-label="...">
+                    <ul class="pagination page-changer" id="page-changer">
+                        <li class="page-item" id="prev-page-btn"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="next-page-btn">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div><label>Page: <label id="current-page-number"></label></label>
+        </div>
+
+    </div>
+
+</body>
+<script src="scripts/modifybundle.js"></script>
+<script src="scripts/loadingbundle.js"></script>
+
+</html>
