@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
 	   $.ajax({
         url:"/getSession",
         type:"post",
@@ -31,8 +32,25 @@ $(document).ready(function(){
 	var editEmployeePasswordInput = document.getElementById('editEmployeePasswordInput');
 	var editEmployeeEmailInput = document.getElementById('editEmployeeEmailInput');
 	var editEmployeeDepartmentList = document.getElementById('selectDepartmentList');
-	
-	//regeex
+
+	$.ajax({
+        url:"/getSession",
+        type:"post",
+        success:function(resp){
+            
+            console.log(resp);
+            // display username and department name to admin panel (main.html)
+            document.getElementById("nav-username").innerHTML = resp.name;
+            document.getElementById("pull-right-username").innerHTML = resp.name;
+            document.getElementById("pull-right-department").innerHTML = resp.department_name;
+            addEmployeeDiv.style.display = "block";
+            removeEmployeeDiv.style.display = "none";
+            editEmployeeDiv.style.display = "none";
+            
+        }
+       
+    });
+
 	var regExNames = /^[a-zA-Z ]{3,50}/;
 	var regExEmail = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
 	var regExPassword = /^[a-zA-Z0-9!@#$%^&*]{8,30}/;

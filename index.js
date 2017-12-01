@@ -5,12 +5,29 @@ const port = process.env.PORT || 10000;
 const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
-
+var multer  = require('multer')
+var upload = multer({ dest: 'images/' })
+var storage = multer.diskStorage({
+	destination: function(req, file, callback) {
+		callback(null, './images')
+	},
+	filename: function(req, file, callback) {
+		console.log(file)
+		callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+	}
+})
 
 //Regex
 var nameRegex = /^[a-zA-Z]{1,15}$/;
 var emailRegex = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
 var passwordRegex = /^[^ \s]{4,15}$/;
+
+function regExTest(regEx, input){
+    if(regEx.test(input)){
+        return true;
+    }
+    return false;
+}
 
 //bcrypt
 var bcrypt = require("bcrypt");
@@ -41,7 +58,6 @@ var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'survey_system',
-    password: 'bcitA00972424',
     max: 20
 });
 
@@ -984,6 +1000,82 @@ app.post("/edit-employee", function(req,resp){
 				}
 			})
 		}
+	})
+})
+
+//Profile page code
+
+app.post("/getUser", function(req,resp){
+    var obj = {
+        status:"success",
+        username:req.session.name,
+        email:req.session.email
+    }
+    resp.send(obj)
+})
+
+app.post("/updateUserP", function(req,resp){
+    if(regExTest(emailRegex,req.body.email) && regExTest(passwordRegex,req.body.pass)){
+        pool.connect(function(err,client,done){
+            if (err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("UPDATE admin SET password = $1, email=$2 where name=$3",[req.body.pass,req.body.email,req.session.name],function(err,result){
+                client.release();
+                if(err) {
+                    console.log(err)
+                    resp.end("FAIL")
+                } else {
+                    req.session.email = req.body.email
+                    var obj = {
+                        status:'success'
+                    }
+                    resp.send(obj)
+                }
+            })
+        })
+    }
+    else {
+            resp.end("FAIL")
+        }
+})
+
+app.post("/updateUser", function(req,resp){
+    if(regExTest(emailRegex,req.body.email)){
+        pool.connect(function(err,client,done){
+            if (err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("UPDATE admin SET email=$1 where name=$2",[req.body.email,req.session.name],function(err,result){
+                client.release();
+                if(err) {
+                    console.log(err)
+                    resp.end("FAILnow")
+                } else {
+                    req.session.email = req.body.email
+                    var obj = {
+                        status:'success'
+                    }
+                    resp.send(obj)
+                }
+            })
+        })
+    }
+    else {
+            resp.end("FAIL")
+        }
+})
+
+var  fs = require('fs');
+// ...
+app.post('/file', function(req, res) {
+	var upload = multer({
+		storage: storage
+	}).single('userFile')
+	upload(req, res, function(err) {
+		res.send('File is uploaded')
 	})
 })
 
