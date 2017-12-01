@@ -40,6 +40,7 @@ $(document).ready(function () {
     });
     changeQ("q1");
     console.log(choices);
+    document.getElementById("questionChoices").innerHTML= "";
     choices.forEach(function (Element) {
         var choice = document.createElement("button");
         choice.id = Element.id;
