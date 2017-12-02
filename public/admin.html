@@ -3,31 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Page</title>
-    <link rel="stylesheet"  type="text/css" href="/styles/main.css"/>	
-    <link href="https://fonts.googleapis.com/css?family=Raleway|Montserrat:900|Boogaloo" rel="stylesheet">
+	<link rel="icon" href="/images/android-icon-192x192.png">
+    <link rel="stylesheet"  type="text/css" href="/styles/admin.css"/>	
 </head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+<!--Google Roboto Font -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Latest Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- FontAwesome 4.3.0 -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<!-- Ionicons 2.0.0 -->
+<link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <body>
+<div class="wrapper">
 			<!--Top-->
 	    <header class="main-header">
 			<!--BCIT Logo-->
-			<img src="/images/bcit.png" class="logo"/>
+			<img src="/images/bcit.png" class="logo" href='#'>
 		<!--Navbar Header-->
         <nav class="navbar navbar-static-top">
-			<!--Hamburger Icon Button-->
 		<!-- dropdown container -->
 		<div class="dropdown">
     	<!-- trigger button -->
     <button>
 		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
-		Creighton Lee
+		 <label id = "nav-username"></label>
 		<i class="fa fa-caret-down" aria-hidden="true"></i>
 	</button>
     	<!-- dropdown menu -->
@@ -50,35 +55,64 @@
 </div>
 </nav>
 </header>
-
-<div id="adminSettingsDiv">
-        <div id="headerDiv">
-            <h1 class="headerTexts">Admin PAGE</h1>
-        </div>
-    </div>
-
-<div id="addEmployeeDiv" class="displayDivs">
+	<div class="main-sidebar">
+		<section class="sidebar" style="height: 100vh;">
+			<div class="user-panel">
+				<div class="pull-left">
+					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
+				</div>
+				<div class="pull-right">
+					<p id = "pull-right-username"></p>
+					<p id = "pull-right-department"></p>
+					<p></p>
+				</div>
+			</div>
+			<ul class="sidebar-menu">
+            <li class="sidebar-title">ADMIN DASHBOARD</li>
+            <li class="active treeview">
+              <a href="#" id="add-btn">
+                <i class="fa fa-plus-square fa-lg"></i> <span>CREATE EMPLOYEE</span><i class="fa fa-angle-left pull-right"></i> 
+              </a>
+            </li>
+            <li class="treeview">
+              <a href="#" id='modify-btn'>
+                <i class="fa fa-pencil-square"></i>
+                <span>MODIFY EMPLOYEE</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" id="remove-btn">
+                <i class="fa fa-eraser" aria-hidden="true"></i> <span>REMOVE EMPLOYEE</span> 
+              </a>
+            </li>
+          </ul>
+		</section>	
+	</div>
+	
+	<div class="content-wrapper" style="height: 100vh;">
+		<section class="content" id="main-content">
+				<div id="addEmployeeDiv" class="displayDivs">
         <div class="headerDivs">
-            <h1 id="addEmployeeText" class="headerTexts">ADD EMPLOYEE</h1>
+            <h1 id="addEmployeeText" class="headerTexts">CREATE EMPLOYEE</h1>
         </div>
 
         <div class="lowerDivs">
             <div class="bigContainer">
                 <div class="container">
-                    <label id="addEmployeeNameLabel" class="addEmployeeLabels">Employee Name:</label>
+                    <label id="addEmployeeNameLabel" class="addEmployeeLabels">Username:</label>
                     <input type="text" title="Only alphabetic characters are allowed" id="addEmployeeNameInput" class="form-control">
                 </div>
 
                 <div class="container">
-                    <label id="addEmployeeIdLabel" class="addEmployeeLabels">Employee ID:</label>
-                    <input type="text" title="Employee ID should start with 'A' followed by a 3 digit unique employee number" id="addEmployeeIdInput" class="form-control">
+                    <label id="addEmployeeEmailLabel" class="addEmployeeLabels">Email:</label>
+                    <input type="text" title="Employee Email" id="addEmployeeEmailInput" class="form-control">
                 </div>
-
+<!-- 	values of dropdowns are the same as the department id's in database	-->
                 <div class="container">
-                    <label id="selectPositionLabel" class="addEmployeeLabels">Position:</label>
-                    <select id="selectPositionList" class="form-control">
-                        <option value="a">Admin</option>
-                        <option value="c">Cook</option>
+                    <label id="selectPositionLabel" class="addEmployeeLabels">Department:</label>
+                    <select id="selectDepartmentList" class="form-control">
+                        <option value="1">student services</option>
+                        <option value="2">help center</option>
                     </select>
                 </div>
 
@@ -131,7 +165,7 @@
 
     <div id="editEmployeeDiv" class="displayDivs">
         <div class="headerDivs">
-            <h1 id="editEmployeeText" class="headerTexts">EDIT EMPLOYEE</h1>
+            <h1 id="editEmployeeText" class="headerTexts">MODIFY EMPLOYEE</h1>
         </div>
 
         <div class="lowerDivs">
@@ -142,20 +176,15 @@
                 </div>
 
                 <div class="container">
-                    <label id="editEmployeeNameLabel" class="editEmployeeLabels">Employee Name:</label>
-                    <input type="text" title="Only alphabetic characters are allowed" id="editEmployeeNameInput" class="form-control">
+                    <label id="editEmployeeEmailLabel" class="editEmployeeLabels">Employee Email:</label>
+                    <input type="text" title="Employee ID should start with 'A' followed by a 3 digit unique employee number" id="editEmployeeEmailInput" class="form-control">
                 </div>
 
                 <div class="container">
-                    <label id="editEmployeeIdLabel" class="editEmployeeLabels">Employee ID:</label>
-                    <input type="text" title="Employee ID should start with 'A' followed by a 3 digit unique employee number" id="editEmployeeIdInput" class="form-control">
-                </div>
-
-                <div class="container">
-                    <label id="editEmployeePositionLabel" class="editEmployeeLabels">Position:</label>
-                    <select id="editEmployeePositionList" class="form-control">
-                        <option value="a">Admin</option>
-                        <option value="c">Cook</option>
+                    <label id="editEmployeePositionLabel" class="editEmployeeLabels">Department:</label>
+                    <select id="editEmployeeDepartmentList" class="form-control">
+                        <option value="s">Student Services</option>
+                        <option value="h">Help Center</option>
                     </select>
                 </div>
 
@@ -219,6 +248,22 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+			
+		</section>
+	</div>
+	<footer class="main-footer">
+		<div class="pull-right hidden-xs">
+		</div>
+		<div class="copyright">
+			<strong> copyright 2017 BCITSSD Team
+			<a href="github">BCITSS/websurvey</a>
+			</strong>
+			All rights reserved.
+		</div>
+	</footer>
+		
+	</div>
+
 
     <script src='/scripts/adminbundle.js'></script>
 </body>

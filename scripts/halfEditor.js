@@ -4,6 +4,7 @@ $(document).ready(function () {
     var QuestCon = document.getElementById("questionsContainer");
     var questChoose = document.getElementById("questionChooser");
     var selectQ = document.getElementById("question1");
+
     var selectQbtn;
     var createBtn = document.getElementById("create-button");
     var statusBar = document.getElementById("status-bar");
@@ -11,6 +12,13 @@ $(document).ready(function () {
     var remQ = document.getElementById("removeQuestion");
     var inc = 1;
     var surveyQuestions = [];
+
+
+    var createBtn = document.getElementById("create-button");
+    var clicked_btn = document.getElementById("q1");
+    clicked_btn.style.backgroundColor = "red";
+    var statusBar = document.getElementById("status-bar");
+    var status_text = document.getElementById("status-text");
 
     var choices = [{
         "id": "multChoice",
@@ -67,6 +75,7 @@ $(document).ready(function () {
             return 0;
         }
     }
+
 
     // function check input is empty
     function emptyCheck(input){
@@ -150,6 +159,7 @@ $(document).ready(function () {
 
     function addOption(optionValue,row_column = null) {
         selectQTypePanel = selectQ.className.split(" ")[2] + "-panel";
+        
         var $ansDivClone = $("#" + selectQTypePanel).find("#answer-div").clone(true);
         $ansDivClone.find("#option-delete-btn").on("click", deleteDiv);
         if (selectQ.classList.contains("ratingQuest")) {
@@ -205,6 +215,7 @@ $(document).ready(function () {
 
     function addQuestionPanel() {
         selectQTypePanel = selectQ.className.split(" ")[2] + "-panel";
+
         var $panel = $('#' + selectQTypePanel).clone(true);
         $panel[0].id = selectQTypePanel + "-c"
         $(selectQ).children().remove();
@@ -322,8 +333,6 @@ $(document).ready(function () {
 
             }
         }
-        
-
     }
     
     function loadSurveyObj(){
@@ -432,9 +441,7 @@ $(document).ready(function () {
     }
 
     addQ.addEventListener("click", function(){addQuestion("multChoice")});
-
     remQ.addEventListener("click", removeQuestion)
-
     createBtn.addEventListener("click", function () {
         $(".question").each(function () {
             saveQuestion(this);
@@ -470,6 +477,4 @@ $(document).ready(function () {
             });
         }
     });
-    
-
 })

@@ -5,11 +5,29 @@ const port = process.env.PORT || 10000;
 const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
+var multer  = require('multer')
+var upload = multer({ dest: 'images/' })
+var storage = multer.diskStorage({
+	destination: function(req, file, callback) {
+		callback(null, './images')
+	},
+	filename: function(req, file, callback) {
+		console.log(file)
+		callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+	}
+})
 
 //Regex
 var nameRegex = /^[a-zA-Z]{1,15}$/;
 var emailRegex = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
 var passwordRegex = /^[^ \s]{4,15}$/;
+
+function regExTest(regEx, input){
+    if(regEx.test(input)){
+        return true;
+    }
+    return false;
+}
 
 //bcrypt
 var bcrypt = require("bcrypt");
@@ -39,8 +57,7 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system3',
-    password: '1994Daniel',
+    database: 'survey_system',
     max: 20
 });
 
@@ -92,8 +109,7 @@ function getSurveyFromDB(req,resp,client){
         
         
         
-        // Combine  question list and answer_option list into survey_obj and RESP
-        
+        // Combine  question list and answer_option list into survey_obj and RESP        
         function combineData(survey_question_list, answer_option_list) {
             console.log("Qlist",survey_question_list);
             var i = 0;
@@ -134,13 +150,13 @@ function getSurveyFromDB(req,resp,client){
             }
             survey_obj.questions = survey_question_list;
             console.log("sent",survey_obj)
+
             // Send Response with survey_obj
             resp.send(survey_obj);
         }
         
         // --- SELECT Survey ---
-        function getSurvey(err,client,done){
-            
+        function getSurvey(err,client,done){            
             // if request survey obj from client
             if (req.body.client || req.session.name == undefined) {
                 
@@ -284,7 +300,6 @@ app.get("/login", function (req, resp) {
         resp.sendFile(pF + "/main.html");
     }else{
         resp.sendFile(pF+"/login.html");
-
     }
 });
 
@@ -307,7 +322,6 @@ app.get("/main", function (req, resp) {
         resp.sendFile(pF+"/login.html");
 
     }
-    
 });
 
 app.get("/admin", function(req,resp){
@@ -385,11 +399,12 @@ app.post("/pass-reset", function(req, resp){
 			console.log(err);
 			resp.end("FAIL");
 		}
-		client.query("SELECT email FROM users where email = $1", [email], function(err, result){
+		client.query("SELECT email FROM admin where email = $1", [email], function(err, result){
 			if(err){
 				console.log(err);
 				resp.end("FAIL")
 			}
+			console.log(result);
 			if(result.rows.length > 0){
 				var passCode = Math.random().toString(36).substr(2,5);
 				client.query("INSERT INTO passRes (email, passcode) values ($1, $2)",[email, passCode], function (err, result){
@@ -434,14 +449,16 @@ app.post("/pass_recovery_url", function(req, resp){
 	var passcode = req.body.passcode;
 	var email = req.body.email;
 	var password = req.body.password;
+	console.log(req.body);
 	pool.connect(function(err,client,done) {
 		if(err){
 			console.log(err);
 			resp.end("FAIL");
 		}
 		client.query("select * from passRes where email = $1 and passcode = $2",[email,passcode],function(err,result){
+			console.log(result.rows)
 			if(result.rows.length > 0){
-				client.query("update users set password = $1 where email = $2",[password,email], function(err,result){
+				client.query("update admin set password = $1 where email = $2",[password,email], function(err,result){
 					if(err) {
 						console.log(err);
 						resp.end("FAIL");
@@ -592,8 +609,6 @@ app.post("/createSurvey", function (req, resp) {
 app.post("/modifySurvey", function (req, resp) {
     checkLogin(req,resp);
     var questions = req.body.questions;
-    console.log("QQ",req.body.questions);
-
     pool.connect(function (err, client, done) {
         if (err) {
             console.log(err);
@@ -674,11 +689,9 @@ app.post("/modifySurvey", function (req, resp) {
                                                     });
                                                 });
                                             }
-
                                         }
                                     });
                                 }
-
                             });
                         });
 
@@ -901,7 +914,6 @@ app.post("/insertSurveyResult",function(req,resp){
 var req_survey_id;
 app.post("/adminPanel", function (req, resp) {
     checkLogin(req,resp);
-
     // *** VIEW *** //
     if (req.body.type == 'view') {
         pool.connect(function (err, client, done) {
@@ -1066,6 +1078,187 @@ app.post("/adminPage",function(req,resp){
     if(req.body.type == "view"){
         resp.sendFile(pF + "/view.html");
     }
+
+// changing employees stuff
+
+app.post("/get-employees", function(req,resp){
+	pool.connect(function (err, client, done) {
+		if (err) {
+			console.log(err);
+			resp.end('FAIL');
+		}
+		client.query("SELECT name FROM admin",function(err,result){
+		client.release();
+		if (result.rows.length < 0) {
+			resp.end('FAIL')
+		}
+		else {
+			var obj = {
+				names:result.rows,
+				status:"success"
+				}
+				resp.send(obj);
+			}
+		})
+	})
+})
+
+app.post("/add-employee", function(req,resp){
+	bcrypt.hash(req.body.password,saltRounds,function(err,hash){
+		console.log(hash)
+		pool.connect(function(err,client,done) {
+		if (err) {
+			console.log(err);
+			resp.end("FAIL")
+		}
+			console.log(hash);
+		client.query('INSERT INTO admin (name, email, password, department_id) VALUES ($1, $2, $3, $4)',[req.body.name, req.body.email.toLowerCase(), hash, req.body.departmentId], function(err,result){
+			client.release();
+			if(err){
+				console.log(err);
+				resp.end("FAIL")
+			}
+			else {
+				var obj = {status:'success'}
+				resp.send(obj);
+			}
+		})
+	})
+	})
+})
+
+app.post("/remove-employee", function(req,resp){
+	pool.connect(function(err,client,done){
+		if (err) {
+			console.log(err);
+			resp.end("FAIL")
+		}
+		client.query('DELETE FROM admin WHERE name = $1',[req.body.name],function(err,result){
+			client.release();
+			if (err) {
+				console.log(err);
+				resp.end("FAIL")
+			}
+			else {
+				var obj = {status:'success'}
+				resp.send(obj);
+			}
+		})
+	})
+})
+
+app.post("/edit-employee", function(req,resp){
+	pool.connect(function(err,client,done){
+		if(req.body.type == 'select'){
+			client.query('SELECT name, email, department_id, password FROM admin WHERE name = $1',[req.body.employee_name],function(err,result){
+				client.release();
+				if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				}
+				if (result.rows.length >0){
+					var obj = {
+						status:'success',
+						user: result.rows[0]
+					}
+					resp.send(obj)
+				}
+				else {
+					resp.end('FAIL')
+				}
+			})
+		}
+		else if ( req.body.type =='edit'){
+			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email.toLowerCase(),req.body.emp_dep,req.body.pass],function(err,result){
+				client.release();
+				if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				} else {
+					var obj = {
+						status:'success'
+					}
+					resp.send(obj)
+				}
+			})
+		}
+	})
+})
+
+//Profile page code
+
+app.post("/getUser", function(req,resp){
+    var obj = {
+        status:"success",
+        username:req.session.name,
+        email:req.session.email
+    }
+    resp.send(obj)
+})
+
+app.post("/updateUserP", function(req,resp){
+    if(regExTest(emailRegex,req.body.email) && regExTest(passwordRegex,req.body.pass)){
+        pool.connect(function(err,client,done){
+            if (err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("UPDATE admin SET password = $1, email=$2 where name=$3",[req.body.pass,req.body.email,req.session.name],function(err,result){
+                client.release();
+                if(err) {
+                    console.log(err)
+                    resp.end("FAIL")
+                } else {
+                    req.session.email = req.body.email
+                    var obj = {
+                        status:'success'
+                    }
+                    resp.send(obj)
+                }
+            })
+        })
+    }
+    else {
+            resp.end("FAIL")
+        }
+})
+
+app.post("/updateUser", function(req,resp){
+    if(regExTest(emailRegex,req.body.email)){
+        pool.connect(function(err,client,done){
+            if (err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("UPDATE admin SET email=$1 where name=$2",[req.body.email,req.session.name],function(err,result){
+                client.release();
+                if(err) {
+                    console.log(err)
+                    resp.end("FAILnow")
+                } else {
+                    req.session.email = req.body.email
+                    var obj = {
+                        status:'success'
+                    }
+                    resp.send(obj)
+                }
+            })
+        })
+    }
+    else {
+            resp.end("FAIL")
+        }
+})
+
+var  fs = require('fs');
+// ...
+app.post('/file', function(req, res) {
+	var upload = multer({
+		storage: storage
+	}).single('userFile')
+	upload(req, res, function(err) {
+		res.send('File is uploaded')
+	})
 })
 
 // server listen

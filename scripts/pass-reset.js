@@ -5,6 +5,9 @@ var pass_recovery_but = document.getElementById('pass-recovery');
 var new_pass = document.getElementById("new-pass");
 var confirm_pass = document.getElementById("confirm-pass");
 
+var pass_rec_div = document.getElementById("pass_rec_div")
+const swal = require('sweetalert2');
+
 $(document).ready(function(){
 	console.log('PASSWORD RECOVERY PAGE');
     //login but on click does the following
@@ -19,15 +22,28 @@ $(document).ready(function(){
 			},
 			success:function(resp){
 				if(resp.status == "success"){
-					alert("If your email address exists in our database you will receive a password recovery code at your email address.");
+
+					swal(
+						  'Success!',
+						  'If your email address exists in our database you will receive a password recovery code at your email address.',
+						  'success'
+					)
 					email.style.disabled = true;
+					password_reset_but.disabled = true;
+					password_reset_but.style.display = 'none';
+					pass_rec_div.style.display = 'none';
+					
+					document.getElementById('pass_confirm_div').style.display = "inline-block";
 				}else {
-					alert("Error");
+					swal(
+					  'Error',
+					  'Email not found!',
+					  'error'
+					)
 				}
 			}
 		})
 	});
-	
 
 	
 	pass_recovery_but.addEventListener("click", function(){
@@ -44,16 +60,29 @@ $(document).ready(function(){
 				},
 				success:function(resp){
 					if(resp.status == "success"){
-						alert("Your email has been changed");
-						location.href = "/";
+						swal(
+						  'Success!',
+						  'Your password has been changed',
+						  'success'
+						)
+						location.href = "/login";
 					}
 					else{
-						alert("Something went wrong");
+						swal(
+						  'Error',
+						  'Password not changed',
+						  'error'
+						)
 					}
 				}
 			})
 		} else {
 			console.log('passwords do not match');
+			swal(
+				  'Error',
+				  'Passwords do not match',
+				  'error'
+			)
 		}
 	});
 

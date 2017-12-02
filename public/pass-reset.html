@@ -4,6 +4,7 @@
     <title>Forgot your password?</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="/images/android-icon-192x192.png">
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -12,7 +13,9 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <script src="//code.jquery.com/jquery.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/styles/pass-reset.css"/>
@@ -38,7 +41,7 @@
         	<input id="password-reset" type="submit" value="SEND PASSWORD" class="buttons btn">
 <!--			<button id="password-reset">Get Passcode</button>-->
 	</div>
-	<div id="pass_confirm_div">
+	<div id="pass_confirm_div" style="display:none">
 		<h3>Recovery Code</h3>
 			<br>
 			<div class="input-group">
@@ -54,7 +57,7 @@
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="new-pass" placeholder="ENTER NEW PASSWORD" name="new-pass" id="new-pass" class="form-control inputs" title="New Pass">
+				<input type="password" placeholder="ENTER NEW PASSWORD" name="new-pass" id="new-pass" class="form-control inputs" title="New Pass">
 			</div>
 			<br>
 			<div class="input-group">
@@ -62,10 +65,9 @@
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="confirm-pass" placeholder="CONFIRM NEW PASSWORD" name="confirm-pass" id="confirm-pass" class="form-control inputs" title="Confirm Pass">
+				<input type="password" placeholder="CONFIRM NEW PASSWORD" name="confirm-pass" id="confirm-pass" class="form-control inputs" title="Confirm Pass">
 				</div>
 			<input id="pass-recovery" type="submit" value="SUBMIT CODE" class="buttons btn" action="/pass_recovery_url" method="post">
-<!--			<button id="pass-recovery">Change password</button>-->
 			
    		</div>
 </div>
