@@ -1078,7 +1078,7 @@ app.post("/adminPage",function(req,resp){
     if(req.body.type == "view"){
         resp.sendFile(pF + "/view.html");
     }
-
+});
 // changing employees stuff
 
 app.post("/get-employees", function(req,resp){

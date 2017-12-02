@@ -13,13 +13,6 @@ $(document).ready(function () {
     var inc = 1;
     var surveyQuestions = [];
 
-
-    var createBtn = document.getElementById("create-button");
-    var clicked_btn = document.getElementById("q1");
-    clicked_btn.style.backgroundColor = "red";
-    var statusBar = document.getElementById("status-bar");
-    var status_text = document.getElementById("status-text");
-
     var choices = [{
         "id": "multChoice",
         "name": "Multiple Choice"

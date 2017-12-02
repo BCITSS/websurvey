@@ -1,5 +1,4 @@
 const swal = require('sweetalert2')
->>>>>>> a74e5b549c4b9b7270662ae38f9c96ac8aabc9ec
 var loginBut = document.getElementById("login");
 
 $(document).ready(function(){
