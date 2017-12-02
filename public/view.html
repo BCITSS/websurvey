@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>    
+    <link rel="stylesheet"  type="text/css" href="/styles/view.css"/>
+    <head>
+    </head>
+    <body>
+        <div id="info-panel" class = "row-sm-12">
+            <button id="survey-total-card" type="button" class="btn btn-primary survey-total-card">
+              TOTAL SURVEY <span id="survey-total-number" class="badge badge-light"></span>
+            </button>
+            <button id="resp-total-card" type="button" class="btn btn-success resp-total-card">
+              TOTAL RESPONSE <span id="resp-total-number" class="badge badge-light"></span>
+            </button>
+            <button id="recent-total-card" type="button" class="btn btn-warning recent-total-card">
+              RECENT RESPONSE <span id="recent-resp-number" class="badge badge-light"></span>
+            </button>
+            <button id="current-publish-card" type="button" class="btn btn-danger recent-total-card">
+                CURRENT PUBLISHING <div><span id="current-publish-title" class="badge badge-light"></span></div>
+            </button>
+            
+        </div>
+        <div id= "view-info-panel"class="panel panel-info view-info-panel">
+            <div class="panel-heading">
+                <p id="panel-title">survey</p>
+            </div>
+            <div class="panel-body" id ="main-content2">
+            </div>
+            
+        </div>
+    </body>
+    <nav aria-label="...">
+      <ul class="pagination page-changer" id="page-changer">
+      </ul>
+    </nav>
+    <script src="scripts/viewbundle.js"></script>
+</html>

@@ -107,12 +107,7 @@
                 <i class="fa fa-check-square"></i> <span>PUBLISH</span>
               </a>
             </li>
-			<li>
-              <a href="#">
-                <i class="fa fa-tasks"></i> <span>OTHER TAB</span>
-              </a>
-            </li>
-            <li><a href="#"><i class="fa fa-book"></i> Documentation</a></li>
+            <li><a href="#"><i class="fa fa-book"></i> DOCUMENTATION</a></li>
           </ul>
 		</section>	
 	</div>
@@ -152,16 +147,24 @@
     var statusBar = document.getElementById("status-bar");
     
     // status bar function
-    function showStatusBar(string, color="#d0ffad"){
+    function showStatusBar(string, type=" alert alert-success" ){
+        if(type == "red"){
+            type = " alert alert-danger"
+        }
         statusBar.style.display = "block";
         status_text.innerHTML = string;
-        statusBar.style.backgroundColor = color;
+        statusBar.className = "status-bar";
+        statusBar.className += type;
+        setTimeout(function(){
+            $(statusBar).fadeOut("slow");
+        },5000);        
     }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
 <script src="scripts/mainbundle.js"></script>
 <script src="scripts/loadingbundle.js"></script>
+<script src="scripts/main_actionbundle.js"></script>
 
 
 </html>

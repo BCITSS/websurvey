@@ -16,6 +16,9 @@ var config = {
         "loading":jF+"/loading.js",
 		"pass-reset": jF + "/pass-reset.js",
 		"profile": jF + "/profile.js",
+        "main_action":jF +"/main_action.js",
+        "modify":jF +"/modify.js",
+        "view":jF+"/view.js"
     },
     output:{
         filename:"[name]bundle.js",

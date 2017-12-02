@@ -4,6 +4,7 @@ var recover_code = document.getElementById('recover-code');
 var pass_recovery_but = document.getElementById('pass-recovery');
 var new_pass = document.getElementById("new-pass");
 var confirm_pass = document.getElementById("confirm-pass");
+
 var pass_rec_div = document.getElementById("pass_rec_div")
 const swal = require('sweetalert2');
 
@@ -21,6 +22,7 @@ $(document).ready(function(){
 			},
 			success:function(resp){
 				if(resp.status == "success"){
+
 					swal(
 						  'Success!',
 						  'If your email address exists in our database you will receive a password recovery code at your email address.',

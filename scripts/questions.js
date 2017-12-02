@@ -1,3 +1,4 @@
+
 var questionDiv = document.getElementById("questionDiv"),
     
     next = document.getElementById("next"),
@@ -63,6 +64,7 @@ $(document).ready(function() {
                     
                     document.body.appendChild(answerOuterDiv);
                     
+
                     var answerWrapDiv = document.createElement("div");
                     answerWrapDiv.className = "answerWrapDiv";
                     answerOuterDiv.appendChild(answerWrapDiv);
@@ -239,6 +241,7 @@ $(document).ready(function() {
                                 }
                             }
                         });
+
                         
                         answerDiv.appendChild(wordCounter);
                         answerDiv.appendChild(SAinput);
@@ -282,6 +285,7 @@ $(document).ready(function() {
                 
                 document.getElementById("answerOuterDiv0").style.opacity = "1";
                 document.getElementById("answerOuterDiv0").style.left = "5%";
+
                 document.getElementById("question0").style.opacity = "1";
                 document.getElementById("question0").style.left = "2.5%";
                 
@@ -291,11 +295,24 @@ $(document).ready(function() {
                 
                 next.addEventListener("click", function() {
                     if (counter >= resp.questions.length - 1) {
+                        console.log("sent",respWithAnswer)
+                        counter = resp.questions.length - 1;
+                        $.ajax({
+                            url:"/insertSurveyResult",
+                            type:"post",
+                            data:{
+                                result:respWithAnswer
+                            },
+                            success:function(resp){
+                                console.log(resp)
+                            }
+                        });
                         counter = resp.questions.length - 1;
                     } else {
                         counter++;
                     }
                     
+
                     for (var i=0; i < questionsList.length; i++) {
                         questionsList[i].style.opacity = "0";
                         questionsList[i].style.left = "100%";
@@ -312,6 +329,7 @@ $(document).ready(function() {
                     
                     pbar.style.width = (((counter+1)/resp.questions.length)*100) + "%";
                     pbarText.innerHTML = (counter+1) + " of " + resp.questions.length;
+
                     
                     if((counter+1) == optionsDivList.length) {
                         submit.style.display = "inline";
@@ -321,6 +339,7 @@ $(document).ready(function() {
                 previous.addEventListener("click", function() {
                     if (counter < 1) {
                         counter = 0;
+
                     } else {
                         counter--;
                     }

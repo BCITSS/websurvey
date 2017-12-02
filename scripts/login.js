@@ -15,6 +15,7 @@ $(document).ready(function(){
             },
             success:function(resp){
                 if(resp.status =="success") {
+                    
 					swal({
 					  title: 'Success Login!',
 					  text: 'Logging you in...',
@@ -36,4 +37,12 @@ $(document).ready(function(){
             }
         })
     });
+    
+     
+    document.addEventListener("keydown",function(event){
+        if(event.which == 13){
+            loginBut.click();
+        }
+    })
+    
 })

@@ -16,7 +16,7 @@ body {
   font-weight: 400;
   overflow-x: hidden;
   overflow-y: auto;
-	background-color:rgb(225,225,225);
+    background-color:#cccccc;
 }
 /* Layout */
 .wrapper {
@@ -57,7 +57,7 @@ a:focus {
 * ----------------------
 */
 .main-header{
-	max-height:180px;
+	max-height:200px;
 	z-index: 1030;
 	background-color:yellow;
 }
@@ -77,9 +77,8 @@ a:focus {
   background-color: transparent;
   background-image: none;
   font-size: 40px;
-padding-top: 20px;
-margin-left: 45px;
-/*padding-left:45px;*/
+  padding-top: 20px;
+	padding-left:45px;
   font-family: fontAwesome;
 }
 .main-header .sidebar-toggle:before {
@@ -204,7 +203,7 @@ color: #72afd2
   -moz-transition: -moz-transform 0.3s cubic-bezier(0.32, 1.25, 0.375, 1.15);
   -o-transition: -o-transform 0.3s cubic-bezier(0.32, 1.25, 0.375, 1.15);
   transition: transform 0.3s cubic-bezier(0.32, 1.25, 0.375, 1.15);
-	background-color: rgb(225,225,225);
+	background-color:#cccccc;
 }
 @media (max-width: 767px) {
   .main-sidebar,
@@ -283,6 +282,9 @@ color: #72afd2
 .user-panel > .info > a > .ion,
 .user-panel > .info > a > .glyphicon {
   margin-right: 3px;
+}
+.sidebar-title{
+    left: 5px;
 }
 .sidebar-menu {
   list-style: none;
@@ -428,7 +430,7 @@ color: #72afd2
 }
 .content-wrapper{
   min-height: 100%;
-  background-color: whitesmoke;
+  background-color:antiquewhite;
   z-index: 800;
 }
 .main-footer {
@@ -467,50 +469,4 @@ color: #72afd2
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
-}
-
-/* Main Content */
-.content button {
-    background-color: white; 
-    border: none;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border:solid 1px;
-}
-
-#action_bar button {
-    margin: 5px 2px 5px 0;
-    font-size: 18px;
-}
-#action_bar button:hover, .total-resp-btn:hover, .content > button:hover{
-    background-color: #00397d; 
-}
-.survey-list-table {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.survey-list-table td, .survey-list-table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.survey-list-table tr:nth-child(even){background-color: #f2f2f2;}
-
-.survey-list-table tr:hover {background-color: #ddd;}
-
-.survey-list-table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #00397d;
-    color: white;
-}
-.csv-download-btn:hover {
-    background-color: green;
 }
