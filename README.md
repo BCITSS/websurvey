@@ -1,4 +1,4 @@
-# Web-Survey-System [![Build Status](https://travis-ci.org/ACIT2910-HOTH/hoth.svg?branch=develop)](https://travis-ci.org/ACIT2910-HOTH/hoth)
+# Web-Survey-System 
 **DISCLAIMER**: This website is for a BCIT ACIT-3900 project course. 
 A web survey system prototype. 
 
