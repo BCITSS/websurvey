@@ -1,4 +1,4 @@
-# Web-Survey-System 
+# Web-Survey-System  [![Build Status](https://travis-ci.org/BCITSS/websurvey.svg?branch=develop)](https://travis-ci.org/BCITSS/websurvey)
 **DISCLAIMER**: This website is for a BCIT ACIT-3900 project course. 
 A web survey system prototype. 
 
