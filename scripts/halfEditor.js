@@ -160,7 +160,7 @@ $(document).ready(function () {
                 $(selectQ).find("#answer-row").append($ansDivClone);
             } else {
                 $ansDivClone.find("#answer-option").removeClass();
-                $ansDivClone.find("#answer-option").addClass("answer-option-col");
+                $ansDivClone.find("#answer-option").addClass("answer-option-col form-control");
                 $(selectQ).find("#answer-col").append($ansDivClone);
             }
         } else {

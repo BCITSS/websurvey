@@ -92,7 +92,7 @@ $(document).ready(function(){
                 var new_li = document.createElement("li")
                 new_li.className = "page-item"
                 page_changer.insertBefore(new_li,page_changer.children[page_changer.children.length-1])
-//                page_changer.appendChild(new_li);
+                
                 var new_a = document.createElement("a")
                 new_a.className = "page-link";
                 new_a.value = (p+1);
