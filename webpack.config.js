@@ -3,6 +3,7 @@ const path = require("path");
 
 var jF = path.resolve(__dirname,"scripts");
 var bF = path.resolve(__dirname,"build");
+var lF = path.resolve(__dirname,"lib");
 
 var config = {
     entry:{
@@ -18,20 +19,18 @@ var config = {
 		"profile": jF + "/profile.js",
         "main_action":jF +"/main_action.js",
         "modify":jF +"/modify.js",
-        "view":jF+"/view.js"
+        "view":jF+"/view.js",
     },
     output:{
         filename:"[name]bundle.js",
-        path:bF
+        path:bF,
     },
     plugins:[
         new webpack.ProvidePlugin({
             $:"jquery",
             jQuery:"jquery",
-			Survey:"surveyjs-jquery",
-			SurveyEditor:"surveyjs-editor"
         })
     ]
 }
 
-module.exports = config;
+module.exports = config

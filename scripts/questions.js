@@ -30,12 +30,28 @@ $(document).ready(function() {
         success: function(resp) {
             console.log(resp);
             if(resp) {
+                // survey asnwer obj to send
+                var respWithAnswer = resp;
+                function recordAnswerClicked(button_with_QAid){
+                    if(button_with_QAid.classList.contains("SAinput")){
+                        var question_number = button_with_QAid.id[button_with_QAid.id.length -1];
+                        respWithAnswer.questions[question_number-1].result = button_with_QAid.value;
+                    }else{
+                        var option_number = button_with_QAid.id[button_with_QAid.id.length -1];
+                        var question_number = button_with_QAid.id[button_with_QAid.id.length -2];
+                        respWithAnswer.questions[question_number-1].result = option_number-1;
+                    }
+                    
+                }
                 
                 var questionsList = [],
                     optionsDivList = [],
                     optionsList = [];
                 
                 for (var i=0; i < resp.questions.length; i++) {
+                    // assign default question result equal empty
+                    respWithAnswer.questions[i].result = "";
+                    
                     var question = document.createElement("div");
                     question.id = "question" + i;
                     question.className = "question";
@@ -102,6 +118,8 @@ $(document).ready(function() {
                             MCoptions.addEventListener("click", function() {
                                 var option = this.id;
                                 for(var l=0; l < optionsList.length; l++) {
+                                    recordAnswerClicked(this)
+                                    
                                     if(optionsList[l].classList.contains("question" + (counter + 1))) {
                                         if(optionsList[l].id == option) {
                                             
@@ -146,6 +164,7 @@ $(document).ready(function() {
                         wordCounter.classList.add(SAinput.id);
                         
                         SAinput.addEventListener("keyup", function() {
+                            recordAnswerClicked(this)
                             var thisID = this.id;
                             
                             var length = this.value.length;
@@ -195,7 +214,7 @@ $(document).ready(function() {
                         });
                         SAinput.addEventListener("keydown", function() {
                             var thisID = this.id;
-                            
+            
                             var length = this.value.length;
                             var finalLength = this.maxLength - length;
                             var inputs = document.getElementsByClassName("SAinput");
@@ -254,13 +273,16 @@ $(document).ready(function() {
                         
                         trueOption.className = "TFoptions";
                         trueOption.innerHTML = "True";
+                        trueOption.id = "TFoptions"+(i+1)+(1);
                         falseOption.className = "TFoptions";
                         falseOption.innerHTML = "False";
+                        falseOption.id = "TFoptions"+(i+1)+(2);
                         
                         answerDiv.appendChild(trueOption);
                         answerDiv.appendChild(falseOption);
                         
                         trueOption.addEventListener("click", function() {
+                            recordAnswerClicked(this)
                             this.style.backgroundColor = "orange";
                             this.style.border = ".25vw inset orange";
                             this.style.boxShadow = "0 0 .75vw black";
@@ -270,6 +292,7 @@ $(document).ready(function() {
                             falseOption.style.boxShadow = ".2vw .2vw 1.25vw black";
                         });
                         falseOption.addEventListener("click", function() {
+                            recordAnswerClicked(this)
                             this.style.backgroundColor = "orange";
                             this.style.border = ".25vw inset orange";
                             this.style.boxShadow = "0 0 .75vw black";
@@ -279,6 +302,8 @@ $(document).ready(function() {
                             trueOption.style.boxShadow = ".2vw .2vw 1.25vw black";
                         });
                         
+                    }else if(resp.questions[i].quesion_type == "ratingQuest"){
+                        // TODO rating
                     }
                     
                 }
@@ -295,18 +320,6 @@ $(document).ready(function() {
                 
                 next.addEventListener("click", function() {
                     if (counter >= resp.questions.length - 1) {
-                        console.log("sent",respWithAnswer)
-                        counter = resp.questions.length - 1;
-                        $.ajax({
-                            url:"/insertSurveyResult",
-                            type:"post",
-                            data:{
-                                result:respWithAnswer
-                            },
-                            success:function(resp){
-                                console.log(resp)
-                            }
-                        });
                         counter = resp.questions.length - 1;
                     } else {
                         counter++;
@@ -386,7 +399,20 @@ $(document).ready(function() {
                             });
                             setTimeout(function() {
                                 location.href = "/client";
-                            }, 6500);
+                            }, 3000);
+                            
+                            console.log("sent",respWithAnswer)
+                            $.ajax({
+                                url:"/insertSurveyResult",
+                                type:"post",
+                                data:{
+                                    result:respWithAnswer,
+                                    department_id:1
+                                },
+                                success:function(resp){
+                                    console.log(resp)
+                                }
+                            });
                         }
                     });
                 });

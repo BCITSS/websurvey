@@ -74,7 +74,6 @@ viewBtn.on("click",function(){
             type:"view"
         },
         success:function(resp){
-            console.log(resp);
             maincontent.html(resp);
         }
     })

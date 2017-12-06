@@ -57,7 +57,8 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system',
+    database: 'survey_system3',
+    password:'1994Daniel',
     max: 20
 });
 
@@ -111,7 +112,6 @@ function getSurveyFromDB(req,resp,client){
         
         // Combine  question list and answer_option list into survey_obj and RESP        
         function combineData(survey_question_list, answer_option_list) {
-            console.log("Qlist",survey_question_list);
             var i = 0;
             var ratingQ_stuck_num;
             var duplicate_ratingQ_list = [];
@@ -142,15 +142,12 @@ function getSurveyFromDB(req,resp,client){
             }
             // remove duplicate rating question
             var h = 0
-            console.log("question LISTT",survey_question_list)
-            console.log("DQ",duplicate_ratingQ_list);
             for(var y=0;y<duplicate_ratingQ_list.length;y++){
                 survey_question_list.splice(duplicate_ratingQ_list[y]-h,1);
                 h++
             }
             survey_obj.questions = survey_question_list;
-            console.log("sent",survey_obj)
-
+            
             // Send Response with survey_obj
             resp.send(survey_obj);
         }
@@ -287,6 +284,9 @@ app.use("/styles", express.static("css"));
 
 app.use("/html", express.static("html"));
 
+app.use("/lib", express.static("lib"));
+
+
 app.use(function(req, res, next) {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
   next();
@@ -343,6 +343,10 @@ app.get("/logout", function (req, resp) {
     resp.redirect("/");
 });
 
+app.get("/view",function(req,resp){
+    checkLogin(req,resp);
+    resp.sendFile(pF + "/view.html")
+})
 app.post("/client",function(req,resp){
     getSurveyFromDB(req,resp);
 });
@@ -776,9 +780,12 @@ app.post("/getSurveyData",function(req,resp){
                }
            });
            function getAnswers(){
+               console.log("RESPPP AA",response_array)
                var g= 0;
                for(var k=0; k<response_array.length;k++){
-                   client.query("SELECT (select question_text from question where question.id = answer.question_id), (select answer_option_text from answer_option where answer.answer_id = answer_option.id) FROM answer WHERE response_id = $1",[response_array[k].response_id],function(err,result){
+                   var select_answer_query;
+                   
+                   client.query("SELECT (select question_text from question where question.id = answer.question_id),(select question_column from question where question.id = answer.question_id), (select answer_option_text from answer_option where answer_option.id = answer.answer_id),answer_text FROM answer WHERE response_id = $1",[response_array[k].response_id],function(err,result){
                        done();
                        if(err){
                            console.log(err);
@@ -790,7 +797,9 @@ app.post("/getSurveyData",function(req,resp){
                            for(var x=0; x<result.rows.length;x++){
                                var new_obj_2 = {} 
                                new_obj_2.question_text = result.rows[x].question_text;
+                               new_obj_2.question_column = result.rows[x].question_column;
                                new_obj_2.answer_option_text = result.rows[x].answer_option_text;
+                               new_obj_2.short_answer_text = result.rows[x].answer_text;
                                array.push(new_obj_2);
                            }
                            answer_array.push(array);
@@ -816,9 +825,9 @@ app.post("/getSurveyData",function(req,resp){
 });
 
 app.post("/insertSurveyResult",function(req,resp){
-    console.log("result",req.body.result);
     var questions = req.body.result.questions;
     var survey_id = req.body.result.survey_id;
+    var department_id = parseInt(req.body.department_id);
     
     function checkNull(variable){
         if(variable == "" || variable == null || survey_id ==undefined){
@@ -835,6 +844,11 @@ app.post("/insertSurveyResult",function(req,resp){
             console.log("survey_id fail",!checkNull(survey_id),!Number.isInteger(survey_id))
             return false;
         }
+        // check department ID
+        if(!checkNull(department_id) || !Number.isInteger(department_id)){
+            console.log("insert response input department_id fail",!checkNull(department_id),!Number.isInteger(department_id))
+            return false;
+        }
         // check questions array
         if(questions.length == 0 || questions.length == null || questions == null || !(questions instanceof Array)){
             console.log("question array fail")
@@ -843,7 +857,7 @@ app.post("/insertSurveyResult",function(req,resp){
         // check each question 
         for(var i=0; i<questions.length; i++){
             //TODO rating question check
-            if(questions[i].question_type ="ratingQuest"){
+            if(questions[i].question_type =="ratingQuest"){
                 
             }else{
                 // check question id
@@ -859,26 +873,44 @@ app.post("/insertSurveyResult",function(req,resp){
     // if valide check true
     if(answerValidCheck(req.body.result)){
            pool.connect(function(err,client,done){
-               client.query("INSERT INTO response (survey_id) VALUES ((SELECT id FROM survey WHERE id = $1)) RETURNING id,survey_id",[req.body.result.survey_id],function(err,result){
+               client.query("INSERT INTO response (survey_id,department_id) VALUES ((SELECT id FROM survey WHERE id = $1),$2) RETURNING id,survey_id",[req.body.result.survey_id,req.body.department_id],function(err,result){
                    done();
                    if(err){
                        console.log(err);
                        resp.end('FAIL');
                    }
-                   console.log("REEE",result);
                    if(result.rowCount == 1){
+                       
                        var response_id = result.rows[0].id;
                        var s_id = result.rows[0].survey_id;
                        for(var i=0; i<questions.length;i++){
                            var question_id = parseInt(questions[i].id);
                             var answer_id = parseInt(questions[i].result);
-                            var answer_option = questions[i].answers[answer_id];
-
-                            console.log("sID qID aID",req.body.result.survey_id,question_id,answer_option);
+                           var answer_option;
+                           if(questions[i].question_type == "shortAns"){
+                               answer_option = questions[i].result
+                           }else{
+                               answer_option = String(questions[i].answers[answer_id]);
+                           }
+                            
+                            console.log("QQQQQ",questions[i]  ,questions[i].question_type == "shortAns")
                             // TODO rating insert
-                            if(questions.question_type == "ratingQuest"){
+                            if(questions[i].question_type == "ratingQuest"){
 
+                            }else if(questions[i].question_type == "shortAns"){
+                            // shorAns insert    
+                                client.query("INSERT INTO answer (question_id,answer_text,response_id) VALUES ((SELECT id FROM question WHERE id= $1 and survey_id = $4),$2,$3)",[question_id,answer_option,response_id,s_id],function(err,result){
+                                   done();
+                                   if(err){
+                                       console.log(err);
+                                       resp.end('FAIL');
+                                   }
+                                   if(i == questions.length-1){
+                                       resp.send("done insert");
+                                   }
+                               })
                             }else{
+                            // multChoice and truefalse insert
                                client.query("INSERT INTO answer (question_id,answer_id,response_id) VALUES ((SELECT id FROM question WHERE id= $1 and survey_id = $4),(SELECT id from answer_option WHERE question_id = $1 and answer_option_text = $2),$3)",[question_id,answer_option,response_id,s_id],function(err,result){
                                    done();
                                    if(err){
@@ -1010,13 +1042,14 @@ app.post("/adminPanel", function (req, resp) {
         getSurveyFromDB(req,resp);
     }
     
+    // *** VIEW RESPONSE FROM RECENT DAYS *** //
     if(req.body.type == "view_status_with_date"){
         pool.connect(function(err,client,done){
             if(err){
                 console.log(err);
                 resp.end('FAIL');
             }
-            client.query("SELECT survey.*,(SELECT COUNT(*) FROM response WHERE response.survey_id = survey.id) AS count FROM survey WHERE department_id = $1 and start_date >= $2 ORDER BY id DESC",[req.session.department,req.body.before_date],function(err,result){
+            client.query("SELECT survey_id,(SELECT survey_name FROM survey WHERE survey.id = response.survey_id), response_time FROM RESPONSE WHERE response_time > $2 AND department_id = $1",[req.session.department,req.body.before_date],function(err,result){
                 done();
                 if(err){
                     console.log(err);
@@ -1027,7 +1060,7 @@ app.post("/adminPanel", function (req, resp) {
                     console.log(result.rows);
                 }else{
                     var obj = {
-                        survey_result: "no result"
+                        response_result: "no result"
                     }
                     resp.send(obj)
                 }
@@ -1067,16 +1100,21 @@ app.post("/adminPanel", function (req, resp) {
 
 // ----- ADMIN PAGES ----- //
 app.post("/adminPage",function(req,resp){
-    if(req.body.type == 'modify'){
-        resp.sendFile(pF + "/modify.html")
-    }
+    if(!checkLogin(req,resp)){
 
-    if (req.body.type == "create") {
-        resp.sendFile(pF + "/halfEditor.html");
-    }
-    
-    if(req.body.type == "view"){
-        resp.sendFile(pF + "/view.html");
+    }else{
+
+        if(req.body.type == 'modify'){
+            resp.sendFile(pF + "/modify.html")
+        }
+
+        if (req.body.type == "create") {
+            resp.sendFile(pF + "/halfEditor.html");
+        }
+
+        if(req.body.type == "view"){
+            resp.sendFile(pF + "/view.html");
+        }
     }
 });
 // changing employees stuff
