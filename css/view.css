@@ -33,10 +33,26 @@
     margin: 5px 0 5px 0;
 }
 .chart-div{
-    width: 50%;
+    width: 100%;
     display: block;
 }
 .canvas-div{
     display: inline-block;
-    width: 50%
+    width: 25%
+}
+
+.line-chart-div{
+    display: inline-block;
+    width: 50%;
+}
+.recent_table_div{
+    display: inline-block;
+    height: 80vh;
+    overflow: scroll;
+    overflow-x: hidden;
+    width:45%
+}
+.input-day{
+    min-width: 20px;
+    width:10%;
 }
