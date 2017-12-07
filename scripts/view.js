@@ -132,7 +132,8 @@ $(document).ready(function () {
                     this.inverse = true;
                     this.innerHTML = this.innerHTML + " &#8593"
                 }
-                sortArray(all_survey_array, this.id, this.inverse);
+                var array = sortArray(all_survey_array, this.id, this.inverse);
+                createTable(array, 1, 10)
                 appendRows(all_survey_array, table, 1, user_display_number)
 
 
@@ -145,6 +146,45 @@ $(document).ready(function () {
 
         return table;
     }
+    
+    // update recent info card
+    function getRecentDate(day_duration) {
+        var days = day_duration // days to subtract
+        var today = new Date();
+        console.log(days);
+        // get date from substract day_duration
+        var new_date = new Date(today.getTime() - (days * 24 * 60 * 60 * 1000));
+        var dd = new_date.getDate();
+        var mm = new_date.getMonth() + 1;
+        var yyyy = new_date.getFullYear()
+
+        var date = yyyy + "-" + mm + "-" + dd
+
+        $.ajax({
+            url: '/adminPanel',
+            type: 'post',
+            data: {
+                type: "view_status_with_date",
+                before_date: date
+            },
+            success: function (resp) {
+                var recent_resp_num;
+                if(resp == "invalid input"){
+                    showStatusBar("Invalid input of day")
+                }else if (resp.response_result == "no result") {
+                    document.getElementById("recent-day-input").value = 5;
+                    showStatusBar("No Responses","red")
+                    recent_resp_num = 0
+                    getRecentDate(5);
+                } else {
+                    recent_resp_num = resp.length
+                    recent_resp_number.innerHTML = recent_resp_num
+                    recent_survey_array = resp
+                    upRecentResp();
+                }
+            }
+        })
+    }
 
     function updateInfoCard(obj) {
 
@@ -154,39 +194,6 @@ $(document).ready(function () {
                 total_number += parseInt(Element.count)
             })
             return total_number;
-        }
-
-
-        function getRecentDate(obj, day_duration) {
-            var days = day_duration // days to subtract
-            var today = new Date();
-
-            // get date from substract day_duration
-            var new_date = new Date(today.getTime() - (days * 24 * 60 * 60 * 1000));
-            var dd = new_date.getDate();
-            var mm = new_date.getMonth() + 1;
-            var yyyy = new_date.getFullYear()
-
-            var date = yyyy + "-" + mm + "-" + dd
-
-            $.ajax({
-                url: '/adminPanel',
-                type: 'post',
-                data: {
-                    type: "view_status_with_date",
-                    before_date: date
-                },
-                success: function (resp) {
-                    var recent_resp_num;
-                    if (resp.response_result == "no result") {
-                        recent_resp_num = 0
-                    } else {
-                        recent_resp_num = resp.length
-                        recent_resp_number.innerHTML = recent_resp_num
-                        recent_survey_array = resp
-                    }
-                }
-            })
         }
 
         function findPublishingSurvey(obj) {
@@ -211,7 +218,7 @@ $(document).ready(function () {
         }
 
         // update recent resp card
-        getRecentDate(obj, 5)
+        getRecentDate(5)
     }
 
     function cleanPager(pager) {
@@ -271,7 +278,9 @@ $(document).ready(function () {
                 return 0;
             })
         }
-        createTable(array, 1, 10)
+        
+        console.log("SS",array)
+        return array;
 
     }
     
@@ -280,6 +289,8 @@ $(document).ready(function () {
         document.getElementById("pager-component").style.display = "none"
         document.getElementById("main-content2").style.display = "none"
         document.getElementById("main-content3").style.display = "block"
+        document.getElementById("main-content4").style.display = "none"
+
     }
     
     function changeSurveyView(){
@@ -287,6 +298,16 @@ $(document).ready(function () {
         document.getElementById("pager-component").style.display = "block"
         document.getElementById("main-content2").style.display = "block"
         document.getElementById("main-content3").style.display = "none"
+        document.getElementById("main-content4").style.display = "none"
+
+    }
+    
+    function changeRecentView(){
+        document.getElementById("search-box-component").style.display = "none"
+        document.getElementById("pager-component").style.display = "none"
+        document.getElementById("main-content2").style.display = "none"
+        document.getElementById("main-content3").style.display = "none"
+        document.getElementById("main-content4").style.display = "block"
     }
     
     // create total response button 
@@ -471,6 +492,137 @@ $(document).ready(function () {
             view_info_panel_toggle = false
         }
     }
+    
+    // update recent resp status
+    function upRecentResp () {
+        toggleViewInfoPanel();
+        maincontent.html("");
+        cleanPager(page_changer)
+        
+        console.log(recent_survey_array);
+        var chart_data = convertLineChart(recent_survey_array);
+        
+        function convertLineChart(obj){
+            var new_obj = {};
+            var data = [];
+            var label = [];
+            var count = 0
+            for(var i=0; i< obj.length;i++){
+                if(i == 0){
+                    var prev_survey_name = obj[i].survey_name
+                }else{
+                    var prev_survey_name = obj[i-1].survey_name
+                }
+                                
+                if(prev_survey_name == obj[i].survey_name && i !== obj.length-1){
+                    count++
+                }else{
+                    label.push(prev_survey_name);
+                    data.push(count)
+                    count = 1;
+                }
+            }
+            new_obj.data = data;
+            new_obj.label = label;
+            
+            console.log(new_obj);
+            return new_obj;
+        }
+        
+        // Create Bar Chart
+        var chart_color_array = [];
+
+        for(var y =0;y<chart_data.data.length;y++){
+            chart_color_array.push(getRandomColor());
+        }
+        
+        // Clean line chart canvas
+        $("#line-chart-div").html("");
+        var new_canvas = document.createElement("canvas");
+        new_canvas.id = "line-chart";
+        new_canvas.width = "400";
+        new_canvas.height = "400";
+        
+        $("#line-chart-div").append(new_canvas);
+        
+        var ctx = document.getElementById("line-chart").getContext("2d");
+
+        var respLineChart =  new Chart(ctx,{
+            type: 'bar',
+            data: {
+                labels: chart_data.label,
+                datasets:[{
+                    label:"Number of Responses",
+                    backgroundColor: chart_color_array,
+                    data:chart_data.data,
+                    borderWidth:1
+                    
+                }],
+                
+            },
+            options: {
+                title:{
+                    text:"MY CHART"
+                },
+                scales: {
+                    xAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Survey Name'
+						}
+				    }],
+                    yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Response Number'
+						},
+                        ticks: {
+                            beginAtZero:true
+                        }
+					}]
+                }
+            }
+        })
+        
+        // Clean Table
+        $("#recent_resp_table").html("");
+        
+        // Create Table on right        
+        var tHead = document.createElement("thead")
+        var headTr = document.createElement('tr');
+        var tableColumn = ['Survey Name','Response Time']
+        var tableColumValue = ['survey_name','response_time'];
+        var x = 0
+        recent_table = document.getElementById("recent_resp_table").appendChild(tHead);
+        tableColumn.forEach(function (Element) {
+            var th = document.createElement('th');
+            th.scope = "col";
+            th.id = tableColumValue[x];
+            th.innerHTML = Element;
+            th.inverse = true;
+            th.init_HTML = Element
+            
+            headTr.appendChild(th);
+            x++
+        });
+        tHead.appendChild(headTr);
+        
+        
+        $(recent_table).find("tr:gt(0)").remove();
+        row_number = 0;
+        for (var i = 0; i < recent_survey_array.length; i++) {
+            var row = recent_table.insertRow(row_number + 1);
+            row_number++
+            var survey_id = row.insertCell(0)
+            var survey_name = row.insertCell(1);
+
+
+            survey_id.innerHTML = recent_survey_array[i].survey_name;
+            survey_name.innerHTML = timeConvert(recent_survey_array[i].response_time);
+        }
+        
+        $("#panel-title").html("RECENT RESPONSES");
+    }
 
     // EventListners 
     survey_total_card.addEventListener("click", function () {
@@ -490,9 +642,15 @@ $(document).ready(function () {
         toggleViewInfoPanel();
     })
 
-    recent_total_card.addEventListener("click", function () {
-        maincontent.html("");
-        console.log(recent_survey_array);
+    recent_total_card.addEventListener("click",function(){
+        upRecentResp();
+        changeRecentView();
+    })
+    
+    $("#recent-day-input").on("change",function(){
+        getRecentDate(document.getElementById("recent-day-input").value)
+        upRecentResp();
+//        toggleViewInfoPanel();
     })
 
     $("#prev-page-btn").on("click", function () {
@@ -537,8 +695,6 @@ $(document).ready(function () {
                 } else {
                     all_survey_array = resp
                     updateInfoCard(resp);
-                    toggleViewInfoPanel();
-                    
                 }
             }
         })

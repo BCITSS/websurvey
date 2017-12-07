@@ -1044,28 +1044,35 @@ app.post("/adminPanel", function (req, resp) {
     
     // *** VIEW RESPONSE FROM RECENT DAYS *** //
     if(req.body.type == "view_status_with_date"){
-        pool.connect(function(err,client,done){
-            if(err){
-                console.log(err);
-                resp.end('FAIL');
-            }
-            client.query("SELECT survey_id,(SELECT survey_name FROM survey WHERE survey.id = response.survey_id), response_time FROM RESPONSE WHERE response_time > $2 AND department_id = $1",[req.session.department,req.body.before_date],function(err,result){
-                done();
+        console.log(req.body.before_date)
+        var regex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/g
+        
+        if(regex.test(req.body.before_date)){
+            pool.connect(function(err,client,done){
                 if(err){
                     console.log(err);
-                    resp.end('FAIL')
+                    resp.end('FAIL');
                 }
-                if(result.rowCount>0){
-                    resp.send(result.rows);
-                    console.log(result.rows);
-                }else{
-                    var obj = {
-                        response_result: "no result"
+                client.query("SELECT survey_id,(SELECT survey_name FROM survey WHERE survey.id = response.survey_id), response_time FROM RESPONSE WHERE response_time > $2 AND department_id = $1 ORDER BY response_time DESC",[req.session.department,req.body.before_date],function(err,result){
+                    done();
+                    if(err){
+                        console.log(err);
+                        resp.end('FAIL')
                     }
-                    resp.send(obj)
-                }
+                    if(result.rowCount>0){
+                        resp.send(result.rows);
+                        console.log(result.rows);
+                    }else{
+                        var obj = {
+                            response_result: "no result"
+                        }
+                        resp.send(obj)
+                    }
+                });
             });
-        });
+        }else{
+            resp.send("invalid input");
+        }
     }
     
     // *** DELETE *** //

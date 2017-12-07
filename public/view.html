@@ -4,6 +4,7 @@
     <head>
     </head>
     <body>
+<!--        info cards -->
         <div id="info-panel" class = "row justify-content-center">
             <button id="survey-total-card" type="button" class="btn btn-primary survey-total-card col-sm-3">
                 TOTAL SURVEY <span id="survey-total-number" class="badge badge-light"></span>
@@ -11,12 +12,15 @@
             </button>
             <button id="recent-total-card" type="button" class="btn btn-warning recent-total-card col-sm-3">
               RECENT RESPONSE <span id="recent-resp-number" class="badge badge-light"></span>
+                <p> &#8259 Recent Days Responses</p>
             </button>
             <button id="current-publish-card" type="button" class="btn btn-success recent-total-card col-sm-3">
                 CURRENT PUBLISHING <div><span id="current-publish-title" class="badge badge-light"></span></div>
             </button>
             
         </div>
+        
+<!--        survey list with total resp and csv-->
         <div id= "view-info-panel"class="panel panel-info view-info-panel">
             <div class="panel-heading">
                 <p id="panel-title">survey</p>
@@ -33,6 +37,7 @@
             <div class="panel-body" id ="main-content2">
             </div>
             
+<!--            pie chart for survey resp-->
             <div class="panel-body" id ="main-content3">
                 <div id= "status-chart-panel" class="panel panel-info view-info-panel">
                     <button id="back_survey_button" class="btn btn-primary">&#8592 BACK TO SURVEY LIST</button>
@@ -41,8 +46,23 @@
                     <div class="table-div" id="table-div"></div>
                 </div>
             </div>
-            
+<!--            line chart for recent resp-->
+            <div class="panel-body" id="main-content4">
+                <div id="resp-chart-panel" class="panel panel-info view-info-panel">
+                    <div><h4 class="text-center"> RECENT <input type="text" id="recent-day-input" placeholder="days" value="5" class ="input-day"/> DAYS RESPONSES</h4> </div>
 
+                    <div class="line-chart-div" id="line-chart-div">
+
+                    </div>
+                    <div class="recent_table_div">
+                        <table id="recent_resp_table" class="survey-list-table tabe table-dark table-striped">
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+<!--            page changer div-->
             <div id="pager-component" class="row-sm-12 panel-body">
                 <div><label>Page: <label id="current-page-number"></label></label></div>
                 <nav aria-label="...">
@@ -52,8 +72,9 @@
                     </ul>
                 </nav>
             </div>
-            
         </div>
+        
+        
 
     </body>
     <script src="scripts/viewbundle.js"></script>
