@@ -123,7 +123,7 @@ $(document).ready(function(){
         table.id = "survey-list-table";
         var tHead = document.createElement("thead")
         var headTr = document.createElement('tr');
-        var tableColumn = ['ID' ,'Name','Creator', 'Create Date', 'Last Update','Publishing','Been Published' ,'Start Date','End Date','Select' ]
+        var tableColumn = ['ID' ,'Name','Creator', 'Creation Date', 'Last Update','Active','Complete' ,'Start Date','End Date','Select' ]
         var tableColumValue = ["id","survey_name","creator","start_date","updated","isopen","been_published","start_date","end_date","selected"];
         var x = 0
         tableColumn.forEach(function(Element){
