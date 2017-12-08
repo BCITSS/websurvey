@@ -18,7 +18,7 @@ var storage = multer.diskStorage({
 })
 
 //Regex
-var nameRegex = /^[a-zA-Z]{1,15}$/;
+var nameRegex = /^[a-zA-Z ]{3,50}$/;
 var emailRegex = /^[a-zA-Z0-9\._\-]{1,50}@[a-zA-Z0-9_\-]{1,50}(.[a-zA-Z0-9_\-])?.(ca|com|org|net|info|us|cn|co.uk|se)$/;
 var passwordRegex = /^[^ \s]{4,15}$/;
 
@@ -325,7 +325,11 @@ app.get("/main", function (req, resp) {
 });
 
 app.get("/admin", function(req,resp){
+    if(req.session.permission=="W"){
 	resp.sendFile(pF + "/admin.html")
+    } else {
+        resp.sendFile(pF + "/profile.html")
+    }
 });
 
 
@@ -360,23 +364,36 @@ app.post("/login", function (req, resp) {
             console.log(err);
             resp.end("FAIL");
         }
-        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)),email,department_id,name FROM admin where email=$1 and password=$2", [email, password], function (err, result) {
+        
+        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)),email,department_id,name,password,permission,avatar FROM admin where email=$1", [email.toLowerCase()], function (err, result) {
             done();
             if (err) {
                 console.log(err);
                 resp.end("FAIL");
             }
+            console.log(result);
             if (result.rows.length > 0) {
-                req.session.email = result.rows[0].email;
-                req.session.department = result.rows[0].department_id;
-                req.session.department_name = result.rows[0].department_name;
-                req.session.name = result.rows[0].name;
-                req.session.permission  = result.rows[0].permission;
-                var obj = {
-                    status: "success",
-                    user: req.session.name,
-                }
-                resp.send(obj);
+                bcrypt.compare(password, result.rows[0].password, function(err, res) {
+                    if(res){
+                        req.session.email = result.rows[0].email;
+                        req.session.department = result.rows[0].department_id;
+                        req.session.department_name = result.rows[0].department_name;
+                        req.session.name = result.rows[0].name;
+                        req.session.permission  = result.rows[0].permission;
+                        req.session.avatar = result.rows[0].avatar;
+                        console.log(req.session.permission)
+                        var obj = {
+                            status: "success",
+                            rights:req.session.permission,
+                            avatar:req.session.avatar,
+                            user: req.session.name,
+                        }
+                        resp.send(obj);
+                        }
+                    else {
+                        resp.end("Incorrect password");
+                    }
+                })                
             } else {
                 resp.end("FAIL");
             }
@@ -1150,7 +1167,7 @@ app.post("/remove-employee", function(req,resp){
 app.post("/edit-employee", function(req,resp){
 	pool.connect(function(err,client,done){
 		if(req.body.type == 'select'){
-			client.query('SELECT name, email, department_id, password FROM admin WHERE name = $1',[req.body.employee_name],function(err,result){
+			client.query('SELECT name, email, department_id FROM admin WHERE name = $1',[req.body.employee_name],function(err,result){
 				client.release();
 				if (err) {
 					console.log(err);
@@ -1169,7 +1186,8 @@ app.post("/edit-employee", function(req,resp){
 			})
 		}
 		else if ( req.body.type =='edit'){
-			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email.toLowerCase(),req.body.emp_dep,req.body.pass],function(err,result){
+            
+			client.query('UPDATE admin SET name = $1, email = $2, department_id = $3 where name = $1',[req.body.employee_name,req.body.employee_Email.toLowerCase(),req.body.emp_dep],function(err,result){
 				client.release();
 				if (err) {
 					console.log(err);
@@ -1182,7 +1200,54 @@ app.post("/edit-employee", function(req,resp){
 				}
 			})
 		}
+        else if ( req.body.type =='editP'){
+            console.log(req.body.pass)
+            bcrypt.hash(req.body.pass,saltRounds,function(err,hash){
+                console.log(hash)
+                client.query('UPDATE admin SET name = $1, email = $2, department_id = $3, password = $4 where name = $1',[req.body.employee_name,req.body.employee_Email.toLowerCase(),req.body.emp_dep,hash],function(err,result){
+                    client.release();
+                    if (err) {
+                        console.log(err);
+                        resp.end("FAIL")
+                    } else {
+                        var obj = {
+                            status:'success'
+                        }
+                        resp.send(obj)
+                    }
+                })
+            })
+		}
 	})
+})
+
+app.post('/add-department',function(req,resp){
+    if(regExTest(nameRegex,req.body.department)){
+        pool.connect(function(err,client,done){
+            if (err){
+                console.log(err)
+                resp.end("FAIL")
+            }
+            client.query("INSERT INTO department (department_name) VALUES ($1)",[req.body.department],function(err,result){
+                if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				}
+                client.query("SELECT * from department",function(err,result){
+                    if (err) {
+					console.log(err);
+					resp.end("FAIL")
+				    }
+                    console.log(result)
+                    var obj = {
+                        status:"success",
+                        departments:result.rows
+                    }
+                    resp.send(obj);
+                })
+            })
+        })
+    }
 })
 
 //Profile page code
@@ -1203,7 +1268,8 @@ app.post("/updateUserP", function(req,resp){
                 console.log(err)
                 resp.end("FAIL")
             }
-            client.query("UPDATE admin SET password = $1, email=$2 where name=$3",[req.body.pass,req.body.email,req.session.name],function(err,result){
+            bcrypt.hash(req.body.pass,saltRounds,function(err,hash){
+            client.query("UPDATE admin SET password = $1, email=$2 where name=$3",[hash,req.body.email,req.session.name],function(err,result){
                 client.release();
                 if(err) {
                     console.log(err)
@@ -1216,11 +1282,29 @@ app.post("/updateUserP", function(req,resp){
                     resp.send(obj)
                 }
             })
+            })
         })
     }
     else {
             resp.end("FAIL")
         }
+})
+
+app.post("/getDepList",function(req,resp){
+    pool.connect(function(err,client,done){
+        client.query("select * from department",function(err,result){
+            if(err) {
+                    console.log(err)
+                    resp.end("FAILnow")
+                }
+            client.release();
+            var obj = {
+                status:'success',
+                departments:result.rows
+            }
+            resp.send(obj);
+        })
+    })
 })
 
 app.post("/updateUser", function(req,resp){
@@ -1251,14 +1335,41 @@ app.post("/updateUser", function(req,resp){
 })
 
 var  fs = require('fs');
+var upload = multer({ storage : storage}).single('userPhoto');
 // ...
-app.post('/file', function(req, res) {
-	var upload = multer({
-		storage: storage
-	}).single('userFile')
-	upload(req, res, function(err) {
-		res.send('File is uploaded')
-	})
+app.post('/api/file', function(req, res) {
+	upload(req,res,function(err) {
+        if(err) {
+            console.log(err)
+            return res.send("Error uploading file.");
+        }
+        else{
+            pool.connect(function(err,client,done){
+                if (err){
+                    console.log(err)
+                    res.end("FAIL")
+                }
+                client.query("SELECT avatar FROM admin WHERE name=$1",[req.session.name],function(err,result){
+                    if(result.rows.length > 0){
+                        fs.unlink("./images/" + result.rows[0].avatar, (err) => {
+                          if (err) throw err;
+                          console.log('successfully deleted old avatar');
+                        });
+                    }
+                })
+                client.query("UPDATE admin SET avatar=$1 where name=$2",[req.file.filename,req.session.name],function(err,result){
+                    client.release();
+                if(err) {
+                    console.log(err)
+                    res.end("FAILnow")
+                } else {
+                    req.session.avatar = req.session.filename
+                    res.end("Your new picture has been uploaded please go back to the previous page tocontinue")
+                }
+                })
+            })
+        }
+    });
 })
 
 // server listen

@@ -10,7 +10,30 @@ $(document).ready(function(){
     var passCon = document.getElementById("password2");
     var subBut = document.getElementById("submit");
     var canBut = document.getElementById("cancel");
+    var imgBut = document.getElementById("imgBut");
+    var backBut = document.getElementById("back");
     
+    backBut.addEventListener("click",function(){
+        location.href = "/main"
+    })
+    
+    $('#uploadForm').submit(function() {
+        $("#status").empty().text("File is uploading...");
+        var $form = $(event.target);
+        $form.ajaxSubmit({
+            url:$form.attr('action'),
+            error: function(xhr) {
+                status('Error: ' + xhr.status);
+            },
+
+            success: function(response) {
+                $("#status").empty().text(response);
+                console.log(response);
+            }
+    });
+        //Very important line, it disable the page refresh.
+    return false;
+    }); 
     $.ajax({
         url:"/getUser",
         type:"post",
