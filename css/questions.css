@@ -97,15 +97,15 @@ body {
     display: inline-block;
     position: relative;
     
-    min-width: 45%;
-    max-width: 70%;
+    width: 45%;
     height: 11.5vh;
     
     margin-bottom: .5%;
     margin-top: .5%;
     margin-left: .5%;
+    vertical-align: bottom;
     
-    font-size: 165%;
+    font-size: 175%;
     text-align: center;
     font-family: 'Ubuntu', sans-serif;
     
@@ -155,7 +155,7 @@ body {
     height: 25vh;
     
     font-family: 'Ubuntu', sans-serif;
-    font-size: 225%;
+    font-size: 250%;
     text-align: center;
     color: #003F6B;
     background-color: lightyellow;
@@ -184,8 +184,9 @@ body {
     
     margin-bottom: 1%;
     margin-top: 1%;
+    vertical-align: bottom;
     
-    font-size: 200%;
+    font-size: 250%;
     text-align: center;
     font-family: 'Ubuntu', sans-serif;
     
@@ -201,6 +202,48 @@ body {
     outline: none;
 }
 .TFoptions:hover {
+    background-color: orange;
+    border: .25vw outset orange;
+}
+
+.MAnote {
+    position: relative;
+    
+    font-size: 175%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: #003F6B
+}
+
+.MAoptions {
+    display: inline-block;
+    position: relative;
+    
+    width: 45%;
+    height: 11.5vh;
+    
+    margin-bottom: .5%;
+    margin-top: .5%;
+    margin-left: .5%;
+    vertical-align: bottom;
+    
+    font-size: 175%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: black;
+    background-color: yellow;
+    border: .25vw outset yellow;
+    border-radius: 10vw;
+    
+    box-shadow: .2vw .2vw 1.25vw black;
+    
+    transition: .2s;
+    cursor: pointer;
+    outline: none;
+}
+.MAoptions:hover {
     background-color: orange;
     border: .25vw outset orange;
 }

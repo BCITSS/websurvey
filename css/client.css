@@ -33,7 +33,7 @@ body {
     left: 23vw;
     width: 50vw;
     height: 70vh;
-    background-color: rgba(7,60,111,.9);
+    background-color: rgba(7,60,111,.99);
 }
 
 #motto {
@@ -41,21 +41,21 @@ body {
     top: 10vh;
     left: 2vw;
     width: 70%;
-    font-size: 3vw;
+    font-size: 275%;
     font-family: 'Catamaran', sans-serif;
+    line-height: 100%;
     color: yellow;
 }
 
 #motto2 {
     position: relative;
     
-    top: 10vh;
-    transform: translateY(-30%);
+    top: 8.5vh;
     
     left: 2vw;
     width: 70%;
     
-    font-size: 4vw;
+    font-size: 425%;
     font-family: 'Teko', sans-serif;
     text-shadow: 0 0 3vw rgb(175,175,175);
     
@@ -69,7 +69,8 @@ body {
     width: 20vw;
     height: 12.5vh;
     font-family: 'Catamaran', sans-serif;
-    font-size: 4vw;
+    font-size: 275%;
+    line-height: 225%;
     color: #094879;
     background-color: rgba(255,255,0,0.9);
     
@@ -83,11 +84,19 @@ body {
 
 #container2 {
     position: absolute;
-    top: 12vh;
-    right: -15%;
-    width: 40%;
-    height: 55%;
+    top: 15vh;
+    right: -17.5%;
+    width: 50%;
+    height: 35%;
     background-color: rgba(255,255,0,0.9);
+}
+
+hr {
+    position: absolute;
+    top: 1.5vh;
+    left: 1vw;
+    width: 2vw;
+    height: .1vh;
 }
 
 #quote1, #quote2 {
@@ -97,24 +106,25 @@ body {
 
 #quote1 {
     top: 4vh;
-    width: 65%;
+    width: 95%;
     font-family: 'Exo 2', sans-serif;
-    font-size: 1.75vw;
+    font-size: 225%;
     color: #094879;
 }
 
 #quote2 {
-    top: 5vh;
-    width: 85%;
-    font-family: 'Exo', sans-serif;
-    font-size: 2.2vw;
+    top: 6vh;
+    width: 95%;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    font-size: 125%;
     color: #094879;
 }
 
 #bcitlogo {
     position: absolute;
-    right: 5%;
-    bottom: 5%;
-    width: 3vw;    
-    opacity: 0.9;
+    right: 1.5%;
+    top: 5%;
+    width: 20%;
+    
+    opacity: 0.95;
 }
