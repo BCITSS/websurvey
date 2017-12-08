@@ -1,5 +1,4 @@
 	<html lang="en">
-
 	  <head>
 		<meta charset="utf-8">
 		<title>Profile Page</title>
@@ -12,13 +11,13 @@
 		<link href="/css/adminia-1.1-responsive.css" rel="stylesheet"> 
 		<link href="/css/pages/plans.css" rel="stylesheet"> 
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
-		<script src="bower_components/sweetalert2/dist/sweetalert2.all.min.js"></script>
 		<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>	  
 		<!-- jQuery library -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		  <link rel="icon" href="/images/android-icon-192x192.png">
 	  </head>
 	<body>
 <div class="wrapper">
@@ -56,8 +55,8 @@
 </div>
 </nav>
 </header>
-	<div class="main-sidebar">
-		<section class="sidebar" style="height: auto;">
+	<div class="main-sidebar" >
+		<section class="sidebar" style="height: 105vh;">
 			<div class="user-panel">
 				<div class="pull-left">
 					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
@@ -97,17 +96,12 @@
                 <i class="fa fa-check-square"></i> <span>PUBLISH</span>
               </a>
             </li>
-			<li>
-              <a href="#">
-                <i class="fa fa-tasks"></i> <span>OTHER TAB</span>
-              </a>
-            </li>
             <li><a href="#"><i class="fa fa-book"></i> Documentation</a></li>
           </ul>
 		</section>	
 	</div>
 	
-	<div class="content-wrapper" style="height: auto;">
+	<div class="content-wrapper" style="height: 100vh;">
 		<section class="content" id="main-content">
 				<div id="content">
 		<div class="container">
@@ -138,121 +132,58 @@
 							<br>
 								<div class="tab-content">
 									<div class="tab-pane active" id="1">
-									<form id="edit-profile" class="form-horizontal">
+
 										<fieldset>
 											<div class="control-group">											
 												<label class="control-label" for="username">Username</label>
 												<div class="controls">
-													<input type="text" class="input-medium disabled" id="username" value="AGill" disabled>
+													<input type="text" class="input-medium disabled" id="username" disabled>
 													<p class="help-block">Your username is for logging in and cannot be changed.</p>
 												</div> <!-- /controls -->				
 											</div> <!-- /control-group -->
-											<div class="control-group">											
-												<label class="control-label" for="firstname">First Name</label>
-												<div class="controls">
-													<input type="text" class="input-medium" id="firstname" value="Guramrit">
-												</div> <!-- /controls -->				
-											</div> <!-- /control-group -->
-											<div class="control-group">											
-												<label class="control-label" for="lastname">Last Name</label>
-												<div class="controls">
-													<input type="text" class="input-medium" id="lastname" value="Gill">
-												</div> <!-- /controls -->				
+											<div class="control-group">				
 											</div> <!-- /control-group -->
 											<div class="control-group">											
 												<label class="control-label" for="email">Email Address</label>
 												<div class="controls">
-													<input type="text" class="input-large" id="email" value="guramritgill@gmail.com">
+													<input type="text" class="input-large" id="email" >
 												</div> <!-- /controls -->				
 											</div> <!-- /control-group -->
 											<br /><br />
 											<div class="control-group">											
 												<label class="control-label" for="password1">Password</label>
 												<div class="controls">
-													<input type="password" class="input-medium" id="password1" value="password">
+													<input type="password" class="input-medium" id="password1">
 												</div> <!-- /controls -->				
 											</div> <!-- /control-group -->
 											<div class="control-group">											
 												<label class="control-label" for="password2">Confirm</label>
 												<div class="controls">
-													<input type="password" class="input-medium" id="password2" value="password">
+													<input type="password" class="input-medium" id="password2">
 												</div> <!-- /controls -->				
+                                            <form id="uploadForm" enctype="multipart/form-data" method="post" action="/file" >
+                                            <input type="file" name="userFile" />
+                                            <input type="submit" value="Upload File" name="submit">
+                                            </form>
+                                                
 											</div> <!-- /control-group -->
 												<br />
 											<div class="form-actions">
-												<button type="submit" class="btn btn-primary">Save</button> 
-												<button class="btn">Cancel</button>
+												<button type="submit" class="btn btn-primary" id="submit">Save</button> 
+												<button class="btn" id="cancel">Cancel</button>
 											</div> <!-- /form-actions -->
 										</fieldset>
-									</form>
-									</div>
-									<div class="tab-pane" id="2">
-										<form id="edit-profile2" class="form-horizontal">
-											<fieldset>
-												<div class="control-group">
-													<label class="control-label" for="accounttype">Account Type</label>
-													<div class="controls">
-														<label class="radio">
-															<input type="radio" name="accounttype" value="option1" checked="checked" id="accounttype">
-															POP3
-														</label>
-														<label class="radio">
-															<input type="radio" name="accounttype" value="option2">
-															IMAP
-														</label>
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label" for="accountusername">Account Username</label>
-													<div class="controls">
-														<input type="text" class="input-large" id="accountusername" value="rod.howard@example.com">
-												<p class="help-block">Leave blank to use your profile email address.</p>
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label" for="emailserver">Email Server</label>
-													<div class="controls">
-														<input type="text" class="input-large" id="emailserver" value="mail.example.com">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label" for="accountpassword">Password</label>
-													<div class="controls">
-														<input type="text" class="input-large" id="accountpassword" value="password">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label" for="accountadvanced">Advanced Settings</label>
-													<div class="controls">
-														<label class="checkbox">
-															<input type="checkbox" name="accountadvanced" value="option1" checked="checked" id="accountadvanced">
-															User encrypted connection when accessing this server
-														</label>
-														<label class="checkbox">
-															<input type="checkbox" name="accounttype" value="option2">
-															Download all message on connection
-														</label>
-												</div>
-												</div>
-												<br />
-												<div class="form-actions">
-											<button type="submit" class="btn btn-primary">Save</button> <button class="btn">Cancel</button>
-												</div>
-											</fieldset>
-										</form>
 									</div>
 								</div>
 							</div>
-								</div> <!-- /widget-content -->
-							</div> <!-- /widget -->
-						</div> <!-- /span9 -->
-					</div> <!-- /row -->	
-				</div> <!-- /span9 -->
-		   </div> <!-- /row -->
-		</div> <!-- /container -->
-	</div> <!-- /content -->
-
-			
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div> 
+		   </div> 
+		</div> 
+	</div> 
 		</section>
 	</div>
 	<footer class="main-footer">
@@ -270,8 +201,7 @@
 
 
 	  </body>
-		<script src='/scripts/adminbundle.js'></script>
-
+		<script src='/scripts/profilebundle.js'></script>
 
 	</html>
 

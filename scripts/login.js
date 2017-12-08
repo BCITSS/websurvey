@@ -1,3 +1,4 @@
+const swal = require('sweetalert2')
 var loginBut = document.getElementById("login");
 
 $(document).ready(function(){
@@ -14,12 +15,34 @@ $(document).ready(function(){
             },
             success:function(resp){
                 if(resp.status =="success") {
-
+                    
+					swal({
+					  title: 'Success Login!',
+					  text: 'Logging you in...',
+					  timer: 5000,
+					  onOpen: function (){
+						swal.showLoading()
+					  }
+						
+					})
+					location.reload();
                 } else {
-                   alert("Unsuccessful");
+					swal(
+					  'Unsuccessful Login',
+					  'Username and/or password is incorrect.',
+					  'error'
+					)
                 }
-                location.reload();
+                
             }
         })
     });
+    
+     
+    document.addEventListener("keydown",function(event){
+        if(event.which == 13){
+            loginBut.click();
+        }
+    })
+    
 })

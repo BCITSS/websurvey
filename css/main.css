@@ -6,7 +6,6 @@
 html,
 body {
   min-height: 100%;
-	background-color: 
 }
 .layout-boxed html,
 .layout-boxed body {
@@ -17,7 +16,7 @@ body {
   font-weight: 400;
   overflow-x: hidden;
   overflow-y: auto;
-	background-color:#cccccc;
+    background-color:#cccccc;
 }
 /* Layout */
 .wrapper {
@@ -284,6 +283,9 @@ color: #72afd2
 .user-panel > .info > a > .glyphicon {
   margin-right: 3px;
 }
+.sidebar-title{
+    left: 5px;
+}
 .sidebar-menu {
   list-style: none;
   margin: 0;
@@ -467,50 +469,4 @@ color: #72afd2
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
-}
-
-/* Main Content */
-.content button {
-    background-color: white; 
-    border: none;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border:solid 1px;
-}
-
-#action_bar button {
-    margin: 5px 2px 5px 0;
-    font-size: 18px;
-}
-#action_bar button:hover, .total-resp-btn:hover, .content > button:hover{
-    background-color: #00397d; 
-}
-.survey-list-table {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.survey-list-table td, .survey-list-table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.survey-list-table tr:nth-child(even){background-color: #f2f2f2;}
-
-.survey-list-table tr:hover {background-color: #ddd;}
-
-.survey-list-table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #00397d;
-    color: white;
-}
-.csv-download-btn:hover {
-    background-color: green;
 }

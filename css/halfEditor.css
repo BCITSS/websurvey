@@ -1,47 +1,17 @@
-button {
-    background-color: white; 
-    border: none;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border:solid 1px;
+.save-btn{
+    margin-top: 5px;
 }
-.whole-editor{
-
+.nav-tabs>li>a{
+    background-color: gainsboro;
 }
-.content button:hover{
-    background-color: green; 
+.image-preview-div {
+    position: relative;
+    width: 400px;
+    outline: none;
 }
-
-#save-btn:hover {
-    background-color: #00397d;
-}
-.create-button {
-}
-.survey-title{
-    font-size: 18px;
-}
-#option-delete-btn:hover{
-    background-color: red;
-}
-.question-button{
-}
-.question-part{
-    border: solid 1px black;
-    padding: 5%;
-    width:fit-content;
-    margin:1% 0 1% 0;
-    background-color: skyblue;
-}
-.answer-section{
-    border: solid 1px black;
-    padding: 5%;
-    width:fit-content;
-    margin:1% 0 1% 0;
-    background-color: #c1ef86;
-}
-.question-number, .answer-label{
-    font-size: 15px
+.image-preview-div img{
+    position: relative;
+    max-width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
 }

@@ -1,0 +1,40 @@
+#action_bar{
+    margin-bottom: 5px;
+}
+.navbar-nav > li > a {
+  border-right: 1px solid #ddd;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+.navbar-nav:last-child{ border-right:0}
+.modify-button{
+    width: 30px;
+    height:30px;
+}
+.survey-list-table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.survey-list-table td, .survey-list-table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.survey-list-table th:hover{
+    background-color: black;
+}
+
+.survey-list-table tr:nth-child(even){background-color: #f2f2f2;}
+
+.survey-list-table tr:hover {background-color: #ddd;}
+
+.survey-list-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #00397d;
+    color: white;
+}
