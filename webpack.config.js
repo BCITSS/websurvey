@@ -30,7 +30,7 @@ var config = {
             $:"jquery",
             jQuery:"jquery",
         })
-    ]
+    ],
 }
 
 module.exports = config

@@ -5,7 +5,7 @@ const port = process.env.PORT || 10000;
 const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
-var multer  = require('multer')
+var multer  = require('multer');
 var upload = multer({ dest: 'images/' })
 var storage = multer.diskStorage({
 	destination: function(req, file, callback) {
@@ -57,7 +57,7 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system3',
+    database: 'survey_system5',
     password:'1994Daniel',
     max: 20
 });
@@ -351,12 +351,57 @@ app.get("/view",function(req,resp){
     checkLogin(req,resp);
     resp.sendFile(pF + "/view.html")
 })
+
+// convert time
+function getTime(){
+    
+    var new_date = new Date()
+    
+    var dd = new_date.getDate();
+    var mm = new_date.getMonth() + 1;
+    var yyyy = new_date.getFullYear()
+
+    var minutes = new_date.getMinutes();
+    var hour = new_date.getHours();
+    
+    var date = yyyy + "-" + mm + "-" + dd + " " + hour +":" + minutes
+    return date;
+}
+
+function updateSurveyStauts(req,resp){
+    
+    var current_time = getTime();
+    
+    console.log("CCCC",current_time);
+    pool.connect(function(err,client,done){
+        if(err){
+            console.log(err);
+            resp.end('FAIL');
+        }
+        
+        client.query("UPDATE survey SET isopen=false WHERE end_date < $1",[current_time],function(err,result){
+            done();
+            client.query("UPDATE survey SET been_published=true,isopen=true WHERE start_date  < $1 and been_published = false",[current_time],function(err,result){
+                done();
+                if(err){
+                    console.log(err);
+                    resp.end('Fail');
+                }
+
+            });
+        })
+        
+    });
+
+}
 app.post("/client",function(req,resp){
+    updateSurveyStauts(req,resp);
     getSurveyFromDB(req,resp);
 });
 
 //login function
 app.post("/login", function (req, resp) {
+    updateSurveyStauts();
     if(req.session.name){
         resp.sendFile(pF +"/main.html");
     }
@@ -962,6 +1007,7 @@ app.post("/insertSurveyResult",function(req,resp){
 // -------------- ADMIN PAGE GET DATA ---------------- //
 var req_survey_id;
 app.post("/adminPanel", function (req, resp) {
+    updateSurveyStauts();
     checkLogin(req,resp);
     // *** VIEW *** //
     if (req.body.type == 'view') {
@@ -1011,6 +1057,53 @@ app.post("/adminPanel", function (req, resp) {
                 }
             });
         });
+    }
+    
+    // *** SCHEDULE PUBLISH ***//
+    if(req.body.type == 'schedule_publish'){
+        
+        // validation for time and date
+        function datetimeValid(str){
+            var datetime_regex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]/g
+        
+            return datetime_regex.test(str)
+        }
+
+        // valid date and time
+        if(datetimeValid(req.body.start_date) && datetimeValid(req.body.end_date)){
+            pool.connect(function(err,client,done){
+                if(err){
+                    console.log(err);
+                    resp.end('FAIL')
+                }
+                client.query("UPDATE survey SET start_date=$3 , end_date=$4 WHERE id = $1 and department_id= $2 and been_published = false",[req.body.survey_id, req.session.department,req.body.start_date,req.body.end_date],function(err,result){
+                    done();
+                    if(err){
+                        console.log(err);
+                        resp.end('FAIL');
+                    }
+                    console.log(result)
+                    if(result.rowCount == 0){
+                        resp.send({
+                            status: false,
+                            msg:"Survey cannot publish twice"
+                        })
+                    }else if(result.rowCount > 0){
+                        resp.send({
+                            status: true,
+                            msg:"Successfully schedule survey for publish"
+                        })
+                    }
+                })
+            })
+        }else{
+            resp.send({
+                status: false,
+                msg:"Date invalid"
+            })
+        }
+        
+        
     }
     
     // *** PUBLISH ***//
