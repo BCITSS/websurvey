@@ -107,7 +107,7 @@ $(document).ready(function () {
         table.setAttribute('border', '1');
         var tHead = document.createElement("thead")
         var headTr = document.createElement('tr');
-        var tableColumn = ['ID', 'Name', 'Creator', 'Create Date', 'Last Update', 'Total Responses', 'CSV']
+        var tableColumn = ['ID', 'Name', 'Creator', 'Creation Date', 'Last Update', 'Total Responses', 'CSV']
         var tableColumValue = ["id", "survey_name", "creator", "start_date", "updated", "total_response", "csv"];
         var x = 0
         tableColumn.forEach(function (Element) {
@@ -421,7 +421,7 @@ $(document).ready(function () {
             survey_id.innerHTML = resp[i].id;
             survey_name.innerHTML = resp[i].survey_name;
             creator.innerHTML = resp[i].creator;
-            create_date.innerHTML = timeConvert(resp[i].start_date);
+            create_date.innerHTML = timeConvert(resp[i].create_date);
             last_update.innerHTML = timeConvert(resp[i].updated);
             total_resp.appendChild(total_resp_btn);
             csv_field.appendChild(csv_download_btn);
