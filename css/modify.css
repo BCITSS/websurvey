@@ -38,3 +38,6 @@
     background-color: #00397d;
     color: white;
 }
+.time_picker_div {
+    display: none;
+}
