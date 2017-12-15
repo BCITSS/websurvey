@@ -274,7 +274,6 @@ function getSurveyFromDB(req,resp,client){
         }
     });
 }
-
 //redirect scripts to build folder
 app.use("/scripts", express.static("build"));
 
@@ -325,13 +324,22 @@ app.get("/main", function (req, resp) {
 });
 
 app.get("/admin", function(req,resp){
-	resp.sendFile(pF + "/admin.html")
+    if(checkLogin(req,resp)){
+        resp.sendFile(pF + "/admin.html")
+        
+    }else{
+	   resp.sendFile(pF+"/login.html")
+    }
 });
 
 
 app.get("/profile", function (req, resp) {
-    checkLogin(req,resp);
-    resp.sendFile(pF + "/profile.html")
+    if(checkLogin(req,resp)){
+        resp.sendFile(pF + "/profile.html")
+        
+    }else{
+	   resp.sendFile(pF+"/login.html")
+    }
 });
 
 app.get("/reset-pass", function(req,resp){
@@ -344,8 +352,11 @@ app.get("/logout", function (req, resp) {
 });
 
 app.get("/view",function(req,resp){
-    checkLogin(req,resp);
-    resp.sendFile(pF + "/view.html")
+    if(checkLogin(req,resp)){
+        resp.sendFile(pF + "/view.html")
+    }else{
+	   resp.sendFile(pF+"/login.html")
+    }
 })
 
 // convert time
@@ -364,7 +375,7 @@ function getTime(){
     return date;
 }
 
-function updateSurveyStauts(req,resp){
+function updateSurveyStatus(req,resp){
     
     var current_time = getTime();
     
@@ -391,13 +402,13 @@ function updateSurveyStauts(req,resp){
 
 }
 app.post("/client",function(req,resp){
-    updateSurveyStauts(req,resp);
+    updateSurveyStatus(req,resp);
     getSurveyFromDB(req,resp);
 });
 
 //login function
 app.post("/login", function (req, resp) {
-    updateSurveyStauts();
+    updateSurveyStatus();
     if(req.session.name){
         resp.sendFile(pF +"/main.html");
     }
@@ -541,6 +552,30 @@ app.post("/getSession", function (req, resp) {
     }
     
 });
+
+app.post("/getSurveyList",function(req,resp){
+    pool.connect(function(err,client,done){
+        if(err){
+            console.log(err);
+            resp.end("FAIL")
+        }
+        client.query("Select * From survey where isopen = true",[],function(err,result){
+            done();
+            if(err){
+                console.log(err);
+                resp.end("Fail");
+            }else{
+                if(result.rows.length == 0){
+                    resp.send("no survey live");
+                }else if(result.rows.length >=0){
+                    resp.send(result.rows);
+                }else{
+                    resp.send("error")
+                }
+            }
+        })
+    })
+})
 
 // --------- SURVEY MODIFY ACTION -----------//
 // create survey
@@ -990,7 +1025,7 @@ app.post("/insertSurveyResult",function(req,resp){
 // -------------- ADMIN PAGE GET DATA ---------------- //
 var req_survey_id;
 app.post("/adminPanel", function (req, resp) {
-    updateSurveyStauts();
+    updateSurveyStatus();
     checkLogin(req,resp);
     // *** VIEW *** //
     if (req.body.type == 'view') {

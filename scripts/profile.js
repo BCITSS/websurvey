@@ -11,15 +11,35 @@ $(document).ready(function(){
     var subBut = document.getElementById("submit");
     var canBut = document.getElementById("cancel");
     
-    $.ajax({
-        url:"/getUser",
+//    $.ajax({
+//        url:"/getUser",
+//        type:"post",
+//        success:function(resp){
+//            console.log(resp);
+//            username.value = resp.username;
+//            email.value = resp.email;
+//        }
+//    })
+    
+    	   $.ajax({
+        url:"/getSession",
         type:"post",
         success:function(resp){
+            
             console.log(resp);
-            username.value = resp.username;
-            email.value = resp.email;
+            // display username and department name to admin panel (main.html)
+			//default add employee div will be showing
+            document.getElementById("nav-username").innerHTML = resp.name;
+            document.getElementById("pull-right-username").innerHTML = resp.name;
+            document.getElementById("pull-right-department").innerHTML = resp.department_name;
+			addEmployeeDiv.style.display = "block";
+			removeEmployeeDiv.style.display = "none";
+			editEmployeeDiv.style.display = "none";
+            
         }
-    })
+           });
+    
+    
     
     subBut.addEventListener("click",function(){
         if(!pass.value == "" || !passCon.value == ""){
