@@ -13,6 +13,7 @@ $(document).ready(function(){
     var imgBut = document.getElementById("imgBut");
     var backBut = document.getElementById("back");
     
+
     backBut.addEventListener("click",function(){
         location.href = "/main"
     })
@@ -38,11 +39,21 @@ $(document).ready(function(){
         url:"/getUser",
         type:"post",
         success:function(resp){
+            
             console.log(resp);
-            username.value = resp.username;
-            email.value = resp.email;
+            // display username and department name to admin panel (main.html)
+			//default add employee div will be showing
+            document.getElementById("nav-username").innerHTML = resp.name;
+            document.getElementById("pull-right-username").innerHTML = resp.name;
+            document.getElementById("pull-right-department").innerHTML = resp.department_name;
+			addEmployeeDiv.style.display = "block";
+			removeEmployeeDiv.style.display = "none";
+			editEmployeeDiv.style.display = "none";
+            
         }
-    })
+           });
+    
+    
     
     subBut.addEventListener("click",function(){
         if(!pass.value == "" || !passCon.value == ""){
