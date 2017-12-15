@@ -1,7 +1,7 @@
 {
   "name": "lab10",
   "version": "1.0.0",
-  "description": "",
+  "description": "**DISCLAIMER**: This website is for a BCIT ACIT-3900 project course.  A web survey system prototype.",
   "main": "index.js",
   "scripts": {
     "test": "",

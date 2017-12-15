@@ -21,7 +21,9 @@ $(document).ready(function(){
         type:"post",
         success: function(resp){
             console.log("ID",resp);
-            survey_select_list.value = resp;
+            if(!resp == "" || !resp == null){
+                survey_select_list.value = resp;
+            }
         }
     });
     

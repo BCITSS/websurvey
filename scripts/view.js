@@ -169,6 +169,7 @@ $(document).ready(function () {
             },
             success: function (resp) {
                 var recent_resp_num;
+
                 if(resp == "invalid input"){
                     showStatusBar("Invalid input of day")
                 }else if (resp.response_result == "no result") {
@@ -180,6 +181,7 @@ $(document).ready(function () {
                     recent_resp_num = resp.length
                     recent_resp_number.innerHTML = recent_resp_num
                     recent_survey_array = resp
+
                     upRecentResp();
                 }
             }
@@ -187,6 +189,7 @@ $(document).ready(function () {
     }
 
     function updateInfoCard(obj) {
+
 
         function sumResponse(obj) {
             var total_number = 0
@@ -326,6 +329,7 @@ $(document).ready(function () {
                     survey_id: this.id
                 },
                 success: function (resp) {
+
                     if (resp == "no result") {
                         view_info_panel.html("no result to show");
                     } else {
@@ -459,6 +463,7 @@ $(document).ready(function () {
                     survey_id: this.id
                 },
                 success: function (resp) {
+
                     var resp_2D_array = convert2DArray(resp);
 
                     arrayToCsv(resp_2D_array);

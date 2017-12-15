@@ -1,7 +1,7 @@
 //REQUIRE ALL MODULES
 const express = require("express");
 const session = require("express-session");
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 56789;
 const path = require("path");
 const bodyParser = require("body-parser");
 const pg = require("pg");
@@ -56,9 +56,10 @@ var transporter = nodemailer.createTransport({
 //postgres
 //database url
 var pool = new pg.Pool({
-    user: 'postgres',
+    user: 'admerase_daniel',
     host: 'localhost',
-    database: 'survey_system',
+    password:'1994Daniel',
+    database: 'admerase_survey_system',
     max: 20
 });
 
@@ -436,7 +437,7 @@ app.post("/login", function (req, resp) {
             resp.end("FAIL");
         }
         
-        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)),email,department_id,name,password,permission,avatar FROM admin where email=$1", [email.toLowerCase()], function (err, result) {
+        client.query("select (select department_name from department where id = (select department_id from admin where email = $1)) as department_name,email,department_id,name,password,permission,avatar FROM admin where email=$1", [email.toLowerCase()], function (err, result) {
             done();
             if (err) {
                 console.log(err);
@@ -839,7 +840,7 @@ app.post("/viewSurvey",function(req,resp){
            console.log(err);
            resp.end('FAIL');
        }else{
-           client.query("SELECT *,(SELECT COUNT(*) FROM answer WHERE answer.answer_id = answer_option.id) FROM question LEFT JOIN answer_option ON question.id = answer_option.question_id WHERE survey_id = (SELECT id FROM survey WHERE id = $1 and department_id = $2)",[req.body.survey_id,req.session.department],function(err,result){
+           client.query("SELECT *,(SELECT COUNT(*) FROM answer WHERE answer.answer_id = answer_option.id) as count FROM question LEFT JOIN answer_option ON question.id = answer_option.question_id WHERE survey_id = (SELECT id FROM survey WHERE id = $1 and department_id = $2)",[req.body.survey_id,req.session.department],function(err,result){
                done();
                if(result.rows.length>0){
                    for(var i=0; i<result.rows.length;i++){
@@ -902,7 +903,7 @@ app.post("/getSurveyData",function(req,resp){
                for(var k=0; k<response_array.length;k++){
                    var select_answer_query;
                    
-                   client.query("SELECT (select question_text from question where question.id = answer.question_id),(select question_column from question where question.id = answer.question_id), (select answer_option_text from answer_option where answer_option.id = answer.answer_id),answer_text FROM answer WHERE response_id = $1",[response_array[k].response_id],function(err,result){
+                   client.query("SELECT (select question_text from question where question.id = answer.question_id) as question_text,(select question_column from question where question.id = answer.question_id) as question_column, (select answer_option_text from answer_option where answer_option.id = answer.answer_id) as answer_option_text,answer_text FROM answer WHERE response_id = $1",[response_array[k].response_id],function(err,result){
                        done();
                        if(err){
                            console.log(err);
@@ -1102,7 +1103,7 @@ app.post("/adminPanel", function (req, resp) {
                     console.log(err);
                     resp.end('FAIL')
                 }
-                if(result.rowCount>0){
+                if(result.rows.length>0){
                     resp.send(result.rows);
                 }else{
                     var obj = {
@@ -1218,13 +1219,13 @@ app.post("/adminPanel", function (req, resp) {
                     console.log(err);
                     resp.end('FAIL');
                 }
-                client.query("SELECT survey_id,(SELECT survey_name FROM survey WHERE survey.id = response.survey_id), response_time FROM RESPONSE WHERE response_time > $2 AND department_id = $1 ORDER BY response_time DESC",[req.session.department,req.body.before_date],function(err,result){
+                client.query("SELECT survey_id,(SELECT survey_name FROM survey WHERE survey.id = response.survey_id) as survey_name, response_time FROM RESPONSE WHERE response_time > $2 AND department_id = $1 ORDER BY response_time DESC",[req.session.department,req.body.before_date],function(err,result){
                     done();
                     if(err){
                         console.log(err);
                         resp.end('FAIL')
                     }
-                    if(result.rowCount>0){
+                    if(result.rows.length>0){
                         resp.send(result.rows);
                         console.log(result.rows);
                     }else{
