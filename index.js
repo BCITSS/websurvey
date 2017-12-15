@@ -46,6 +46,7 @@ var sF = path.resolve(__dirname, "scripts");
 var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
 	service: 'hotmail',
+    tls: {rejectUnauthorized: false},
 	auth: {
 		user: 'bcitsurvey999@hotmail.com',
 		pass: 'acit3900drc2017'
@@ -57,8 +58,7 @@ var transporter = nodemailer.createTransport({
 var pool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'survey_system5',
-    password:'1994Daniel',
+    database: 'survey_system',
     max: 20
 });
 
@@ -484,7 +484,7 @@ app.post("/pass-reset", function(req, resp){
 			console.log(err);
 			resp.end("FAIL");
 		}
-		client.query("SELECT email FROM admin where email = $1", [email], function(err, result){
+		client.query("SELECT email FROM admin where email = $1", [email.toLowerCase()], function(err, result){
 			if(err){
 				console.log(err);
 				resp.end("FAIL")
@@ -492,7 +492,7 @@ app.post("/pass-reset", function(req, resp){
 			console.log(result);
 			if(result.rows.length > 0){
 				var passCode = Math.random().toString(36).substr(2,5);
-				client.query("INSERT INTO passRes (email, passcode) values ($1, $2)",[email, passCode], function (err, result){
+				client.query("INSERT INTO passRes (email, passcode) values ($1, $2)",[email.toLowerCase(), passCode], function (err, result){
 					if(err){
 						console.log(err);
 						resp.end("FAIL");
@@ -506,6 +506,7 @@ app.post("/pass-reset", function(req, resp){
 						}
 						transporter.sendMail(mailOptions,function (error, info){
 							if (error) {
+                                console.log("shits brokex   ")
 								console.log(error)
 								resp.end("FAIL");
 							}
@@ -540,21 +541,29 @@ app.post("/pass_recovery_url", function(req, resp){
 			console.log(err);
 			resp.end("FAIL");
 		}
-		client.query("select * from passRes where email = $1 and passcode = $2",[email,passcode],function(err,result){
+		client.query("select * from passRes where email = $1 and passcode = $2 and date = now()",[email.toLowerCase(),passcode],function(err,result){
 			console.log(result.rows)
 			if(result.rows.length > 0){
-				client.query("update admin set password = $1 where email = $2",[password,email], function(err,result){
-					if(err) {
+                bcrypt.hash(password,saltRounds,function(err,hash){
+                    if(err) {
+                        client.release();
 						console.log(err);
 						resp.end("FAIL");
 					}
-					else {
-						client.release();
-						var obj = {status:"success"}
-						resp.send(obj)
-					}
-				})
-			}
+                    client.query("update admin set password = $1 where email = $2",[hash,email.toLowerCase()], function(err,result){
+                        if(err) {
+                            client.release();
+                            console.log(err);
+                            resp.end("FAIL");
+                        }
+                        else {
+                            client.release();
+                            var obj = {status:"success"}
+                            resp.send(obj)
+                        }
+				    })
+			 })
+            }
 			else {
 				client.release();
 				resp.end("FAIL");
@@ -1559,6 +1568,5 @@ server.listen(port, function (err) {
         console.log(err);
         return false;
     }
-
     console.log(port + " is running");
 });
