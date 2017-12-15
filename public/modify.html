@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<link rel="stylesheet" type="text/css" href="/styles/modify.css" />
+<link rel="stylesheet" type="text/css" href="/styles/global.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.14/jquery.datetimepicker.css">
+
+<head>
+
+</head>
+<body>
+    <div id="main-content2">
+<!--        action bar-->
+        <div class="row" id="action_bar">
+            <div class="col-sm-4">
+                <button class="mod-action-btn btn btn-primary" id="mod-action-btn">Modify</button>
+                <button class="pub-action-btn btn btn-primary" id="pub-action-btn">Publish</button>
+                <button class="delete-action-btn btn btn-primary" id="delete-action-btn">Delete</button>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Search for..." id='search-input'>
+                </div>
+            </div>
+        </div>
+        
+<!--        time picker-->
+        <div class="row time_picker_div" id="time_picker_div">
+            <div class='col-sm-4'>
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' class="form-control" id="start_date_input" placeholder="From"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class='col-sm-4'>
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' class="form-control" id="end_date_input" placeholder="To"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" id="publish-fire-btn">Done</button>
+        </div>
+        
+<!--        pager-->
+        <div class="row">
+            <div class="col-lg-12">
+                <nav aria-label="...">
+                    <ul class="pagination page-changer" id="page-changer">
+                        <li class="page-item" id="prev-page-btn"><a class="page-link" href="javascript:void(0)">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="javascript:void(0)" id="next-page-btn">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div><label>Page: <label id="current-page-number"></label></label>
+        </div>
+
+    </div>
+
+</body>
+<script src="scripts/modifybundle.js"></script>
+
+</html>

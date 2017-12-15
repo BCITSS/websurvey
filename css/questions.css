@@ -1,0 +1,336 @@
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("/images/beach.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+#questionDiv {
+    position: absolute;
+    width: 90%;
+    height: 15%;
+    top: 2.5%;
+    left: 5%;
+    background-color: #003F6B;
+    border-top-right-radius: 1vw;
+    border-top-left-radius: 1vw;
+}
+
+.question {
+    position: absolute;
+    width: 95%;
+    height: 100%;
+    left: 100%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 300%;
+    
+    color: yellow;
+    
+    opacity: 0;
+    transition: .2s;
+}
+
+/*Through Back-end*/
+.answerOuterDiv {
+    position: absolute;
+    width: 90%;
+    height: 60%;
+    top: 20%;
+    left: 5%;
+    background-color: whitesmoke;
+    border: .1vw solid #003F6B;
+    transition: .35s;
+}
+
+/*Through Back-end*/
+.answerWrapDiv {
+    position: relative;
+    width: 70%;
+    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/*Through Back-end*/
+.answerDiv {
+    position: relative;
+    text-align: center;
+    width: 90%;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+/*Through Back-end*/
+.answerImageDiv {
+    position: absolute;
+    width: 30%;
+    height: 100%;
+    left: 70%;
+    top: 0%;
+}
+
+/*Through Back-end*/
+.answerImage {
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
+    max-height: 90%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.MCoptions {
+    display: inline-block;
+    position: relative;
+    
+    width: 45%;
+    height: 11.5vh;
+    
+    margin-bottom: .5%;
+    margin-top: .5%;
+    margin-left: .5%;
+    vertical-align: bottom;
+    
+    font-size: 175%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: black;
+    background-color: yellow;
+    border: .25vw outset yellow;
+    border-radius: 10vw;
+    
+    box-shadow: .2vw .2vw 1.25vw black;
+    
+    transition: .2s;
+    cursor: pointer;
+    outline: none;
+}
+.MCoptions:hover {
+    background-color: orange;
+    border: .25vw outset orange;
+}
+
+.errMsg {
+    position: relative;
+    left: 1.5vw;
+    
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 200%;
+    text-align: left;
+    
+    color: maroon;
+    
+    transition: .5s;
+}
+
+.wordCounter {
+    position: relative;
+    right: 1.5vw;
+    
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 200%;
+    text-align: right;
+    
+    color: dimgray;
+}
+
+.SAinput {
+    position: relative;
+    width: 100%;
+    height: 25vh;
+    
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 250%;
+    text-align: center;
+    color: #003F6B;
+    background-color: lightyellow;
+    
+    border: .2vw solid yellow;
+    border-radius: 2vw;
+    box-shadow: 0 0 1vw black;
+    
+    transition: .15s;
+    outline: none;
+}
+.SAinput:focus {
+    border: 1vw solid yellow;
+    box-shadow: 0 0 2.5vw black;
+}
+
+.TFoptions {
+    display: block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    min-width: 45%;
+    max-width: 70%;
+    height: 15vh;
+    
+    margin-bottom: 1%;
+    margin-top: 1%;
+    vertical-align: bottom;
+    
+    font-size: 250%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: black;
+    background-color: yellow;
+    border: .25vw outset yellow;
+    border-radius: 10vw;
+    
+    box-shadow: .2vw .2vw 1.25vw black;
+    
+    transition: .2s;
+    cursor: pointer;
+    outline: none;
+}
+.TFoptions:hover {
+    background-color: orange;
+    border: .25vw outset orange;
+}
+
+.MAnote {
+    position: relative;
+    
+    font-size: 175%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: #003F6B
+}
+
+.MAoptions {
+    display: inline-block;
+    position: relative;
+    
+    width: 45%;
+    height: 11.5vh;
+    
+    margin-bottom: .5%;
+    margin-top: .5%;
+    margin-left: .5%;
+    vertical-align: bottom;
+    
+    font-size: 175%;
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    
+    color: black;
+    background-color: yellow;
+    border: .25vw outset yellow;
+    border-radius: 10vw;
+    
+    box-shadow: .2vw .2vw 1.25vw black;
+    
+    transition: .2s;
+    cursor: pointer;
+    outline: none;
+}
+.MAoptions:hover {
+    background-color: orange;
+    border: .25vw outset orange;
+}
+
+#bottomDiv {
+    position: absolute;
+    width: 90%;
+    height: 15%;
+    top: 82.5%;
+    left: 5%;
+    background-color: whitesmoke;
+    background-color: #003F6B;
+    border-bottom-left-radius: 0.5vw;
+    border-bottom-right-radius: 0.5vw;
+}
+
+#previous, #next, #submit {
+    position: absolute;
+    width: 10vw;
+    height: 60%;
+    
+    top: 50%;
+    transform: translateY(-50%);
+    
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 2vw;
+    color: black;
+    background-color: whitesmoke;
+    
+    border: .4vw outset whitesmoke;
+    border-radius: .5vw;
+    
+    transition: .1s;
+    cursor: pointer;
+    outline: none;
+}
+#previous:active, #next:active {
+    border: .4vw inset whitesmoke;
+}
+
+#previous {
+    left: 1.5vw;
+}
+
+#next, #submit {
+    right: 1.5vw;
+}
+
+#submit {
+    display: none;
+    background-color: yellow;
+    border: .4vw outset yellow;
+}
+#submit:active {
+    border: .4vw inset yellow;
+}
+
+#pbarDiv {
+    position: relative;
+    width: 65vw;
+    height: 5vh;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#pbarContainer {
+    position: relative;
+    width: 100%;
+    height: 70%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: black;
+    box-shadow: 0 0 4vw black;
+}
+
+#pbarText {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: sans-serif;
+    font-size: 175%;
+    text-align: center;
+    color: whitesmoke;
+    text-shadow: 0 0 .75vw black;
+}
+
+.swal2-modal {
+    border: .25vw solid whitesmoke;
+    box-shadow: 0 0 20vw black;
+}

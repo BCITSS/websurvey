@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("/images/beach.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#blankBox {
+    position: absolute;
+    top: 10.5vh;
+    left: 21vw;
+    width: 50vw;
+    height: 70vh;
+    border-left: .5vw solid yellow;
+    border-top: .5vw solid yellow;
+}
+
+#blankBox2 {
+    position: absolute;
+    top: 9.5vh;
+    left: 20.5vw;
+    width: 51vw;
+    height: 72vh;
+    background-color: rgba(0,0,0,.3);
+}
+
+#container1 {
+    position: relative;
+    top: 15vh;
+    left: 23vw;
+    width: 50vw;
+    height: 70vh;
+    background-color: rgba(7,60,111,.99);
+}
+
+#motto {
+    position: relative;
+    top: 10vh;
+    left: 2vw;
+    width: 70%;
+    font-size: 275%;
+    font-family: 'Catamaran', sans-serif;
+    line-height: 100%;
+    color: yellow;
+}
+
+#motto2 {
+    position: relative;
+    
+    top: 8.5vh;
+    
+    left: 2vw;
+    width: 70%;
+    
+    font-size: 425%;
+    font-family: 'Teko', sans-serif;
+    text-shadow: 0 0 3vw rgb(175,175,175);
+    
+    color: whitesmoke;
+}
+
+#begin {
+    position: absolute;
+    top: 42.5vh;
+    left: 2vw;
+    width: 20vw;
+    height: 12.5vh;
+    font-family: 'Catamaran', sans-serif;
+    font-size: 275%;
+    line-height: 225%;
+    color: #094879;
+    background-color: rgba(255,255,0,0.9);
+    
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+#begin:hover {
+    background-color: whitesmoke;
+}
+
+#container2 {
+    position: absolute;
+    top: 15vh;
+    right: -17.5%;
+    width: 50%;
+    height: 35%;
+    background-color: rgba(255,255,0,0.9);
+}
+
+hr {
+    position: absolute;
+    top: 1.5vh;
+    left: 1vw;
+    width: 2vw;
+    height: .1vh;
+}
+
+#quote1, #quote2 {
+    position: relative;
+    left: 1vw;
+}
+
+#quote1 {
+    top: 4vh;
+    width: 95%;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 225%;
+    color: #094879;
+}
+
+#quote2 {
+    top: 6vh;
+    width: 95%;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    font-size: 125%;
+    color: #094879;
+}
+
+#bcitlogo {
+    position: absolute;
+    right: 1.5%;
+    top: 5%;
+    width: 20%;
+    
+    opacity: 0.95;
+}

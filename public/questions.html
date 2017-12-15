@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Speak Up</title>
+        <link href="/styles/questions.css" type="text/css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+        
+        <!-- PROGRESS BAR REQUIREMENTS -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    		<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+		    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+        <!-- PROGRESS BAR REQUIREMENTS -->
+		    <link rel="icon" href="/images/android-icon-192x192.png">
+    </head>
+    
+    <body>
+        <!-- QUESTIONS DIV START -->
+        <div id="questionDiv">            
+            <!-- -->
+            <!-- POPULATE FROM DATABASE THROUGH BACK-END -->
+            <!-- -->
+            
+        </div>
+        <!-- QUESTIONS DIV END -->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <!-- ANSWERS START -->
+        
+            <!-- -->
+            <!-- POPULATE FROM DATABASE THROUGH BACK-END -->
+            <!-- -->
+        
+        <!-- ANSWERS END -->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <!-- BOTTOM DIV START-->
+        <div id="bottomDiv">
+            <button id="previous">Previous</button>
+            
+            
+            <!-- PROGRESS BAR START -->
+            <div class="container" id="pbarDiv">
+                <div class="progress" id="pbarContainer">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" id="pbar">
+                        <div id="pbarText"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- PROGRESS BAR END -->
+            
+            
+            <button id="next">Next</button>
+            <button id="submit">Submit</button>
+        </div>
+        <!-- BOTTOM DIV END-->
+        
+        <!-- ---------------------------------------------------------------------------- -->
+        
+        <script src="/scripts/questionsbundle.js"></script>
+    </body>
+    
+</html>

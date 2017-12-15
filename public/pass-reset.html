@@ -1,0 +1,78 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Forgot your password?</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="/images/android-icon-192x192.png">
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+<script src="//code.jquery.com/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/styles/pass-reset.css"/>
+	
+</head>
+<body>
+	<div class="wrapper">
+	<div class="outerdiv">
+		<div id="logo_div">
+			<img id=pass_logo width="400" height="400" src="/images/bcitlogo.png"/>
+		</div>
+    	<div id="pass_rec_div">
+		<h3>Reset your password</h3>
+			<br>
+			<div class="input-group">
+				<h5>Enter the email address and we will send you a link to reset your password.</h5>
+			</div>
+			
+			<div class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+				<input type="email" placeholder="ENTER EMAIL" name="email" id="email1" class="form-control inputs" title="Must be 4-15 characters. Whitespace is not allowed." required="required">
+			</div>			
+        	<input id="password-reset" type="submit" value="SEND PASSWORD" class="buttons btn">
+<!--			<button id="password-reset">Get Passcode</button>-->
+	</div>
+	<div id="pass_confirm_div" style="display:none">
+		<h3>Recovery Code</h3>
+			<br>
+			<div class="input-group">
+			<h5> Enter your recovery code.</h5>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-equalizer"></i></span>
+				<input type="recover-code" placeholder="ENTER CODE" name="recover-code" id="recover-code" class="form-control inputs" title="Recovery Code">
+				</div>
+			<br>
+			<div class="input-group">
+			<h5> Enter new password.</h5>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				<input type="password" placeholder="ENTER NEW PASSWORD" name="new-pass" id="new-pass" class="form-control inputs" title="New Pass">
+			</div>
+			<br>
+			<div class="input-group">
+			<h5> Confirm new password.</h5>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				<input type="password" placeholder="CONFIRM NEW PASSWORD" name="confirm-pass" id="confirm-pass" class="form-control inputs" title="Confirm Pass">
+				</div>
+			<input id="pass-recovery" type="submit" value="SUBMIT CODE" class="buttons btn" action="/pass_recovery_url" method="post">
+			
+   		</div>
+</div>
+		</div>
+</body>
+<script src="/scripts/pass-resetbundle.js"></script>
+	
+</html>

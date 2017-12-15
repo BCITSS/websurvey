@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+    background-image: url(/images/lake.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+    background-size: cover;
+	font-family: Helvetica, Arial, sans-serifs;
+}
+
+.wrapper{
+ margin-top: 60px;
+ margin-bottom: 80px;
+}
+
+.outerdiv {
+  max-width: 350px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  border: 3px solid rgba(0,0,0,0.1);   
+  background-color: rgba(169,169,169,0.9);
+  border-radius: 55px 80px;
+
+}
+
+#logo_div {
+    padding-top:10%;
+    width: 100%;
+}
+
+#pass_logo{
+	display:block;
+	width:50%;
+	height:auto;
+	margin:0 auto;
+}
+
+#pass_rec_div {
+	height:24%;
+	position:relative;
+}
+
+.buttons {
+    background-color: #F28732;
+    color: whitesmoke;
+    border: 1px solid #F28732;
+    margin: 10px auto;
+	font-size: 1.4em;
+	position: relative;
+	left:50%;
+	transform: translateX(-50%);
+}
+
+.buttons:hover {
+    background-color: #F16631;
+    border: 1px solid #F16631;
+	color: whitesmoke;
+	
+}
+
+#password-reset {
+	width: 100%;
+}
+
+.form{
+	margin-top:4%;
+	margin-left:auto;
+	margin-right:auto;
+    width:100%;
+    text-align: center;
+	line-height: 0.75;
+	text-shadow: 0.5px 1px grey;
+}
+
+
+#pass_confirm_div{
+	
+}

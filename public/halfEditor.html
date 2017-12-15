@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link href='/styles/halfEditor.css' type='text/css' rel='stylesheet' />
+</head>
+<style>
+
+
+</style>
+
+<body>
+    <div id="whole-editor" class="whole-editor">    
+    <div id="main-panel" class="panel panel-primary">
+<!--         head-->
+        <div class="panel-heading">
+            <div class="input-group col-sm-3">
+                <span class="input-group-addon">
+                <span class="glyphicon glyphicon-list"></span>
+                </span>
+                <input type="text" class="form-control" placeholder="SURVEY TITLE" id="survey-title">
+            </div>
+        </div>
+<!--        body-->
+        <div class="panel-body">
+            <ul class="nav nav-pills" id="questionChoices">
+            </ul>
+            <ul class="nav nav-tabs" id="questionChooser">
+            </ul>
+            <ul class="nav nav-pills">
+                <li><a href="javascript:void(0)" id="addQuestion">ADD</a></li>
+                <li><a href="javascript:void(0)" id="removeQuestion">DELETE</a></li>
+            </ul>
+            <div id="questionsContainer">
+            </div>
+        </div>
+        <div class="panel-body">
+            <button id="create-button" class="create-button btn btn-info">CREATE</button>
+        </div>
+    </div>
+        
+
+    <!-- question panels -->
+    <!-- multiple choice-->
+    <div id="multChoice-panel" style="display:none">
+        <div class="panel panel-success" id="question-part">
+            <p class="question-number panel-heading" id="question-number">MULTIPLE CHOICE </p>
+            <div>
+                <textarea class="form-control" id="question" placeholder="QUESTION" style="resize:none;overflow: hidden" rows="3" cols="33"></textarea>
+            </div>
+            <div>
+                <input class="form-control" type="text" id="question-image" placeholder="QUESTION IMG URL" />
+            </div>
+            <div id ="image-preview-div" class ="image-preview-div">
+            </div>
+        </div>
+        
+        <div id="answer-section" class="answer-section panel panel-success">
+            <p class="answer-label panel-heading">ANSWERS</p>
+            <div id="answer-div">
+                <input id="answer-option" class="answer-option form-control" type="text" placeholder="ANSWER OPTION">
+                <button class= "option-delete-btn btn btn-danger btn-block" id="option-delete-btn">x</button>
+                
+            </div>
+            
+        </div>
+        <div>
+            <button class="btn btn-success btn-block" id="option-add-btn">+</button>
+        </div>
+        <div>
+            <button id="save-btn" class="save-btn btn btn-primary">SAVE</button>
+        </div>
+    </div>
+
+    <!-- true false-->
+    <div id="trueFalse-panel" style="display:none">
+        <div class="panel panel-success" id="question-part">
+            <p class="question-number panel-heading" id="question-number">TRUE FALSE </p>
+            <div>
+                <textarea class="form-control" id="question" placeholder="QUESTION" style="resize:none;overflow: hidden" rows="3" cols="33"></textarea>
+            </div>
+            <div>
+                <input class="form-control" type="text" id="question-image" placeholder="QUESTION IMG URL" />
+            </div>
+            <div id ="image-preview-div" class ="image-preview-div">
+            </div>
+        </div>
+        
+        
+        <div id="answer-section" class="answer-section panel panel-success">
+            <p class="answer-label panel-heading">ANSWERS</p>
+            <div id="answer-div">
+                <input id="answer-option" name="true-false" class="answer-option form-control" type="text" placeholder="ANSWER OPTION" value="true" disabled>
+                <br>
+                <input id="answer-option" name="true-false" class="answer-option form-control" type="text" placeholder="ANSWER OPTION" value="false" disabled>
+            </div>
+        </div>
+        <div>
+            <button id="save-btn" class="save-btn btn btn-primary">SAVE</button>
+        </div>
+    </div>
+
+    <!-- short answer-->
+    <div id="shortAns-panel" style="display:none">
+        <div class="panel panel-success" id="question-part">
+            <p class="question-number panel-heading" id="question-number">SHORT ANSWER </p>
+            <div>
+                <textarea class="form-control" id="question" placeholder="QUESTION" style="resize:none;overflow: hidden" rows="3" cols="33"></textarea>
+            </div>
+            <div>
+                <input class="form-control" type="text" id="question-image" placeholder="QUESTION IMG URL" />
+            </div>
+            <div id ="image-preview-div" class ="image-preview-div">
+            </div>
+        </div>
+        <div>
+            <button id="save-btn" class="save-btn btn btn-primary">SAVE</button>
+        </div>
+    </div>
+
+    <!-- rating question-->
+    <div id="ratingQuest-panel" style="display:none">
+        <div class="panel panel-success" id="question-part">
+            <p class="question-number panel-heading" id="question-number">RATING QUESTION </p>
+            <div>
+                <textarea class="form-control" id="question" placeholder="QUESTION" style="resize:none;overflow: hidden" rows="3" cols="33"></textarea>
+            </div>
+            <div>
+                <input class="form-control" type="text" id="question-image" placeholder="QUESTION IMG URL" />
+            </div>
+            <div id ="image-preview-div" class ="image-preview-div">
+            </div>
+        </div>
+        
+<!--        row-->
+        <div class="panel panel-success">
+            <p class="answer-label panel-heading">ANSWERS</p>
+            <div class="answer-section panel-body">
+
+                <div id="answer-row">
+                    <p class="panel-heading">Row</p>
+                    <div id="answer-div">
+                        <input id="answer-option" class="answer-option-row form-control" type="text" placeholder="ANSWER OPTION">
+                        <button class= "option-delete-btn btn btn-danger btn-block" id="option-delete-btn">x</button>
+                    </div>
+
+                </div>
+                <div>
+            </div>
+                <button id="option-add-row-btn" class="btn btn-success btn-block">add row</button>
+            </div>
+<!--            col-->
+            <div class="answer-section panel-body">
+                <div id="answer-col">
+                    <p class="panel-heading">Column</p>
+                    <div id="answer-div-2">
+                        <input id="answer-option" class="answer-option-col form-control" type="text" placeholder="ANSWER OPTION">
+                        <button class= "option-delete-btn btn btn-danger btn-block" id="option-delete-btn">X</button>
+                    </div>
+                </div>
+                <div>
+                    <button id="option-add-col-btn" class=" btn btn-success btn-block">add col</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button id="save-btn" class="save-btn btn btn-primary">SAVE</button>
+        </div>
+    </div>
+
+    <!-- multiple answer-->
+    <div id="multipleAnswer-panel" style="display:none">
+         <div class="panel panel-success" id="question-part">
+            <p class="question-number panel-heading" id="question-number">MULTIPLE ANSWER </p>
+            <div>
+                <textarea class="form-control" id="question" placeholder="QUESTION" style="resize:none;overflow: hidden" rows="3" cols="33"></textarea>
+            </div>
+            <div>
+                <input class="form-control" type="text" id="question-image" placeholder="QUESTION IMG URL" />
+            </div>
+            <div id ="image-preview-div" class ="image-preview-div">
+            </div>
+        </div>
+        
+        <div id="answer-section" class="answer-section panel panel-success">
+            <p class="answer-label panel-heading">ANSWERS</p>
+            <div id="answer-div">
+                <input id="answer-option" class="answer-option form-control" type="text" placeholder="ANSWER OPTION">
+                <button class= "option-delete-btn btn btn-danger btn-block" id="option-delete-btn">x</button>
+                
+            </div>
+            
+        </div>
+        <div>
+            <button class="btn btn-success btn-block" id="option-add-btn">+</button>
+        </div>
+        <div>
+            <button id="save-btn" class="save-btn btn btn-primary">SAVE</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- scripts -->
+    <script>
+        var global_survey_obj = "none";
+    </script>
+    <script src='scripts/halfEditorbundle.js'></script>
+</body>
+
+</html>

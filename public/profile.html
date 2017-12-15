@@ -1,0 +1,215 @@
+	<html lang="en">
+	  <head>
+		<meta charset="utf-8">
+		<title>Profile Page</title>
+          <script src="http://malsup.github.com/jquery.form.js"></script>
+		<link rel="stylesheet"  type="text/css" href="/styles/main.css"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">   
+          <!-- FontAwesome 4.3.0 -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<!-- Ionicons 2.0.0 -->
+<link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />  
+          <!--Google Roboto Font -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+		<!-- Include a polyfill for ES6 Promises (optional) for IE11 and Android browser -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>	
+		<!-- jQuery library -->
+          
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		  <link rel="icon" href="/images/android-icon-192x192.png">
+	  </head>
+	<body>
+<div class="wrapper">
+			<!--Top-->
+	    <header class="main-header">
+			<!--BCIT Logo-->
+			<img src="/images/bcit.png" class="logo"/>
+		<!--Navbar Header-->
+        <nav class="navbar navbar-static-top">
+		<!-- dropdown container -->
+		<div class="dropdown">
+    	<!-- trigger button -->
+    <button>
+		<img src="/images/doge-update.jpg" class="user-image" alt="User Image"/>
+		 <label id = "nav-username"></label>
+		<i class="fa fa-caret-down" aria-hidden="true"></i>
+	</button>
+    	<!-- dropdown menu -->
+    <ul class="dropdown-menu">
+        <li><a id="p-but" href="/profile">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			Profile
+			</a>
+		<li><a id="p-but" href="/admin">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			Admin
+			</a>
+		</li>
+        <li><a id="lo-but" href="/logout">
+			<i class="fa fa-sign-out" aria-hidden="true"></i>
+			Logout
+			</a>
+		</li>
+    </ul>
+</div>
+</nav>
+</header>
+	<div class="main-sidebar" >
+		<section class="sidebar" style="height: 105vh;">
+			<div class="user-panel">
+				<div class="pull-left">
+					<img class="doge" src="/images/doge-update.jpg" alt="User Image"/>
+				</div>
+				<div class="pull-right">
+					<p id = "pull-right-username"></p>
+					<p id = "pull-right-department"></p>
+					<p></p>
+				</div>
+			</div>
+<!--
+			<ul class="sidebar-menu">
+            <li class="sidebar-title">SURVEY DASHBOARD</li>
+            <li class="active treeview">
+              <a href="#">
+                <i class="fa fa-plus-square fa-lg"></i> <span>CREATE</span><i class="fa fa-angle-left pull-right"></i> 
+              </a>
+              <ul class="treeview-menu">
+                <li class="active">
+                     <a href="#" id = "new-btn"><i class="fa fa-file"></i> NEW</a>
+               </li>
+                <li><a href="#"><i class="fa fa-clipboard"></i> TEMPLATE</a></li>
+				</ul>
+            </li>
+            <li class="treeview">
+              <a href="#" id='modify-btn'>
+                <i class="fa fa-pencil-square"></i>
+                <span>MODIFY</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" id="view-btn">
+                <i class="fa fa-th"></i> <span>VIEW</span> 
+              </a>
+            </li>
+			<li>
+              <a href="#" id="publish-btn">
+                <i class="fa fa-check-square"></i> <span>PUBLISH</span>
+              </a>
+            </li>
+            <li><a href="#"><i class="fa fa-book"></i> Documentation</a></li>
+          </ul>
+-->
+		</section>	
+	</div>
+	
+	<div class="content-wrapper" style="height: 100vh;">
+		<section class="content" id="main-content">
+				<div id="content">
+		<div class="container">
+			<div class="row">
+				<div class="span9">
+					<h1 class="page-title">
+						<i class="icon-th-large"></i>
+
+						User Account					
+					</h1>
+
+					<div class="row">
+						 <div class="span9">
+							<div class="widget">
+								<div class="widget-header">
+
+									<h3>Basic Information</h3>
+
+								</div> <!-- /widget-header -->
+								<div class="widget-content">
+									<div class="tabbable">
+							<ul class="nav nav-tabs">
+							  <li class="active">
+								<a href="#1" data-toggle="tab">Profile</a>
+							  </li>
+
+							</ul>
+							<br>
+								<div class="tab-content">
+									<div class="tab-pane active" id="1">
+
+										<fieldset>
+											<div class="control-group">											
+												<label class="control-label" for="username">Username</label>
+												<div class="controls">
+													<input type="text" class="input-medium disabled" id="username" disabled>
+													<p class="help-block">Your username is for logging in and cannot be changed.</p>
+												</div> <!-- /controls -->				
+											</div> <!-- /control-group -->
+											<div class="control-group">				
+											</div> <!-- /control-group -->
+											<div class="control-group">						
+                                                <form id="uploadForm" enctype="multipart/form-data" method="post" action="/api/file" on>
+                                                <input type="file" name="userPhoto" />
+                                                <input type="submit" value="Upload Image" name="submit">
+                                                <span id = "status"></span>
+                                                </form>
+                                                
+												<label class="control-label" for="email">Email Address</label>
+												<div class="controls">
+													<input type="text" class="input-large" id="email" >
+												</div> <!-- /controls -->				
+											</div> <!-- /control-group -->
+											<br /><br />
+											<div class="control-group">											
+												<label class="control-label" for="password1">Password</label>
+												<div class="controls">
+													<input type="password" class="input-medium" id="password1">
+												</div> <!-- /controls -->				
+											</div> <!-- /control-group -->
+											<div class="control-group">											
+												<label class="control-label" for="password2">Confirm</label>
+												<div class="controls">
+													<input type="password" class="input-medium" id="password2">
+												</div> <!-- /controls -->				
+                                                
+											</div> <!-- /control-group -->
+												<br />
+											<div class="form-actions">
+												<button type="submit" class="btn btn-primary" id="submit">Save</button> 
+												<button class="btn" id="cancel">Cancel</button>
+											</div> <!-- /form-actions -->
+                                            <button id="back">Back to home page</button>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div> 
+		   </div> 
+		</div> 
+	</div> 
+		</section>
+	</div>
+	<footer class="main-footer">
+		<div class="pull-right hidden-xs">
+		</div>
+		<div class="copyright">
+			<strong> copyright 2017 BCITSSD Team
+			<a href="github">BCITSS/websurvey</a>
+			</strong>
+			All rights reserved.
+		</div>
+	</footer>
+		
+	</div>		
+
+
+	  </body>
+		<script src='/scripts/profilebundle.js'></script>
+
+	</html>
+
