@@ -16,6 +16,17 @@ $(document).ready(function(){
         }
     });
     
+    $.ajax({
+        url:"/getClientSurveyId",
+        type:"post",
+        success: function(resp){
+            console.log("ID",resp);
+            survey_select_list.value = resp;
+        }
+    });
+    
+    
+    
     begin.addEventListener("click", function() {
         $.ajax({
             url:"/client",
