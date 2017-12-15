@@ -102,9 +102,13 @@ function getSurveyFromDB(req,resp,client){
             var survey_q_id = []; // question id for select answer_option loop
             var survey_answers_id = [];
             var req_department_id = req.body.department_id; // var req_survey_id;
+            var req_survey_id = req.session.clientSurveyId;
+            
+            console.log("2222",req_survey_id)
 
             // start getSurvey function
             getSurvey(err,client,done);
+            
             
         }
         
@@ -158,7 +162,7 @@ function getSurveyFromDB(req,resp,client){
             if (req.body.client || req.session.name == undefined) {
                 
                 // get survey from db
-                client.query("SELECT * FROM survey WHERE isopen = true and department_id = $1", [req_department_id], function (err, result) {
+                client.query("SELECT * FROM survey WHERE id = $1", [req_survey_id], function (err, result) {
                     done();
                     if (err) {
                         console.log(err);
@@ -311,7 +315,12 @@ app.get("/client", function (req, resp) {
 });
 
 app.get("/questions", function (req, resp) {
-    resp.sendFile(pF + "/questions.html");
+    if(req.session.clientSurveyId){
+        resp.sendFile(pF + "/questions.html");
+    }else{
+        resp.sendFile(pF + "/client.html");
+    }
+    
 });
 
 app.get("/main", function (req, resp) {
@@ -402,6 +411,10 @@ function updateSurveyStatus(req,resp){
 
 }
 app.post("/client",function(req,resp){
+    if(req.body.setsession){
+        req.session.clientSurveyId = req.body.survey_id;
+    }
+    
     updateSurveyStatus(req,resp);
     getSurveyFromDB(req,resp);
 });
