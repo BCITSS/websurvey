@@ -24,7 +24,6 @@ $(document).ready(function(){
             if(!resp == "" || !resp == null){
                 survey_select_list.value = resp;
             }
-            
         }
     });
     

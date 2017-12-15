@@ -169,7 +169,7 @@ $(document).ready(function () {
             },
             success: function (resp) {
                 var recent_resp_num;
-                console.log("resp",resp)
+
                 if(resp == "invalid input"){
                     showStatusBar("Invalid input of day")
                 }else if (resp.response_result == "no result") {
@@ -181,7 +181,7 @@ $(document).ready(function () {
                     recent_resp_num = resp.length
                     recent_resp_number.innerHTML = recent_resp_num
                     recent_survey_array = resp
-                    console.log("RS",recent_survey_array)
+
                     upRecentResp();
                 }
             }
@@ -189,7 +189,7 @@ $(document).ready(function () {
     }
 
     function updateInfoCard(obj) {
-        console.log("obj",obj)
+
 
         function sumResponse(obj) {
             var total_number = 0
@@ -329,7 +329,7 @@ $(document).ready(function () {
                     survey_id: this.id
                 },
                 success: function (resp) {
-                    console.log("TR",resp)
+
                     if (resp == "no result") {
                         view_info_panel.html("no result to show");
                     } else {
@@ -463,7 +463,7 @@ $(document).ready(function () {
                     survey_id: this.id
                 },
                 success: function (resp) {
-                    console.log("csv",resp)
+
                     var resp_2D_array = convert2DArray(resp);
 
                     arrayToCsv(resp_2D_array);
@@ -693,13 +693,11 @@ $(document).ready(function () {
                 type: "view_status"
             },
             success: function (resp) {
-                console.log("SS",resp)
                 if (resp.survey_result == "no result") {
                     var new_div = document.createElement("div");
                     new_div.innerHTML = "No survey in your department";
                     maincontent.html(new_div);
                 } else {
-                    console.log("all_s",all_survey_array);
                     all_survey_array = resp
                     updateInfoCard(resp);
                 }
