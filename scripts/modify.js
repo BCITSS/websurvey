@@ -1,3 +1,4 @@
+import 'jquery-datetimepicker/build/jquery.datetimepicker.full.min.js';
 $(document).ready(function(){
     var maincontent =  $("#main-content2");
     var page_changer = document.getElementById("page-changer")
@@ -13,7 +14,10 @@ $(document).ready(function(){
     var current_page_number = document.getElementById("current-page-number");
     var search_input = document.getElementById("search-input");
     var table;
-
+    var publish_fire_btn = document.getElementById("publish-fire-btn")
+    var start_date_input = document.getElementById("start_date_input");
+    var end_date_input = document.getElementById("end_date_input");
+    
     // convert time
     function timeConvert(time){
         var date_obj = new Date(time);
@@ -53,6 +57,7 @@ $(document).ready(function(){
         
     }
     
+    // search arry
     function searchArray(search_array,search_value,type){
         var matched_index = []
         var matched_obj_array = []
@@ -70,6 +75,7 @@ $(document).ready(function(){
         appendRows(matched_obj_array,table,1,10);
     }
     
+    // load survey to Editor
     function loadSurveyObj(survey_obj){
         // assign top level variable with survey_obj
         global_survey_obj = survey_obj;
@@ -85,6 +91,7 @@ $(document).ready(function(){
         });
     }
     
+    // create page button
     function createPager(resp,display_number,table){
         if(resp.length>display_number){
             var total_page = Math.ceil((resp.length/display_number))
@@ -108,6 +115,7 @@ $(document).ready(function(){
         }
     }
     
+    // create table for modify
     function createTable (resp){
         console.log("list",resp);
         var table = document.createElement("table");
@@ -115,8 +123,8 @@ $(document).ready(function(){
         table.id = "survey-list-table";
         var tHead = document.createElement("thead")
         var headTr = document.createElement('tr');
-        var tableColumn = ['ID' ,'Name','Creator', 'Create Date', 'Last Update','Publishing','Been Published' ,'Select' ]
-        var tableColumValue = ["id","survey_name","creator","start_date","updated","isopen","been_published","selected"];
+        var tableColumn = ['ID' ,'Name','Creator', 'Creation Date', 'Last Update','Active','Complete' ,'Start Date','End Date','Select' ]
+        var tableColumValue = ["id","survey_name","creator","start_date","updated","isopen","been_published","start_date","end_date","selected"];
         var x = 0
         tableColumn.forEach(function(Element){
             var th = document.createElement('th');
@@ -154,13 +162,13 @@ $(document).ready(function(){
         table.appendChild(tHead);
         
         return table;
-
     }
     
+    // append row to table
     function appendRows(resp,table,pageNumber=1,display_number){
         $(table).find("tr:gt(0)").remove();
-        start_number = (pageNumber-1)*display_number
-        end_number = pageNumber*display_number
+        var start_number = (pageNumber-1)*display_number
+        var end_number = pageNumber*display_number
         console.log("start#",start_number);
         console.log("end#",end_number);
         var row_number = 0
@@ -175,7 +183,10 @@ $(document).ready(function(){
             var last_update = row.insertCell(4);
             var publish = row.insertCell(5);
             var been_pub = row.insertCell(6)
-            var modify = row.insertCell(7);
+            var start_date = row.insertCell(7);
+            var end_date = row.insertCell(8);
+            var modify = row.insertCell(9);
+
 
             var modify_button = document.createElement('input');
             modify_button.type = 'radio';
@@ -186,9 +197,24 @@ $(document).ready(function(){
             survey_id.innerHTML = resp[i].id;
             creator.innerHTML = resp[i].creator;
             survey_name.innerHTML = resp[i].survey_name;
-            create_date.innerHTML = timeConvert(resp[i].start_date);
+            create_date.innerHTML = timeConvert(resp[i].create_date);
+            
+            // if no start date 
+            if(resp[i].start_date==null){
+                start_date.innerHTML = "";
+            }else{
+                start_date.innerHTML = timeConvert(resp[i].start_date);
+            }
+            
+            // if no end date
+            if(resp[i].end_date==null){
+                end_date.innerHTML = "";
+            }else{
+                end_date.innerHTML = timeConvert(resp[i].end_date);
+            }
+            
             // change color of  the cell if isopen equal to true
-            var open_var;
+            var openvar ;
             if(resp[i].isopen){
                 publish.style.backgroundColor = "#c4ffad";
                 openvar = "Yes";
@@ -218,7 +244,7 @@ $(document).ready(function(){
         
     }
     
-    // Top Modify Button click event listener
+    // top modify click event listener
     modify_action_button.addEventListener("click",function(){
        var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
         $.ajax({
@@ -254,27 +280,33 @@ $(document).ready(function(){
         });
     });
 
-    // Top Delete button listner
+    // top publish button listener
+    var datetime_picker_toggle = false
     publish_action_button.addEventListener("click",function(){
-        var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
-        $.ajax({
-            url:"/adminPanel",
-            type:"post",
-            data:{
-                type:"publish",
-                survey_id: selected_survey.value
-            },
-            success: function(resp){
-                if(resp.status == false){
-                    showStatusBar(resp.msg,"red");
-                }else{
-                    showStatusBar("survey "+resp.survey_name+" is publishing")
-                }
-                modifyBtn.click();
-            }
+        // time date picker
+        jQuery.datetimepicker.setLocale('en');
+        $('#start_date_input').datetimepicker({
+            format:'Y-m-d H:i',
+            datepicker:true,
+            step:5,
         });
+        $('#end_date_input').datetimepicker({
+            format:'Y-m-d H:i',
+            datepicker:true,
+            step:5,
+        });
+        
+        // toggle time picker row display
+        if(datetime_picker_toggle == false){
+            document.getElementById("time_picker_div").style.display = "block";
+            datetime_picker_toggle = true;
+        }else{
+            document.getElementById("time_picker_div").style.display = "none";
+            datetime_picker_toggle = false;
+        }
     });
-
+    
+    // top delete button listner
     delete_action_button.addEventListener("click",function(){
         var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
         $.ajax({
@@ -295,6 +327,7 @@ $(document).ready(function(){
         });
     })
     
+    // prev-page listener
     $("#prev-page-btn").on("click",function(){
         if( 1 < current_page){
             current_page--
@@ -304,6 +337,7 @@ $(document).ready(function(){
         
     })
     
+    // next-page listener
     $("#next-page-btn").on("click",function(){
         if(current_page < page_changer.children.length-2){
             current_page++
@@ -313,10 +347,45 @@ $(document).ready(function(){
 
     })
     
+    // seach input keyup listener
     search_input.addEventListener("keyup",function(){
         console.log(search_input.value);
         searchArray(loaded_array,search_input.value,"survey_name")
     })
+    
+    // publish fire button listener
+    publish_fire_btn.addEventListener("click",function(){
+        var start_date = start_date_input.value
+        var end_date = end_date_input.value
+        console.log(start_date,end_date);
+        var selected_survey = document.querySelector('input[name="modi_btn"]:checked');
+        if(start_date_input.value == "" || end_date_input.value == ""){
+            showStatusBar("Please select a Date","red")
+        }else if(selected_survey == null){
+            showStatusBar("Please select a survey","red")
+        }else{
+            $.ajax({
+                url:"/adminPanel",
+                type:"post",
+                data:{
+                    type:"schedule_publish",
+                    start_date:start_date,
+                    end_date:end_date,
+                    survey_id: selected_survey.value,
+                },
+                success: function(resp){
+                    if(resp.status == false){
+                        showStatusBar(resp.msg,"red");
+                    }else{
+                        showStatusBar(resp.msg,);
+//                        showStatusBar("survey "+resp.survey_name+" is publishing")
+                    }
+                    modifyBtn.click();
+                }
+            });
+        }
+    })
+
     // --- Initilize --- //
     current_page_number.innerHTML = 1;
 
@@ -327,6 +396,7 @@ $(document).ready(function(){
             type:"view"
         },
         success:function(resp){
+            console.log("THE RESP",resp);
             // --- create survey list table ---
             if(resp.status == "No survey" ){
                 var new_div = document.createElement('div');

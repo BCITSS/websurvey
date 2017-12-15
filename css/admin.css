@@ -100,7 +100,9 @@ color: #72afd2
 	margin-right:10px;
 	margin-top: 10px;
 }
-
+.navbar{
+    margin: 0px;
+}
 @media (max-width: 767px) {
   .navbar-nav > .user-menu .user-image {
     float: none;
@@ -398,8 +400,10 @@ color: #72afd2
   -o-transition: margin-left 0.3s cubic-bezier(0.32, 1.25, 0.375, 1.15);
   transition: margin-left 0.3s cubic-bezier(0.32, 1.25, 0.375, 1.15);
   margin-left: 230px;
-	margin-top:-20px;
   z-index: 820;
+}
+#navbar-static-top{
+    margin-bottom: 0px;
 }
 .layout-top-nav .content-wrapper,
 .layout-top-nav .main-footer {

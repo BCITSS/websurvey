@@ -23,9 +23,9 @@ $(document).ready(function () {
         "id": "shortAns",
         "name": "Short Answer"
     }, {
-        "id": "ratingQuest",
-        "name": "Rating Question"
-    }, {
+//        "id": "ratingQuest",
+//        "name": "Rating Question"
+//    }, {
         "id": "multipleAnswer",
         "name": "Multiple Answers"
     }];

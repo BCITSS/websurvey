@@ -107,7 +107,7 @@ $(document).ready(function () {
         table.setAttribute('border', '1');
         var tHead = document.createElement("thead")
         var headTr = document.createElement('tr');
-        var tableColumn = ['ID', 'Name', 'Creator', 'Create Date', 'Last Update', 'Total Responses', 'CSV']
+        var tableColumn = ['ID', 'Name', 'Creator', 'Creation Date', 'Last Update', 'Total Responses', 'CSV']
         var tableColumValue = ["id", "survey_name", "creator", "start_date", "updated", "total_response", "csv"];
         var x = 0
         tableColumn.forEach(function (Element) {
@@ -173,9 +173,9 @@ $(document).ready(function () {
                     showStatusBar("Invalid input of day")
                 }else if (resp.response_result == "no result") {
                     document.getElementById("recent-day-input").value = 5;
-                    showStatusBar("No Responses","red")
+//                    showStatusBar("No Responses","red")
                     recent_resp_num = 0
-                    getRecentDate(5);
+//                    getRecentDate(5);
                 } else {
                     recent_resp_num = resp.length
                     recent_resp_number.innerHTML = recent_resp_num
@@ -421,7 +421,7 @@ $(document).ready(function () {
             survey_id.innerHTML = resp[i].id;
             survey_name.innerHTML = resp[i].survey_name;
             creator.innerHTML = resp[i].creator;
-            create_date.innerHTML = timeConvert(resp[i].start_date);
+            create_date.innerHTML = timeConvert(resp[i].create_date);
             last_update.innerHTML = timeConvert(resp[i].updated);
             total_resp.appendChild(total_resp_btn);
             csv_field.appendChild(csv_download_btn);
@@ -495,7 +495,6 @@ $(document).ready(function () {
     
     // update recent resp status
     function upRecentResp () {
-        toggleViewInfoPanel();
         maincontent.html("");
         cleanPager(page_changer)
         
@@ -645,6 +644,7 @@ $(document).ready(function () {
     recent_total_card.addEventListener("click",function(){
         upRecentResp();
         changeRecentView();
+        toggleViewInfoPanel()
     })
     
     $("#recent-day-input").on("change",function(){
@@ -698,6 +698,7 @@ $(document).ready(function () {
                 }
             }
         })
+        toggleViewInfoPanel();
     }
     
     initialize();

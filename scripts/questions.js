@@ -24,7 +24,6 @@ $(document).ready(function() {
         url: "/client",
         data: {
             client: true,
-            department_id: 1
         },
         type: "post",
         success: function(resp) {
