@@ -415,9 +415,10 @@ app.post("/getClientSurveyId",function(req,resp){
 })
 app.post("/client",function(req,resp){
     if(req.body.setsession){
-        req.session.clientSurveyId = req.body.survey_id;
+        if(Number.isInteger(parseInt(req.body.survey_id))){
+            req.session.clientSurveyId = req.body.survey_id;
+        }
     }
-    
     updateSurveyStatus(req,resp);
     getSurveyFromDB(req,resp);
 });

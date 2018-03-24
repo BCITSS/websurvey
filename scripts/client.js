@@ -6,12 +6,15 @@ $(document).ready(function(){
         type:"post",
         success: function(resp){
             console.log(resp);
-            
-            for (var i=0; i< resp.length;i++){
-                var new_option = document.createElement("option");
-                new_option.value = resp[i].id
-                new_option.innerHTML = resp[i].survey_name;
-                survey_select_list.appendChild(new_option)
+            if(resp == "no survey live"){
+                console.log("no survey live");
+            }else{
+                for (var i=0; i< resp.length;i++){
+                    var new_option = document.createElement("option");
+                    new_option.value = resp[i].id
+                    new_option.innerHTML = resp[i].survey_name;
+                    survey_select_list.appendChild(new_option)
+                }
             }
         }
     });
